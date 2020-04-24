@@ -14,6 +14,8 @@ class Entities : public std::vector<std::shared_ptr<Entity>>
 public:
 	static constexpr float SPAWN_DELAY = 5; // seconds
 
+	static std::shared_ptr<Entities> getInstance();
+
 	Entities() : lastFrameTime(0), totalSpawned(0) {}
 	~Entities() {}
 	

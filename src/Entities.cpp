@@ -3,29 +3,30 @@
 using namespace std;
 using namespace glm;
 
+shared_ptr<Entities> Entities::getInstance() {
+	static shared_ptr<Entities> instance(new Entities);
+	return instance;
+}
+
 void Entities::init(vector<shared_ptr<Shape>>& s)
 {
 	shapes = s;
+	spawnRandom();
 }
 
 void Entities::update(float deltaTime, float gameTime)
 {
 	shared_ptr<Entity> entity;
-	auto iter = begin();
-	while (iter != end())
+	for (int i = 0; i < size(); i++)
 	{
-		entity = *iter;
-		//if (entity->isAlive()) // Removing code, not needed for lab
-		//{
-			entity->update(deltaTime, *this);
-			iter++;
-		//}
-		//else
-		//	iter = erase(iter);
+		entity = at(i);
+		entity->update(deltaTime, *this);
 	}
+
+	// pull this out into a spawner class -- can be used for general random spawns
 	if (size() < MAX_SPAWN_ENTITIES && gameTime - lastFrameTime > SPAWN_DELAY)
 	{
-		spawnRandom();
+		//spawnRandom();
 		lastFrameTime = gameTime;
 	}
 }

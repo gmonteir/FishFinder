@@ -96,8 +96,10 @@ bool Entity::hasCollided(Entity &entity) const
 
 bool Entity::hasCollided(std::vector<std::shared_ptr<Entity>> &entities)
 {
-	for (auto &e : entities)
+	shared_ptr<Entity> e;
+	for (int i = 0; i < entities.size(); i++)
 	{
+		e = entities[i];
 		if (&(*e) != &(*this) && hasCollided(*e)) {
 			onCollision(*e); 
 			e->onCollision(*this);

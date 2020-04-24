@@ -1,4 +1,5 @@
 #include "Player.h"
+#include "Entities.h"
 #include <algorithm>
 #include <iostream>
 
@@ -13,6 +14,7 @@ void Player::onCollision(Entity& collider)
 		score++;
 		collider.stop();
 		collider.remove();
+		Entities::getInstance()->spawnRandom();
 	}
 }
 
