@@ -19,12 +19,12 @@ const std::string NEMO_SHAPE = "NEMO";
 const std::string RESOURCE_DIR = "../resources";
 
 constexpr float PLAYER_SPEED = 20;
-constexpr float PLAYER_SIZE = 0.5;
+constexpr float PLAYER_SIZE = 3;
 constexpr int PLAYER_MATERIAL = 5;
 
 constexpr float CAMERA_SPEED = 5;
 const glm::vec2 FIRST_PERSON_OFFSET = glm::vec2(PLAYER_SIZE * 1.5, 0);
-const glm::vec2 SECOND_PERSON_OFFSET = glm::vec2(PLAYER_SIZE * 10, PLAYER_SIZE * 3);
+const glm::vec2 SECOND_PERSON_OFFSET = glm::vec2(PLAYER_SIZE + 10, PLAYER_SIZE + 0.3);
 const glm::vec2 THIRD_PERSON_OFFSET = glm::vec2(-SECOND_PERSON_OFFSET.x, SECOND_PERSON_OFFSET.y);
 
 const glm::vec3 FLOOR_POSITION = glm::vec3(0, -2, 0);

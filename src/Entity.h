@@ -29,7 +29,7 @@ public:
 	void randomRespawn();
 
 	void update(float deltaTime, std::vector<std::shared_ptr<Entity>>& entities);
-	void draw(std::shared_ptr<Program> &prog, std::shared_ptr<MatrixStack> &M) const;
+	virtual void draw(std::shared_ptr<Program> &prog, std::shared_ptr<MatrixStack> &M);
 
 	virtual void onOutOfBounds(float deltaTime);
 	bool isOutOfBounds() const 
@@ -42,8 +42,8 @@ public:
 	void stop() { velocity = ORIGIN; material = STOPPED_MATERIAL; }
 	glm::vec3 getVelocity() const { return velocity; }
 	glm::vec3 getShift() const { return shift; }
-	glm::vec3 getMaxBoundCoordinate() const { return max * scale * size + position; }
-	glm::vec3 getMinBoundCoordinate() const { return min * scale * size + position; }
+	glm::vec3 getMaxBoundCoordinate() const { return max * scale * size + position; } // note: max already shifted
+	glm::vec3 getMinBoundCoordinate() const { return min * scale * size + position; } // note: min already shifted
 	bool isAlive() { return !isDead; }
 	void remove() { isDead = true; }
 

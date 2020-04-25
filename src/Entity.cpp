@@ -50,7 +50,7 @@ void Entity::update(float deltaTime, std::vector<std::shared_ptr<Entity>> &entit
 		onOutOfBounds(deltaTime);
 }
 
-void Entity::draw(shared_ptr<Program> &prog, shared_ptr<MatrixStack> &M) const
+void Entity::draw(shared_ptr<Program> &prog, shared_ptr<MatrixStack> &M)
 {
 	M->pushMatrix();
 	M->translate(position);

@@ -219,7 +219,7 @@ public:
 
 	void update(float deltaTime, float gameTime)
 	{
-		player->keyUpdate(keyInput);
+		player->keyUpdate(deltaTime, keyInput);
 		Entities::getInstance()->update(deltaTime, gameTime);
 		camera.update(player->getPosition(), player->getFacing());
 	}
