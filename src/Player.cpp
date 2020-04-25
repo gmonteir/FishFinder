@@ -116,23 +116,33 @@ void Player::draw(shared_ptr<Program> &prog, shared_ptr<MatrixStack> &M)
 	//prog->bind();
 	//texture->bind(prog->getUniform("Texture0"));
 	M->pushMatrix();
+	M->loadIdentity();
 	M->translate(position);											// move dory to its world position
 	M->rotate(atan2(facing.x, facing.z) + radians(80.f), YAXIS);	// orient dory to face forward
 	M->scale(scale*size); 			  								// scale dory at the origin
 	M->translate(vec3(-1)*shift); 									// shift dory to origin
 	int shapeSize = shapes.size();
+	cout << shapeSize << endl;
 	for (int i = 0; i < shapeSize; ++i)
 	{
 		if (i == 4)
+		{
 			setupPart(shapes, M, i, 2, &leftFin);
+		}
 		else if (i == 5)
+		{
 			setupPart(shapes, M, i, 3, &rightFin);
+		}
 		else if (i == 6)
+		{
 			setupPart(shapes, M, i, 7, &tail);
+		}
 		glUniformMatrix4fv(prog->getUniform("M"), 1, GL_FALSE, value_ptr(M->topMatrix()));
 		shapes.at(i)->draw(prog);
-		if (i >= 4 && i <= 6)
+		if (i == 4 || i == 5 || i == 6)
+		{
 			M->popMatrix();
+		}
 	}
 	M->popMatrix();
 
