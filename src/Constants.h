@@ -13,6 +13,9 @@ const glm::vec3 YAXIS = glm::vec3(0.0, 1.0, 0.0);
 const glm::vec3 ZAXIS = glm::vec3(0.0, 0.0, 1.0);
 
 const std::string DORY_TEXTURE = "DORY";
+const std::string CUBE_SHAPE = "CUBE";
+const std::string DORY_SHAPE = "DORY";
+const std::string NEMO_SHAPE = "NEMO";
 const std::string RESOURCE_DIR = "../resources";
 
 constexpr float PLAYER_SPEED = 20;

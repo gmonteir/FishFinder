@@ -25,6 +25,9 @@ public:
 	void draw(const std::shared_ptr<Program> prog) const;
 	glm::vec3 min;
 	glm::vec3 max;
+
+	static void loadMultipleShapeMesh(std::shared_ptr<std::vector<std::shared_ptr<Shape>>> shapes,
+		glm::vec3* gMin, glm::vec3* gMax, const std::string& meshName);
 	
 private:
 	std::vector<unsigned int> eleBuf;
@@ -37,9 +40,6 @@ private:
 	unsigned texBufID;
     unsigned vaoID;
 };
-
-void loadMultipleShapeMesh(std::shared_ptr<std::vector<std::shared_ptr<Shape>>> shapes, 
-	          glm::vec3 *gMin, glm::vec3 *gMax, const std::string &meshName);
 void getShiftAndScale(glm::vec3 *shift, glm::vec3 *scale, glm::vec3 *gMin, glm::vec3 *gMax);
 void updateBounds(int i, const std::shared_ptr<Shape> shape,
   				  glm::vec3 *gMin, glm::vec3 *gMax);

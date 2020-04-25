@@ -152,7 +152,7 @@ void Shape::resize()
 }
 
 // Load geometry of a multiple shape mesh
-void loadMultipleShapeMesh(shared_ptr<vector<shared_ptr<Shape>>> shapes,
+void Shape::loadMultipleShapeMesh(shared_ptr<vector<shared_ptr<Shape>>> shapes,
 			  glm::vec3 *gMin, glm::vec3 *gMax, const string &meshName)
 {
 	shared_ptr<Shape> shape;

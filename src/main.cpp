@@ -11,6 +11,7 @@
 #include "Program.h"
 #include "MatrixStack.h"
 #include "Shape.h"
+#include "Shapes.h"
 #include "WindowManager.h"
 #include "GLTextureWriter.h"
 #include "Draw.h"
@@ -47,10 +48,6 @@ public:
 
 	// Shape to be used (from obj file)
 	shared_ptr<Shape> shape;
-	shared_ptr<vector<shared_ptr<Shape>>> dummyShapes;
-	shared_ptr<vector<shared_ptr<Shape>>> doryShapes;
-	shared_ptr<vector<shared_ptr<Shape>>> nemoShapes;
-	shared_ptr<vector<shared_ptr<Shape>>> cube;
 
 	// Contains vertex information for OpenGL
 	GLuint VertexArrayID;
@@ -198,33 +195,21 @@ public:
 
 	void initGeom()
 	{
-		shared_ptr<Shape> cube = make_shared<Shape>();
-		cube->loadSingleShapeMesh(RESOURCE_DIR + "/cube.obj");
-		this->cube = make_shared<vector<shared_ptr<Shape>>>();
-		this->cube->push_back(cube);
-
-		dummyShapes = make_shared<vector<shared_ptr<Shape>>>();
-		loadMultipleShapeMesh(dummyShapes, &gMin, &gMax, RESOURCE_DIR + "/dummy.obj");
-
-		doryShapes = make_shared<vector<shared_ptr<Shape>>>();
-		loadMultipleShapeMesh(doryShapes, &doryMin, &doryMax, RESOURCE_DIR + "/dory.obj");
-
-		nemoShapes = make_shared<vector<shared_ptr<Shape>>>();
-		shared_ptr<Shape> nemo = make_shared<Shape>();
-		nemo->loadSingleShapeMesh(RESOURCE_DIR + "/nemo.obj");
-		nemoShapes->push_back(nemo);
+		Shapes::getInstance()->addShape(RESOURCE_DIR + "/cube.obj", CUBE_SHAPE);
+		Shapes::getInstance()->addShape(RESOURCE_DIR + "/dory.obj", DORY_SHAPE);
+		Shapes::getInstance()->addShape(RESOURCE_DIR + "/nemo.obj", NEMO_SHAPE);
 	}
 
 	void initEntities()
 	{
-		floor = make_shared<Entity>(*cube, FLOOR_POSITION, ORIGIN, FLOOR_SIZE, -ZAXIS, 2);
+		floor = make_shared<Entity>(*Shapes::getInstance()->getShape(CUBE_SHAPE), FLOOR_POSITION, ORIGIN, FLOOR_SIZE, -ZAXIS, 2);
 		floor->remove(); // mark as dead so that it doesnt change color when player collides
-		player = make_shared<Player>(*doryShapes);
+		player = make_shared<Player>(*Shapes::getInstance()->getShape(DORY_SHAPE));
 		//player->setTexture(Textures::getInstance()->getTexture(DORY_TEXTURE));
 
 		Entities::getInstance()->push_back(player);
 		Entities::getInstance()->push_back(floor);
-		Entities::getInstance()->init(*nemoShapes);
+		Entities::getInstance()->init(*Shapes::getInstance()->getShape(NEMO_SHAPE));
 	}
 
 	void SetModel(shared_ptr<Program>& p, shared_ptr<MatrixStack>& M)
@@ -286,7 +271,7 @@ public:
 			Model->scale(vec3(100));
 			glUniformMatrix4fv(prog->getUniform("M"), 1, GL_FALSE,value_ptr(Model->topMatrix()) );
 			glBindTexture(GL_TEXTURE_CUBE_MAP, cubeMapTexture);
-			cube->at(0)->draw(prog);
+			Shapes::getInstance()->getShape(CUBE_SHAPE)->at(0)->draw(prog);
 		glDepthFunc(GL_LESS);
 		Model->popMatrix();
 		prog->unbind();
