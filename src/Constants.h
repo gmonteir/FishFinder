@@ -12,15 +12,23 @@ const glm::vec3 XAXIS = glm::vec3(1.0, 0.0, 0.0);
 const glm::vec3 YAXIS = glm::vec3(0.0, 1.0, 0.0);
 const glm::vec3 ZAXIS = glm::vec3(0.0, 0.0, 1.0);
 
+// Assets
 const std::string DORY_TEXTURE = "DORY";
 const std::string CUBE_SHAPE = "CUBE";
 const std::string DORY_SHAPE = "DORY";
 const std::string NEMO_SHAPE = "NEMO";
 const std::string RESOURCE_DIR = "../resources";
 
+// Tags
+const std::string NEMO_TAG = "NEMO";
+const std::string POWERUP_TAG = "POWERUP";
+
+// Player
 constexpr float PLAYER_SPEED = 20;
 constexpr float PLAYER_SIZE = 3;
 constexpr int PLAYER_MATERIAL = 5;
+constexpr float INITIAL_STAMINA = 3;
+constexpr float MAX_STAMINA = 10;
 
 constexpr float CAMERA_SPEED = 5;
 const glm::vec2 FIRST_PERSON_OFFSET = glm::vec2(PLAYER_SIZE * 1.5, 0);

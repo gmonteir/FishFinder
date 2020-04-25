@@ -2,20 +2,22 @@
 
 #include "Entity.h"
 #include "Keys.h"
+#include "Constants.h"
+
+#define _USE_MATH_DEFINES
+#include <math.h>
 
 class Player : public Entity
 {
 public:
-	Player(std::vector<std::shared_ptr<Shape>>& shapes) : Entity(shapes), score(0), speed(PLAYER_SPEED), rotationSpeed(CAMERA_SPEED),
-		alpha(0), beta(-M_PI_2) {
+	Player(std::vector<std::shared_ptr<Shape>>& shapes) 
+		: Entity(shapes), score(0), speed(PLAYER_SPEED), stamina(INITIAL_STAMINA),
+		rotationSpeed(CAMERA_SPEED), alpha(0), beta(-M_PI_2), 
+		tailRight(false), tail(ORIGIN), rightFin(ORIGIN), leftFin(ORIGIN) {
+		// override Entity defaults:
 		size = glm::vec3(PLAYER_SIZE);
 		position = glm::vec3(0, size.y*scale.y*(max.y-min.y)/2 + FLOOR_POSITION.y + 0.1, 0);
 		material = PLAYER_MATERIAL;
-		tailRight = false;
-		tail = glm::vec3(0);
-		rightFin = glm::vec3(0);
-		leftFin = glm::vec3(0);
-		stamina = 3;
 	}
 	virtual ~Player() {}
 
@@ -44,9 +46,9 @@ private:
 	bool tailRight;
 
 	Keys keys;
-};
 
-float calculateShift(float minCoord, float maxCoord);
-void setupPart(const std::vector<std::shared_ptr<Shape>> shape,
-			   std::shared_ptr<MatrixStack> Model, int i, int pivot, glm::vec3 *angle);
+	float calculateShift(float minCoord, float maxCoord);
+	void setupPart(const std::vector<std::shared_ptr<Shape>> shape,
+		std::shared_ptr<MatrixStack> Model, int i, int pivot, glm::vec3* angle);
+};
 

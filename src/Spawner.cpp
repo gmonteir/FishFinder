@@ -1,4 +1,5 @@
 #include "Spawner.h"
+#include "Entities.h"
 
 using namespace std;
 using namespace glm;
@@ -29,21 +30,21 @@ void Spawner::update(float deltaTime, float gameTime)
 
 void Spawner::spawnNemo()
 {
-	spawnRandom(nemos, "nemo");
+	spawnRandom(nemos, NEMO_TAG);
 }
 
 void Spawner::spawnPowerup()
 {
-	spawnRandom(powerups, "powerup");
+	spawnRandom(powerups, POWERUP_TAG);
 	Entities::getInstance()->at(Entities::getInstance()->size()-1)->setSize(vec3(0.5));
 }
 
-void Spawner::spawnRandom(vector<shared_ptr<Shape>>& shapes, string name)
+void Spawner::spawnRandom(vector<shared_ptr<Shape>>& shapes, string tag)
 {
 	totalSpawned++;
 	unique_ptr<Entity> entity(new Entity(shapes));
 	entity->randomRespawn();
-	entity->setName(name);
+	entity->setTag(tag);
 	while (entity->hasCollided(*Entities::getInstance()))
 	{
 		entity->randomRespawn();

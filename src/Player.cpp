@@ -14,9 +14,9 @@ void Player::onCollision(Entity& collider)
 		score++;
 		collider.stop();
 		collider.remove();
-		if (collider.getName() == "nemo")
+		if (collider.getTag() == NEMO_TAG)
 			Spawner::getInstance()->spawnNemo();
-		if (collider.getName() == "powerup") {
+		if (collider.getTag() == POWERUP_TAG) {
 			stamina += 1;
 			if (stamina > 10)
 				stamina = 10;
@@ -94,7 +94,7 @@ void Player::rotate(float dx, float dy)
 }
 
 // pivot around given part
-void setupPart(const vector<shared_ptr<Shape>> shapes,
+void Player::setupPart(const vector<shared_ptr<Shape>> shapes,
 			   shared_ptr<MatrixStack> Model, int i, int pivot, vec3 *angle)
 {
 	float x = calculateShift(shapes.at(pivot)->min.x, shapes.at(pivot)->max.x);
@@ -109,7 +109,7 @@ void setupPart(const vector<shared_ptr<Shape>> shapes,
 }
 
 // Calcualtes the shift to be centered at the origin
-float calculateShift(float minCoord, float maxCoord)
+float Player::calculateShift(float minCoord, float maxCoord)
 {
 	float coordExtent;
 	coordExtent = maxCoord - minCoord;
@@ -171,30 +171,3 @@ void Player::draw(shared_ptr<Program> &prog, shared_ptr<MatrixStack> &M)
 		prog->unbind();
 	*/
 }
-
-//vec3 Player::getInputDirection(int direction)
-//{
-//	switch (direction)
-//	{
-//	case Keys::FORWARD:
-//		moveForward(speed);
-//		break;
-//	case Keys::LEFT:
-//		moveRight(-speed);
-//		break;
-//	case Keys::BACKWARD:
-//		moveForward(-speed);
-//		break;
-//	case Keys::RIGHT:
-//		moveRight(speed);
-//		break;
-//	case Keys::ROTLEFT:
-//		rotate(speed * 0.01, 0);
-//		break;
-//	case Keys::ROTRIGHT:
-//		rotate(-speed * 0.01, 0);
-//		break;
-//	default:
-//		break;
-//	}
-//}

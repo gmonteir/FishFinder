@@ -1,13 +1,8 @@
 #pragma once
 
-#include "Program.h"
-#include "MatrixStack.h"
 #include "Shape.h"
-#include "Entities.h"
 
-#include <iostream>
 #include <vector>
-#include <functional>
 
 class Spawner
 {

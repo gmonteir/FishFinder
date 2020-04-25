@@ -213,11 +213,6 @@ public:
 		Spawner::getInstance()->init(*Shapes::getInstance()->getShape(NEMO_SHAPE), *Shapes::getInstance()->getShape(CUBE_SHAPE));
 	}
 
-	void SetModel(shared_ptr<Program>& p, shared_ptr<MatrixStack>& M)
-	{
-		glUniformMatrix4fv(p->getUniform("M"), 1, GL_FALSE, value_ptr(M->topMatrix()));
-	}
-
 	void update(float deltaTime, float gameTime)
 	{
 		player->keyUpdate(deltaTime, keyInput);

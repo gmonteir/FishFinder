@@ -2,12 +2,9 @@
 
 #include "Program.h"
 #include "MatrixStack.h"
-#include "Shape.h"
 #include "Entity.h"
 
-#include <iostream>
 #include <vector>
-#include <functional>
 
 class Entities : public std::vector<std::shared_ptr<Entity>>
 {

@@ -21,7 +21,7 @@ class Camera
 
 public:
 	Camera() : eye(), LA(-ZAXIS), upVector(YAXIS), 
-		/*alpha(0), beta(-M_PI_2),*/ offset(FIRST_PERSON_OFFSET), reverse(false) {}
+		/*alpha(0), beta(-M_PI_2),*/ offset(THIRD_PERSON_OFFSET), reverse(false) {}
 	~Camera() {}
 	void reset() {}
 
