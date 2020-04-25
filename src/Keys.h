@@ -18,7 +18,8 @@ class Keys
 		static constexpr int RIGHT = 3;
 		static constexpr int ROTLEFT = 4;
 		static constexpr int ROTRIGHT = 5;
-		static constexpr int NUM_KEYS = 6;
+		static constexpr int BOOST = 6;
+		static constexpr int NUM_KEYS = 7;
 		static int DEFAULT_KEYS[NUM_KEYS];
 
 		Keys();

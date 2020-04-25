@@ -15,6 +15,7 @@ public:
 		tail = glm::vec3(0);
 		rightFin = glm::vec3(0);
 		leftFin = glm::vec3(0);
+		stamina = 3;
 	}
 	virtual ~Player() {}
 
@@ -37,6 +38,7 @@ private:
 	int score;
 	float speed, rotationSpeed;
 	float alpha, beta;
+	float stamina;
 
 	glm::vec3 leftFin, rightFin, tail;
 	bool tailRight;

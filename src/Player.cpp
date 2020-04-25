@@ -14,7 +14,13 @@ void Player::onCollision(Entity& collider)
 		score++;
 		collider.stop();
 		collider.remove();
-		Entities::getInstance()->spawnRandom();
+		if (collider.getName() == "nemo")
+			Entities::getInstance()->spawnNemo();
+		if (collider.getName() == "powerup") {
+			stamina += 1;
+			if (stamina > 10)
+				stamina = 10;
+		}
 	}
 }
 
@@ -22,12 +28,21 @@ void Player::keyUpdate(float deltaTime, Keys input)
 {
 	int forward = 0;
 	int right = 0;
+	float boost = 0;
 	vec3 deltas;
 
 	if (input.keyPressed(Keys::FORWARD))
 		forward += 1;
 	if (input.keyPressed(Keys::BACKWARD))
 		forward -= 1;
+
+	if (input.keyPressed(Keys::BOOST) && stamina > 0) {
+		boost = 30;
+		stamina -= deltaTime;
+		if (stamina < 0)
+			stamina = 0;
+		cout << stamina << endl;
+	}
 
 	if (input.keyPressed(Keys::LEFT))
 		right -= 1;
@@ -42,7 +57,7 @@ void Player::keyUpdate(float deltaTime, Keys input)
 	deltas.x = forward * facing.x + right * -facing.z;
 	deltas.y = forward * facing.y;
 	deltas.z = forward * facing.z + right * facing.x;
-	velocity = (right == 0 && forward == 0) ? ORIGIN : normalize(deltas) * speed;
+	velocity = (right == 0 && forward == 0) ? ORIGIN : normalize(deltas) * (speed + boost);
 
 
 	animate(deltaTime);

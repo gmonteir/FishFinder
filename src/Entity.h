@@ -19,8 +19,8 @@ class Entity
 public:
 	/* shape, position, velocity, size, facing, material */
 	Entity(std::vector<std::shared_ptr<Shape>>& shapes, glm::vec3 position=ORIGIN, glm::vec3 velocity=ORIGIN, 
-		glm::vec3 size=glm::vec3(1.0), glm::vec3 facing=-ZAXIS, int material=DEFAULT_MATERIAL, int program=SIMPLEPROG)
-		: shapes(shapes), position(position), velocity(velocity), size(size), facing(facing), material(material), program(program), isDead(false), texture(nullptr)
+		glm::vec3 size=glm::vec3(1.0), glm::vec3 facing=-ZAXIS, int material=DEFAULT_MATERIAL, string name="DEFAULT", int program=SIMPLEPROG)
+		: shapes(shapes), position(position), velocity(velocity), size(size), facing(facing), material(material), name(name), program(program), isDead(false), texture(nullptr)
 	{
 		extractMinMax();
 	}
@@ -47,6 +47,10 @@ public:
 	bool isAlive() { return !isDead; }
 	void remove() { isDead = true; }
 
+	void setSize(glm::vec3 size) { this->size = size; }
+	void setName(string tag) { this->name = tag; }
+	string getName() { return this->name; }
+
 	void setTexture(std::shared_ptr<Texture>& tex) { texture = tex; }
 
 	// checks if point is inside the bounding box defined by max and min
@@ -59,6 +63,7 @@ public:
 protected:
 	glm::vec3 position, velocity, size, facing;
 	bool isDead;
+	string name;
 
 	std::vector<std::shared_ptr<Shape>> shapes;
 	std::shared_ptr<Texture> texture;
@@ -68,5 +73,6 @@ private:
 
 	void extractMinMax();
 	void extractShiftScale();
+	
 };
 

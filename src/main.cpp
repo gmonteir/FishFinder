@@ -209,7 +209,8 @@ public:
 
 		Entities::getInstance()->push_back(player);
 		Entities::getInstance()->push_back(floor);
-		Entities::getInstance()->init(*Shapes::getInstance()->getShape(NEMO_SHAPE));
+		Entities::getInstance()->init(*Shapes::getInstance()->getShape(NEMO_SHAPE), *Shapes::getInstance()->getShape(CUBE_SHAPE));
+		
 	}
 
 	void SetModel(shared_ptr<Program>& p, shared_ptr<MatrixStack>& M)

@@ -8,10 +8,12 @@ shared_ptr<Entities> Entities::getInstance() {
 	return instance;
 }
 
-void Entities::init(vector<shared_ptr<Shape>>& s)
+void Entities::init(vector<shared_ptr<Shape>>& nemos, vector<shared_ptr<Shape>>& powerups)
 {
-	shapes = s;
-	spawnRandom();
+	this->nemos = nemos;
+	this->powerups = powerups;
+	spawnNemo();
+	spawnPowerup();
 }
 
 void Entities::update(float deltaTime, float gameTime)
@@ -26,7 +28,7 @@ void Entities::update(float deltaTime, float gameTime)
 	// pull this out into a spawner class -- can be used for general random spawns
 	if (size() < MAX_SPAWN_ENTITIES && gameTime - lastFrameTime > SPAWN_DELAY)
 	{
-		//spawnRandom();
+		spawnPowerup();
 		lastFrameTime = gameTime;
 	}
 }
@@ -38,7 +40,7 @@ void Entities::draw(shared_ptr<Program>& prog, shared_ptr<MatrixStack>& M)
 		entity->draw(prog, M);
 	}
 }
-void Entities::spawnRandom()
+void Entities::spawnRandom(vector<shared_ptr<Shape>>& shapes)
 {
 	totalSpawned++;
 	unique_ptr<Entity> entity(new Entity(shapes));
@@ -48,4 +50,33 @@ void Entities::spawnRandom()
 		entity->randomRespawn();
 	}
 	push_back(move(entity));
+}
+
+void Entities::spawnNemo()
+{
+	totalSpawned++;
+	unique_ptr<Entity> entity(new Entity(nemos));
+	entity->randomRespawn();
+	entity->setName("nemo");
+	while (entity->hasCollided(*this))
+	{
+		entity->randomRespawn();
+	}
+	push_back(move(entity));
+
+}
+
+void Entities::spawnPowerup()
+{
+	totalSpawned++;
+	unique_ptr<Entity> entity(new Entity(powerups));
+	entity->randomRespawn();
+	entity->setName("powerup");
+	while (entity->hasCollided(*this))
+	{
+		entity->randomRespawn();
+	}
+	entity->setSize(vec3(0.5, 0.5, 0.5));
+	push_back(move(entity));
+
 }

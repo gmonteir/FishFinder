@@ -8,7 +8,8 @@ int Keys::DEFAULT_KEYS[] = {
 	GLFW_KEY_S,
 	GLFW_KEY_D,
 	GLFW_KEY_Q,
-	GLFW_KEY_E
+	GLFW_KEY_E,
+	GLFW_KEY_LEFT_SHIFT
 };
 
 Keys::Keys() : keys()
