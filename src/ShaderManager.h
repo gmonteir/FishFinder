@@ -18,9 +18,12 @@ class ShaderManager
 
 	public:
 		static constexpr int NUM_SHADERS = 4;
+
+		static shared_ptr<ShaderManager> getInstance();
+
 		// Shader Manager Constants
 		ShaderManager(const string& resourceDirectory);
-		~ShaderManager();
+		~ShaderManager() {}
 
 		shared_ptr<Program> initSimpleProg();
 	    shared_ptr<Program> initSkyboxProg();

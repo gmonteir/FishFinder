@@ -5,6 +5,7 @@
 #include "Texture.h"
 #include "Shape.h"
 #include "Constants.h"
+#include "ShaderManager.h"
 
 #include <vector>
 #include <functional>
@@ -18,8 +19,8 @@ class Entity
 public:
 	/* shape, position, velocity, size, facing, material */
 	Entity(std::vector<std::shared_ptr<Shape>>& shapes, glm::vec3 position=ORIGIN, glm::vec3 velocity=ORIGIN, 
-		glm::vec3 size=glm::vec3(1.0), glm::vec3 facing=-ZAXIS, int material=DEFAULT_MATERIAL)
-		: shapes(shapes), position(position), velocity(velocity), size(size), facing(facing), material(material), isDead(false), texture(nullptr)
+		glm::vec3 size=glm::vec3(1.0), glm::vec3 facing=-ZAXIS, int material=DEFAULT_MATERIAL, int program=SIMPLEPROG)
+		: shapes(shapes), position(position), velocity(velocity), size(size), facing(facing), material(material), program(program), isDead(false), texture(nullptr)
 	{
 		extractMinMax();
 	}
@@ -61,7 +62,7 @@ protected:
 
 	std::vector<std::shared_ptr<Shape>> shapes;
 	std::shared_ptr<Texture> texture;
-	int material;
+	int material, program;
 	glm::vec3 max, min, shift, scale;
 private:
 

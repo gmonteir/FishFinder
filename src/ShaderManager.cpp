@@ -1,5 +1,11 @@
-
+#include "Constants.h"
 #include "ShaderManager.h"
+
+shared_ptr<ShaderManager> ShaderManager::getInstance()
+{
+	static shared_ptr<ShaderManager> instance(new ShaderManager(RESOURCE_DIR));
+	return instance;
+}
 
 ShaderManager::ShaderManager(const string& resourceDirectory) :
 	resourceDirectory(resourceDirectory)

@@ -12,6 +12,9 @@ const glm::vec3 XAXIS = glm::vec3(1.0, 0.0, 0.0);
 const glm::vec3 YAXIS = glm::vec3(0.0, 1.0, 0.0);
 const glm::vec3 ZAXIS = glm::vec3(0.0, 0.0, 1.0);
 
+const std::string DORY_TEXTURE = "DORY";
+const std::string RESOURCE_DIR = "../resources";
+
 constexpr float PLAYER_SPEED = 20;
 constexpr float PLAYER_SIZE = 0.5;
 constexpr int PLAYER_MATERIAL = 5;

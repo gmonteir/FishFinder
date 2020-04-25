@@ -20,6 +20,7 @@
 #include "ShaderManager.h"
 #include "RenderText.h"
 #include "Player.h"
+#include "Textures.h"
 
 #define _USE_MATH_DEFINES
 #include <math.h>
@@ -69,16 +70,13 @@ public:
 
 	// texture for skymap
 	unsigned int cubeMapTexture;
-	shared_ptr<Texture> doryTexture;
 
 	int drawMode = 0;
 
 	shared_ptr<Player> player;
 	shared_ptr<Entity> floor;
-	shared_ptr<Entity> dory;
 	Camera camera;
 	Keys keyInput;
-	ShaderManager *shaderManager;
 	RenderText *textRenderer;
 
 	void keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods)
@@ -167,11 +165,7 @@ public:
 	// Code to load in the textures
 	void initTex(const std::string& resourceDirectory)
 	{
-		doryTexture = make_shared<Texture>();
-		doryTexture->setFilename(resourceDirectory + "/dory.jpg");
-		doryTexture->init();
-		doryTexture->setUnit(0);
-		doryTexture->setWrapModes(GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE);
+		Textures::getInstance()->addTexture(resourceDirectory + "/dory.jpg", DORY_TEXTURE, GL_CLAMP_TO_EDGE);
 
 		vector<std::string> faces {
     	"uw_rt.jpg",
@@ -184,7 +178,7 @@ public:
 		cubeMapTexture = createSky(resourceDirectory + "/underwater/",  faces);
 	}
 
-	void init(const std::string& resourceDirectory)
+	void init()
 	{
 		int width, height;
 		glfwGetFramebufferSize(windowManager->getHandle(), &width, &height);
@@ -196,29 +190,28 @@ public:
 		glEnable(GL_DEPTH_TEST);
 
 		//initialize the textures we might use
-		initTex(resourceDirectory);
-		shaderManager = new ShaderManager(resourceDirectory);
+		initTex(RESOURCE_DIR);
 
 		FT_Library ft;
-		textRenderer = new RenderText(&ft, shaderManager->getShader(GLYPHPROG));
+		textRenderer = new RenderText(&ft, ShaderManager::getInstance()->getShader(GLYPHPROG));
 	 }
 
-	void initGeom(const std::string& resourceDirectory)
+	void initGeom()
 	{
 		shared_ptr<Shape> cube = make_shared<Shape>();
-		cube->loadSingleShapeMesh(resourceDirectory + "/cube.obj");
+		cube->loadSingleShapeMesh(RESOURCE_DIR + "/cube.obj");
 		this->cube = make_shared<vector<shared_ptr<Shape>>>();
 		this->cube->push_back(cube);
 
 		dummyShapes = make_shared<vector<shared_ptr<Shape>>>();
-		loadMultipleShapeMesh(dummyShapes, &gMin, &gMax, resourceDirectory + "/dummy.obj");
+		loadMultipleShapeMesh(dummyShapes, &gMin, &gMax, RESOURCE_DIR + "/dummy.obj");
 
 		doryShapes = make_shared<vector<shared_ptr<Shape>>>();
-		loadMultipleShapeMesh(doryShapes, &doryMin, &doryMax, resourceDirectory + "/dory.obj");
+		loadMultipleShapeMesh(doryShapes, &doryMin, &doryMax, RESOURCE_DIR + "/dory.obj");
 
 		nemoShapes = make_shared<vector<shared_ptr<Shape>>>();
 		shared_ptr<Shape> nemo = make_shared<Shape>();
-		nemo->loadSingleShapeMesh(resourceDirectory + "/nemo.obj");
+		nemo->loadSingleShapeMesh(RESOURCE_DIR + "/nemo.obj");
 		nemoShapes->push_back(nemo);
 	}
 
@@ -226,9 +219,8 @@ public:
 	{
 		floor = make_shared<Entity>(*cube, FLOOR_POSITION, ORIGIN, FLOOR_SIZE, -ZAXIS, 2);
 		floor->remove(); // mark as dead so that it doesnt change color when player collides
-		dory = make_shared<Entity>(*doryShapes, vec3(5, 5, -20), ORIGIN, vec3(5));
-		dory->setTexture(doryTexture);
-		player = make_shared<Player>(*cube);
+		player = make_shared<Player>(*doryShapes);
+		//player->setTexture(Textures::getInstance()->getTexture(DORY_TEXTURE));
 
 		Entities::getInstance()->push_back(player);
 		Entities::getInstance()->push_back(floor);
@@ -269,7 +261,7 @@ public:
 		mat4 V = camera.getView();
 
 		// draw the floor and the nemos
-		prog = shaderManager->getShader(SIMPLEPROG);
+		prog = ShaderManager::getInstance()->getShader(SIMPLEPROG);
 		prog->bind();
 		glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, value_ptr(P->topMatrix()));
 		glUniformMatrix4fv(prog->getUniform("V"), 1, GL_FALSE, value_ptr(V));
@@ -281,7 +273,7 @@ public:
 		prog->unbind();
 
 		//draw the sky box
-		prog = shaderManager->getShader(SKYBOXPROG);
+		prog = ShaderManager::getInstance()->getShader(SKYBOXPROG);
 		prog->bind();
 		glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, value_ptr(P->topMatrix()));
 		glUniformMatrix4fv(prog->getUniform("V"), 1, GL_FALSE, value_ptr(V));
@@ -299,20 +291,10 @@ public:
 		Model->popMatrix();
 		prog->unbind();
 
-		// draw  dory
-		prog = shaderManager->getShader(TEXTUREPROG);
-		prog->bind();
-		glUniform3f(prog->getUniform("lightDir"), lightDir.x, lightDir.y, lightDir.z);
-		glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, value_ptr(P->topMatrix()));
-		glUniformMatrix4fv(prog->getUniform("V"), 1, GL_FALSE, value_ptr(V));
-		doryTexture->bind(prog->getUniform("Texture0"));
-		dory->draw(prog, Model);
-		prog->unbind();
-
 		/* FreeType */
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		prog = shaderManager->getShader(GLYPHPROG);
+		prog = ShaderManager::getInstance()->getShader(GLYPHPROG);
 		prog->bind();
 		glm::mat4 proj = glm::ortho(0.0f, static_cast<GLfloat>(width), 0.0f, static_cast<GLfloat>(height));
 		glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, glm::value_ptr(proj));
@@ -328,14 +310,6 @@ public:
 
 int main(int argc, char **argv)
 {
-	// Where the resources are loaded from
-	std::string resourceDir = "../resources";
-
-	if (argc >= 2)
-	{
-		resourceDir = argv[1];
-	}
-
 	Application *application = new Application();
 
 	// Your main will always include a similar set up to establish your window
@@ -348,8 +322,8 @@ int main(int argc, char **argv)
 
 	// This is the code that will likely change program to program as you
 	// may need to initialize or set up different data and state
-	application->init(resourceDir);
-	application->initGeom(resourceDir);
+	application->init();
+	application->initGeom();
 	application->initEntities();
 	double gameTime = 0; // keep track of how long we have been in the game.
 	int frameCount = 0;
