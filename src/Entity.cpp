@@ -26,25 +26,14 @@ void Entity::update(float deltaTime, std::vector<std::shared_ptr<Entity>> &entit
 {
 	vec3 change = velocity * deltaTime;
 	position.x += change.x;
-	position.z += change.z;
 	if (hasCollided(entities))
-	{
 		position.x -= change.x;
-		position.z -= change.z;
-	}
 	position.y += change.y;
 	if (hasCollided(entities))
 		position.y -= change.y;
-
-	//position.x += change.x;
-	//if (hasCollided(entities))
-	//	position.x -= change.x;
-	//position.y += change.y;
-	//if (hasCollided(entities))
-	//	position.y -= change.y;
-	//position.z += change.z;
-	//if (hasCollided(entities))
-	//	position.z -= change.z;
+	position.z += change.z;
+	if (hasCollided(entities))
+		position.z -= change.z;
 
 	if (isOutOfBounds()) // event trigger check 
 		onOutOfBounds(deltaTime);
