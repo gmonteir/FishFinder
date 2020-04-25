@@ -48,8 +48,8 @@ public:
 	void remove() { isDead = true; }
 
 	void setSize(glm::vec3 size) { this->size = size; }
-	void setName(string tag) { this->name = tag; }
-	string getName() { return this->name; }
+	void setName(std::string tag) { this->name = tag; }
+	std::string getName() { return this->name; }
 
 	void setTexture(std::shared_ptr<Texture>& tex) { texture = tex; }
 

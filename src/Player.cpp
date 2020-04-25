@@ -1,5 +1,5 @@
 #include "Player.h"
-#include "Entities.h"
+#include "Spawner.h"
 #include <algorithm>
 #include <iostream>
 
@@ -15,7 +15,7 @@ void Player::onCollision(Entity& collider)
 		collider.stop();
 		collider.remove();
 		if (collider.getName() == "nemo")
-			Entities::getInstance()->spawnNemo();
+			Spawner::getInstance()->spawnNemo();
 		if (collider.getName() == "powerup") {
 			stamina += 1;
 			if (stamina > 10)
