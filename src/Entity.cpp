@@ -24,6 +24,9 @@ void Entity::randomRespawn()
 
 void Entity::update(float deltaTime, std::vector<std::shared_ptr<Entity>> &entities)
 {
+	if (!isAlive())
+		return;
+
 	vec3 change = velocity * deltaTime;
 	position.x += change.x;
 	if (hasCollided(entities))
