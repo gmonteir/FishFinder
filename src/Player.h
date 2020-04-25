@@ -12,6 +12,9 @@ public:
 		position = glm::vec3(0, size.y*scale.y*(max.y-min.y)/2 + FLOOR_POSITION.y + 0.1, 0);
 		material = PLAYER_MATERIAL;
 		tailRight = false;
+		tail = glm::vec3(0);
+		rightFin = glm::vec3(0);
+		leftFin = glm::vec3(0);
 	}
 	virtual ~Player() {}
 

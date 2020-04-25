@@ -122,7 +122,6 @@ void Player::draw(shared_ptr<Program> &prog, shared_ptr<MatrixStack> &M)
 	M->scale(scale*size); 			  								// scale dory at the origin
 	M->translate(vec3(-1)*shift); 									// shift dory to origin
 	int shapeSize = shapes.size();
-	cout << shapeSize << endl;
 	for (int i = 0; i < shapeSize; ++i)
 	{
 		if (i == 4)
