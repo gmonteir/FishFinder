@@ -30,5 +30,6 @@ private:
 	std::vector<std::shared_ptr<Shape>> nemos;
 	std::vector<std::shared_ptr<Shape>> powerups;
 	std::vector<std::string> coralTypes;
+	int coralMaterials[3];
 };
 

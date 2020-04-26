@@ -19,6 +19,9 @@ void Spawner::init()
 	coralTypes.push_back(TREE_CORAL_SHAPE);
 	coralTypes.push_back(SOFT_CORAL_SHAPE);
 	coralTypes.push_back(ELKHORN_CORAL_SHAPE);
+	coralMaterials[0] = TREE_CORAL_MATERIAL;
+	coralMaterials[1] = SOFT_CORAL_MATERIAL;
+	coralMaterials[2] = ELKHORN_CORAL_MATERIAL;
 	
 	for (size_t i = 0; i < NUM_CORAL; i++)
 	{
@@ -58,6 +61,7 @@ void Spawner::spawnCoral(int type)
 {	
 	shared_ptr<Entity> e = spawnRandom(*Shapes::getInstance()->getShape(coralTypes[type]), CORAL_TAG);
 	e->setVelocity(vec3(0, 0, 0));
+	e->setMaterial(coralMaterials[type]);
 }
 
 shared_ptr<Entity> Spawner::spawnRandom(vector<shared_ptr<Shape>>& shapes, string tag)

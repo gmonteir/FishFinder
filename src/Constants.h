@@ -52,7 +52,6 @@ constexpr float MAX_SPAWN_SIZE = 3;
 constexpr float WORLD_SIZE = 55.0;
 constexpr int DEFAULT_MATERIAL = 3;
 constexpr int STOPPED_MATERIAL = 0;
-constexpr int NUM_CORAL = 20;
 
 // Powerup Constants
 constexpr float POWERUP_SIZE = 0.7;
@@ -64,6 +63,10 @@ constexpr int MAP_X = 32;
 constexpr int MAP_Z = 32;
 
 // Coral Constants
+constexpr int NUM_CORAL = 20;
 constexpr int TREE_CORAL_INDEX = 0;
 constexpr int SOFT_CORAL_INDEX = 1;
 constexpr int ELKHORN_CORAL_INDEX = 2;
+constexpr int TREE_CORAL_MATERIAL = 8;
+constexpr int SOFT_CORAL_MATERIAL = 6;
+constexpr int ELKHORN_CORAL_MATERIAL = 7;
