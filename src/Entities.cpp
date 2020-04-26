@@ -1,4 +1,5 @@
 #include "Entities.h"
+#include "ShaderManager.h"
 
 using namespace std;
 using namespace glm;
@@ -18,10 +19,10 @@ void Entities::update(float deltaTime)
 	}
 }
 
-void Entities::draw(shared_ptr<Program>& prog, shared_ptr<MatrixStack>& M)
+void Entities::draw(shared_ptr<MatrixStack>& M)
 {
 	for (shared_ptr<Entity> &entity : *this)
 	{
-		entity->draw(prog, M);
+		entity->draw(M);
 	}
 }

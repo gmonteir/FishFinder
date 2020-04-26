@@ -6,7 +6,6 @@
 using namespace std;
 using namespace glm;
 
-
 void Player::onCollision(Entity& collider)
 {
 	if (collider.isAlive())
@@ -65,21 +64,6 @@ void Player::keyUpdate(float deltaTime, Keys input)
 
 void Player::animate(float dt)
 {
-	//animateLeftFin(dt);
-	/*
-	if (tailRight)
-	{
-		tail.y += dt;
-		if (tail.y > 0.7)
-			tailRight = false;
-	}
-	else
-	{
-		tail.y -= dt;
-		if (tail.y < -0.7)
-			tailRight = true;
-	}
-	*/
 	animatePart(dt, &tail.y, &tailRight, -0.7, 0.7);
 	animatePart(dt, &leftFin.y, &leftFinRight, -0.3, 0.3);
 	leftFin.x = leftFin.y;
@@ -138,7 +122,7 @@ float Player::calculateShift(float minCoord, float maxCoord)
 	return minCoord + (coordExtent/2.0f);
 }
 
-void Player::draw(shared_ptr<Program> &prog, shared_ptr<MatrixStack> &M)
+void Player::draw(shared_ptr<MatrixStack> &M)
 {
 	/* Dory Parts by Index
 	0 - Face
@@ -149,9 +133,10 @@ void Player::draw(shared_ptr<Program> &prog, shared_ptr<MatrixStack> &M)
 	5 - Right Fin
 	6 - Tail
 	7 - Tail Joint */
-	//prog = ShaderManager::getInstance()->getShader(TEXTUREPROG);
-	//prog->bind();
-	//texture->bind(prog->getUniform("Texture0"));
+
+	shared_ptr<Program> prog = ShaderManager::getInstance()->getShader(TEXTUREPROG);
+	prog->bind();
+	ShaderManager::getInstance()->sendUniforms(TEXTUREPROG);
 	M->pushMatrix();
 	M->loadIdentity();
 	M->translate(position);											// move dory to its world position
@@ -181,15 +166,5 @@ void Player::draw(shared_ptr<Program> &prog, shared_ptr<MatrixStack> &M)
 		}
 	}
 	M->popMatrix();
-
-	/* draw  dory
-		prog = shaderManager->getShader(TEXTUREPROG);
-		prog->bind();
-		glUniform3f(prog->getUniform("lightDir"), lightDir.x, lightDir.y, lightDir.z);
-		glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, value_ptr(P->topMatrix()));
-		glUniformMatrix4fv(prog->getUniform("V"), 1, GL_FALSE, value_ptr(V));
-		doryTexture->bind(prog->getUniform("Texture0"));
-		dory->draw(prog, Model);
-		prog->unbind();
-	*/
+	prog->unbind();
 }

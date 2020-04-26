@@ -45,8 +45,11 @@ void Entity::update(float deltaTime, std::vector<std::shared_ptr<Entity>> &entit
 		onOutOfBounds(deltaTime);
 }
 
-void Entity::draw(shared_ptr<Program> &prog, shared_ptr<MatrixStack> &M)
+void Entity::draw(shared_ptr<MatrixStack> &M)
 {
+	shared_ptr<Program> prog = ShaderManager::getInstance()->getShader(SIMPLEPROG);
+	prog->bind();
+	ShaderManager::getInstance()->sendUniforms(SIMPLEPROG);
 	M->pushMatrix();
 	M->translate(position);
 	M->rotate(atan2(facing.x, facing.z), YAXIS);
@@ -66,6 +69,7 @@ void Entity::draw(shared_ptr<Program> &prog, shared_ptr<MatrixStack> &M)
 		shape->draw(prog);
 	}
 	M->popMatrix();
+	prog->unbind();
 }
 
 void Entity::onOutOfBounds(float deltaTime)

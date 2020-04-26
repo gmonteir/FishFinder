@@ -12,6 +12,15 @@ using namespace std;
 #define SKYBOXPROG 1
 #define TEXTUREPROG 2
 #define GLYPHPROG 3
+using namespace glm;
+
+struct uniforms {
+   mat4 P;
+   mat4 V;
+   vec3 lightDir;
+   vec3 lightCol;
+   vec3 eye;
+ };
 
 class ShaderManager
 {
@@ -29,8 +38,12 @@ class ShaderManager
 	    shared_ptr<Program> initSkyboxProg();
 	    shared_ptr<Program> initTextureProg();
 	    shared_ptr<Program> initGlyphProg();
+
 	    shared_ptr<Program> getShader(int i) { return shaderProgs[i]; }
+	    void setData(uniforms *common) { uniformData = common; }
+	    void sendUniforms(int i);
 	private:
 		string resourceDirectory;
 		shared_ptr<Program> shaderProgs[NUM_SHADERS];
+		uniforms *uniformData;
 };

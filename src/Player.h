@@ -33,7 +33,7 @@ public:
 
 	void keyUpdate(float deltaTime, Keys keyInput);
 
-	void draw(std::shared_ptr<Program> &prog, std::shared_ptr<MatrixStack> &M) override;
+	void draw(std::shared_ptr<MatrixStack> &M) override;
 	void animate(float dt);
 	void animatePart(float dt, float *angle, bool *movingRight, float low, float high);
 

@@ -29,7 +29,7 @@ public:
 	void randomRespawn();
 
 	void update(float deltaTime, std::vector<std::shared_ptr<Entity>>& entities);
-	virtual void draw(std::shared_ptr<Program> &prog, std::shared_ptr<MatrixStack> &M);
+	virtual void draw(std::shared_ptr<MatrixStack> &M);
 
 	virtual void onOutOfBounds(float deltaTime);
 	bool isOutOfBounds() const 

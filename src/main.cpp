@@ -215,6 +215,16 @@ public:
 		camera.update(player->getPosition(), player->getFacing());
 	}
 
+	/* helper functions for sending matrix data to the GPU */
+	mat4 SetProjectionMatrix(shared_ptr<Program> curShade) {
+	   int width, height;
+	   glfwGetFramebufferSize(windowManager->getHandle(), &width, &height);
+	   float aspect = width/(float)height;
+	   mat4 Projection = perspective(radians(50.0f), aspect, 0.1f, 100.0f);
+	   glUniformMatrix4fv(curShade->getUniform("P"), 1, GL_FALSE, value_ptr(Projection));
+	   return Projection;
+	 }
+
 	void render(int fps)
 	{
 		// Get current frame buffer size.
@@ -236,17 +246,10 @@ public:
 		P->perspective(45.0f, aspect, 0.01f, 200.0f);
 		mat4 V = camera.getView();
 
+		uniforms *commonUniforms = new uniforms {P->topMatrix(), V, lightDir, vec3(1), camera.getEye()};
+		ShaderManager::getInstance()->setData(commonUniforms);
 		// draw the floor and the nemos
-		prog = ShaderManager::getInstance()->getShader(SIMPLEPROG);
-		prog->bind();
-		glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, value_ptr(P->topMatrix()));
-		glUniformMatrix4fv(prog->getUniform("V"), 1, GL_FALSE, value_ptr(V));
-		glUniform3f(prog->getUniform("lightDir"), lightDir.x, lightDir.y, lightDir.z);
-		glUniform3f(prog->getUniform("lightCol"), 1, 1, 1);
-		glUniform3f(prog->getUniform("eye"), camera.getEye().x, camera.getEye().y, camera.getEye().z);
-		floor->draw(prog, Model);
-		Entities::getInstance()->draw(prog, Model);
-		prog->unbind();
+		Entities::getInstance()->draw(Model);
 
 		//draw the sky box
 		prog = ShaderManager::getInstance()->getShader(SKYBOXPROG);

@@ -15,6 +15,6 @@ public:
 	~Entities() {}
 	
 	void update(float deltaTime);
-	void draw(std::shared_ptr<Program>& prog, std::shared_ptr<MatrixStack>& M);
+	void draw(std::shared_ptr<MatrixStack>& M);
 };
 
