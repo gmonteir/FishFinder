@@ -53,3 +53,7 @@ constexpr int STOPPED_MATERIAL = 0;
 // Powerup Constants
 constexpr float POWERUP_SIZE = 0.7;
 constexpr int POWERUP_MATERIAL = 5;
+
+// Tile Constants
+constexpr int MAP_X = 32;
+constexpr int MAP_Z = 32;

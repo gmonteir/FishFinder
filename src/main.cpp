@@ -60,6 +60,9 @@ public:
 	vec3 lightDir = vec3(0.2, 1, 0.5);
 	float lightPosX;
 
+	// sample terrain size
+	float terrain[MAP_X][MAP_Z];
+
 	// texture for skymap
 	unsigned int cubeMapTexture;
 
@@ -168,6 +171,21 @@ public:
     	"uw_bk.jpg"
 		}; 
 		cubeMapTexture = createSky(resourceDirectory + "/underwater/",  faces);
+
+		// sample terrain
+		int w, h, ncomps;
+		stbi_set_flip_vertically_on_load(true);
+		unsigned char* data = stbi_load((resourceDirectory + "/terrain.bmp").c_str(), &w, &h, &ncomps, 0);
+		unsigned bytePerPixel = ncomps;
+
+		for (size_t i = 0; i < w; i++)
+		{
+			for (size_t j = 0; j < h; j++)
+			{
+				unsigned char* pixelOffset = data + (i + h * j) * bytePerPixel;
+				terrain[i][j] = pixelOffset[0];
+			}
+		}
 	}
 
 	void init()
@@ -251,6 +269,17 @@ public:
 		// draw the floor and the nemos
 		Entities::getInstance()->draw(Model);
 
+		// draw test heightmap plane
+		prog = ShaderManager::getInstance()->getShader(SIMPLEPROG);
+		prog->bind();
+		glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, value_ptr(P->topMatrix()));
+		glUniformMatrix4fv(prog->getUniform("V"), 1, GL_FALSE, value_ptr(V));
+		Model->pushMatrix();
+			
+			glUniformMatrix4fv(prog->getUniform("M"), 1, GL_FALSE, value_ptr(Model->topMatrix()));
+		Model->popMatrix();
+		prog->unbind();
+		
 		//draw the sky box
 		prog = ShaderManager::getInstance()->getShader(SKYBOXPROG);
 		prog->bind();
