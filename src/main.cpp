@@ -57,12 +57,6 @@ public:
 	GLuint VertexBufferID;
 
 	//example data that might be useful when trying to compute bounds on multi-shape
-	vec3 gMin;
-	vec3 gMax;
-	vec3 doryMin;
-	vec3 doryMax;
-	vec3 tMin;
-	vec3 tMax;
 	vec3 lightDir = vec3(0.2, 1, 0.5);
 	float lightPosX;
 

@@ -12,7 +12,7 @@ class Player : public Entity
 public:
 	Player(std::vector<std::shared_ptr<Shape>>& shapes) 
 		: Entity(shapes), score(0), speed(PLAYER_SPEED), stamina(INITIAL_STAMINA),
-		rotationSpeed(CAMERA_SPEED), alpha(0), beta(-M_PI_2), 
+		rotationSpeed(CAMERA_SPEED), alpha(0), beta(-M_PI_2), leftFinRight(false), rightFinRight(false), 
 		tailRight(false), tail(ORIGIN), rightFin(ORIGIN), leftFin(ORIGIN) {
 		// override Entity defaults:
 		size = glm::vec3(PLAYER_SIZE);
@@ -35,6 +35,8 @@ public:
 
 	void draw(std::shared_ptr<Program> &prog, std::shared_ptr<MatrixStack> &M) override;
 	void animate(float dt);
+	void animatePart(float dt, float *angle, bool *movingRight, float low, float high);
+
 	//static vec3 getInputDirection(int direction);
 
 private:
@@ -44,7 +46,7 @@ private:
 	float stamina;
 
 	glm::vec3 leftFin, rightFin, tail;
-	bool tailRight;
+	bool leftFinRight, rightFinRight, tailRight;
 
 	Keys keys;
 

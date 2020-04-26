@@ -57,16 +57,16 @@ void Player::keyUpdate(float deltaTime, Keys input)
 	deltas.y = forward * facing.y;
 	deltas.z = forward * facing.z + right * facing.x;
 	velocity = (right == 0 && forward == 0) ? ORIGIN : normalize(deltas) * (speed + boost);
-
-
+    
+    if (boost > 0)
+    	deltaTime *= 3;
 	animate(deltaTime);
-	//leftFin += vec3(0, lfNext, 0);
-	//rightFin += vec3(0, rfNext, 0);
-	//cout << tail.y << endl;
 }
 
 void Player::animate(float dt)
 {
+	//animateLeftFin(dt);
+	/*
 	if (tailRight)
 	{
 		tail.y += dt;
@@ -79,7 +79,30 @@ void Player::animate(float dt)
 		if (tail.y < -0.7)
 			tailRight = true;
 	}
+	*/
+	animatePart(dt, &tail.y, &tailRight, -0.7, 0.7);
+	animatePart(dt, &leftFin.y, &leftFinRight, -0.3, 0.3);
+	leftFin.x = leftFin.y;
+	animatePart(dt, &rightFin.y, &rightFinRight, -0.3, 0.3);
+	rightFin.x = -rightFin.y;
 }
+
+void Player::animatePart(float dt, float *angle, bool *movingRight, float low, float high)
+{
+	if (*movingRight)
+	{
+		*angle += dt;
+		if (*angle > high)
+			*movingRight = false;
+	}
+	else
+	{
+		*angle -= dt;
+		if (*angle < low)
+			*movingRight = true;
+	}
+}
+
 
 void Player::rotate(float dx, float dy)
 {
