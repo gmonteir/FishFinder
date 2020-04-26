@@ -49,6 +49,7 @@ public:
 
 	void setSize(glm::vec3 size) { this->size = size; }
 	void setTag(std::string tag) { this->tag = tag; }
+	void setMaterial(int material) { this->material = material; }
 	std::string getTag() { return this->tag; }
 
 	void setTexture(std::shared_ptr<Texture>& tex) { texture = tex; }

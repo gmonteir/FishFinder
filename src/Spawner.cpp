@@ -36,15 +36,15 @@ void Spawner::spawnNemo()
 void Spawner::spawnPowerup()
 {
 	spawnRandom(powerups, POWERUP_TAG);
-	Entities::getInstance()->at(Entities::getInstance()->size()-1)->setSize(vec3(0.5));
+	Entities::getInstance()->at(Entities::getInstance()->size()-1)->setMaterial(POWERUP_MATERIAL);
 }
 
 void Spawner::spawnRandom(vector<shared_ptr<Shape>>& shapes, string tag)
 {
 	totalSpawned++;
 	unique_ptr<Entity> entity(new Entity(shapes));
-	entity->randomRespawn();
 	entity->setTag(tag);
+	entity->randomRespawn();
 	while (entity->hasCollided(*Entities::getInstance()))
 	{
 		entity->randomRespawn();

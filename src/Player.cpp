@@ -41,7 +41,6 @@ void Player::keyUpdate(float deltaTime, Keys input)
 		stamina -= deltaTime;
 		if (stamina < 0)
 			stamina = 0;
-		cout << stamina << endl;
 	}
 
 	if (input.keyPressed(Keys::LEFT))

@@ -16,7 +16,10 @@ void Entity::randomRespawn()
 	uniform_real_distribution<float> randPos(-MAX_SPAWN_DISTANCE, MAX_SPAWN_DISTANCE);
 	uniform_real_distribution<float> randVel(-MAX_SPAWN_VELOCITY, MAX_SPAWN_VELOCITY);
 	uniform_real_distribution<float> randSize(MIN_SPAWN_SIZE, MAX_SPAWN_SIZE);
-	size = vec3(randSize(rd));
+	if (tag == POWERUP_TAG)
+		size = vec3(POWERUP_SIZE);
+	else
+		size = vec3(randSize(rd));
 	position = vec3(randPos(rd), scale.y*size.y*(max.y-min.y)/2 + FLOOR_POSITION.y + 0.2, randPos(rd));
 	velocity = vec3(randVel(rd), 0, randVel(rd));
 	facing = velocity;

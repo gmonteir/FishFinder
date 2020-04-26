@@ -28,7 +28,8 @@ public:
 	glm::vec3 getFacing() const { return facing; }
 	void rotate(float dx, float dy);
 
-	int getScore() { return score; }
+	int getScore() const { return score; }
+	float getStamina() const { return stamina; }
 
 	void keyUpdate(float deltaTime, Keys keyInput);
 

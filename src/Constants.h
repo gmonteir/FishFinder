@@ -49,3 +49,7 @@ constexpr float MAX_SPAWN_SIZE = 3;
 constexpr float WORLD_SIZE = 55.0;
 constexpr int DEFAULT_MATERIAL = 3;
 constexpr int STOPPED_MATERIAL = 0;
+
+// Powerup Constants
+constexpr float POWERUP_SIZE = 0.7;
+constexpr int POWERUP_MATERIAL = 5;
