@@ -1,4 +1,6 @@
 #include "Spawner.h"
+#include "Shapes.h"
+#include "Powerup.h"
 #include "Entities.h"
 
 using namespace std;
@@ -9,19 +11,27 @@ shared_ptr<Spawner> Spawner::getInstance() {
 	return instance;
 }
 
-void Spawner::init(vector<shared_ptr<Shape>>& nemos, vector<shared_ptr<Shape>>& powerups)
+void Spawner::init()
 {
-	this->nemos = nemos;
-	this->powerups = powerups;
 	spawnNemo();
 	spawnPowerup();
+
+	coralTypes.push_back(TREE_CORAL_SHAPE);
+	coralTypes.push_back(SOFT_CORAL_SHAPE);
+	coralTypes.push_back(ELKHORN_CORAL_SHAPE);
+	
+	for (size_t i = 0; i < NUM_CORAL; i++)
+	{
+		int coralType = rand() % 3;
+
+		spawnCoral(coralType);
+	}
 }
 
 void Spawner::update(float deltaTime, float gameTime)
 {
 	// pull this out into a spawner class -- can be used for general random spawns
-	if (Entities::getInstance()->size() < MAX_SPAWN_ENTITIES 
-		&& gameTime - lastFrameTime > SPAWN_DELAY)
+	if (gameTime - lastFrameTime > SPAWN_DELAY)
 	{
 		spawnPowerup();
 		lastFrameTime = gameTime;
@@ -30,24 +40,45 @@ void Spawner::update(float deltaTime, float gameTime)
 
 void Spawner::spawnNemo()
 {
-	spawnRandom(nemos, NEMO_TAG);
+	totalSpawned++;
+	spawnRandom(*Shapes::getInstance()->getShape(NEMO_SHAPE), NEMO_TAG);
+	Entities::getInstance()->incrementNumActive();
 }
 
 void Spawner::spawnPowerup()
 {
-	spawnRandom(powerups, POWERUP_TAG);
-	Entities::getInstance()->at(Entities::getInstance()->size()-1)->setMaterial(POWERUP_MATERIAL);
+	totalSpawned++;
+	shared_ptr<Entity> e = spawnRandom(*Shapes::getInstance()->getShape(CUBE_SHAPE), POWERUP_TAG);
+	Entities::getInstance()->incrementNumActive();
+	e->setMaterial(POWERUP_MATERIAL);
+	e->setVelocity(vec3(0, 0, 0));
 }
 
-void Spawner::spawnRandom(vector<shared_ptr<Shape>>& shapes, string tag)
+void Spawner::spawnCoral(int type)
+{	
+	shared_ptr<Entity> e = spawnRandom(*Shapes::getInstance()->getShape(coralTypes[type]), CORAL_TAG);
+	e->setVelocity(vec3(0, 0, 0));
+}
+
+shared_ptr<Entity> Spawner::spawnRandom(vector<shared_ptr<Shape>>& shapes, string tag)
 {
-	totalSpawned++;
-	unique_ptr<Entity> entity(new Entity(shapes));
+	shared_ptr<Entity> entity;
+	
+	if (tag == POWERUP_TAG)
+	{
+		entity = make_shared<Powerup>(shapes);
+	}
+	else
+	{
+		entity = make_shared<Entity>(shapes);
+	}
+	
 	entity->setTag(tag);
 	entity->randomRespawn();
 	while (entity->hasCollided(*Entities::getInstance()))
 	{
 		entity->randomRespawn();
 	}
-	Entities::getInstance()->push_back(move(entity));
+	Entities::getInstance()->push_back(entity);
+	return entity;
 }

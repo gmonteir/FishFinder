@@ -17,12 +17,15 @@ const std::string DORY_TEXTURE = "DORY";
 const std::string CUBE_SHAPE = "CUBE";
 const std::string DORY_SHAPE = "DORY";
 const std::string NEMO_SHAPE = "NEMO";
+const std::string TREE_CORAL_SHAPE = "TREE_CORAL";
+const std::string SOFT_CORAL_SHAPE = "SOFT_CORAL";
+const std::string ELKHORN_CORAL_SHAPE = "ELKHORN_CORAL";
 const std::string RESOURCE_DIR = "../resources";
 
 // Tags
 const std::string NEMO_TAG = "NEMO";
 const std::string POWERUP_TAG = "POWERUP";
-
+const std::string CORAL_TAG = "CORAL";
 // Player
 constexpr float PLAYER_SPEED = 20;
 constexpr float PLAYER_SIZE = 3;
@@ -49,11 +52,18 @@ constexpr float MAX_SPAWN_SIZE = 3;
 constexpr float WORLD_SIZE = 55.0;
 constexpr int DEFAULT_MATERIAL = 3;
 constexpr int STOPPED_MATERIAL = 0;
+constexpr int NUM_CORAL = 20;
 
 // Powerup Constants
 constexpr float POWERUP_SIZE = 0.7;
 constexpr int POWERUP_MATERIAL = 5;
+constexpr float POWERUP_DESPAWN_TIME = 10.0;
 
 // Tile Constants
 constexpr int MAP_X = 32;
 constexpr int MAP_Z = 32;
+
+// Coral Constants
+constexpr int TREE_CORAL_INDEX = 0;
+constexpr int SOFT_CORAL_INDEX = 1;
+constexpr int ELKHORN_CORAL_INDEX = 2;

@@ -1,4 +1,5 @@
 #include "Player.h"
+#include "Entities.h"
 #include "Spawner.h"
 #include <algorithm>
 #include <iostream>
@@ -10,12 +11,18 @@ void Player::onCollision(Entity& collider)
 {
 	if (collider.isAlive())
 	{
-		score++;
-		collider.stop();
-		collider.remove();
 		if (collider.getTag() == NEMO_TAG)
+		{
+			collider.stop();
+			collider.kill();
 			Spawner::getInstance()->spawnNemo();
-		if (collider.getTag() == POWERUP_TAG) {
+			Entities::getInstance()->decrementNumActive();
+		}
+		else if (collider.getTag() == POWERUP_TAG)
+		{
+			collider.stop();
+			collider.remove();
+			Entities::getInstance()->decrementNumActive();
 			stamina += 1;
 			if (stamina > 10)
 				stamina = 10;

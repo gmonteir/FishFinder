@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Shape.h"
+#include "Entity.h"
 
 #include <vector>
 
@@ -14,11 +15,12 @@ public:
 	Spawner() : lastFrameTime(0), totalSpawned(0) {}
 	~Spawner() {}
 
-	void init(std::vector<std::shared_ptr<Shape>>& nemo, std::vector<std::shared_ptr<Shape>>& powerup);
+	void init();
 	void update(float deltaTime, float gameTime);
 	void spawnNemo();
 	void spawnPowerup();
-	void spawnRandom(std::vector<std::shared_ptr<Shape>>& shapes, std::string name);
+	void spawnCoral(int type);
+	std::shared_ptr<Entity> spawnRandom(std::vector<std::shared_ptr<Shape>>& shapes, std::string name);
 	int getSpawned() const { return totalSpawned; }
 
 private:
@@ -27,5 +29,6 @@ private:
 
 	std::vector<std::shared_ptr<Shape>> nemos;
 	std::vector<std::shared_ptr<Shape>> powerups;
+	std::vector<std::string> coralTypes;
 };
 

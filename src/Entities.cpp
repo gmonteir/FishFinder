@@ -15,7 +15,16 @@ void Entities::update(float deltaTime)
 	for (int i = 0; i < size(); i++)
 	{
 		entity = at(i);
-		entity->update(deltaTime, *this);
+
+		if (entity->shouldRemove())
+		{
+			erase(begin() + i);
+			i--;
+		}
+		else
+		{
+			entity->update(deltaTime, *this);
+		}
 	}
 }
 

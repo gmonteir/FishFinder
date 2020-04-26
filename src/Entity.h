@@ -18,9 +18,11 @@ class Entity
 {
 public:
 	/* shape, position, velocity, size, facing, material */
-	Entity(std::vector<std::shared_ptr<Shape>>& shapes, glm::vec3 position=ORIGIN, glm::vec3 velocity=ORIGIN, 
-		glm::vec3 size=glm::vec3(1.0), glm::vec3 facing=-ZAXIS, int material=DEFAULT_MATERIAL, string tag ="DEFAULT", int program=SIMPLEPROG)
-		: shapes(shapes), position(position), velocity(velocity), size(size), facing(facing), material(material), tag(tag), program(program), isDead(false), texture(nullptr)
+	Entity(std::vector<std::shared_ptr<Shape>>& shapes, glm::vec3 position = ORIGIN, glm::vec3 velocity = ORIGIN,
+		glm::vec3 size = glm::vec3(1.0), glm::vec3 facing = -ZAXIS, int material = DEFAULT_MATERIAL, string tag = "DEFAULT", int program = SIMPLEPROG)
+		: shapes(shapes), position(position), velocity(velocity), size(size), facing(facing), material(material), tag(tag),
+		program(program), isDead(false), texture(nullptr), toRemove(false)
+
 	{
 		extractMinMax();
 	}
@@ -28,7 +30,7 @@ public:
 
 	void randomRespawn();
 
-	void update(float deltaTime, std::vector<std::shared_ptr<Entity>>& entities);
+	virtual void update(float deltaTime, std::vector<std::shared_ptr<Entity>>& entities);
 	virtual void draw(std::shared_ptr<MatrixStack> &M);
 
 	virtual void onOutOfBounds(float deltaTime);
@@ -45,8 +47,12 @@ public:
 	glm::vec3 getMaxBoundCoordinate() const { return max * scale * size + position; } // note: max already shifted
 	glm::vec3 getMinBoundCoordinate() const { return min * scale * size + position; } // note: min already shifted
 	bool isAlive() { return !isDead; }
-	void remove() { isDead = true; }
+	void kill() { isDead = true; }
+	bool shouldRemove() { return toRemove; }
+	void remove() { toRemove = true; }
 
+	void setPosition(glm::vec3 pos) { this->position = pos; }
+	void setVelocity(glm::vec3 vel) { this->velocity = vel; }
 	void setSize(glm::vec3 size) { this->size = size; }
 	void setTag(std::string tag) { this->tag = tag; }
 	void setMaterial(int material) { this->material = material; }
@@ -64,6 +70,7 @@ public:
 protected:
 	glm::vec3 position, velocity, size, facing;
 	bool isDead;
+	bool toRemove;
 	string tag;
 
 	std::vector<std::shared_ptr<Shape>> shapes;

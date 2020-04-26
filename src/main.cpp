@@ -211,18 +211,20 @@ public:
 		Shapes::getInstance()->addShape(RESOURCE_DIR + "/cube.obj", CUBE_SHAPE);
 		Shapes::getInstance()->addShape(RESOURCE_DIR + "/dory.obj", DORY_SHAPE);
 		Shapes::getInstance()->addShape(RESOURCE_DIR + "/nemo.obj", NEMO_SHAPE);
+		Shapes::getInstance()->addShape(RESOURCE_DIR + "/tree_coral.obj", TREE_CORAL_SHAPE);
+		Shapes::getInstance()->addShape(RESOURCE_DIR + "/soft_coral.obj", SOFT_CORAL_SHAPE);
+		Shapes::getInstance()->addShape(RESOURCE_DIR + "/elkhorn_coral.obj", ELKHORN_CORAL_SHAPE);
 	}
 
 	void initEntities()
 	{
 		floor = make_shared<Entity>(*Shapes::getInstance()->getShape(CUBE_SHAPE), FLOOR_POSITION, ORIGIN, FLOOR_SIZE, -ZAXIS, 2);
-		floor->remove(); // mark as dead so that it doesnt change color when player collides
 		player = make_shared<Player>(*Shapes::getInstance()->getShape(DORY_SHAPE));
 		//player->setTexture(Textures::getInstance()->getTexture(DORY_TEXTURE));
 
 		Entities::getInstance()->push_back(player);
 		Entities::getInstance()->push_back(floor);
-		Spawner::getInstance()->init(*Shapes::getInstance()->getShape(NEMO_SHAPE), *Shapes::getInstance()->getShape(CUBE_SHAPE));
+		Spawner::getInstance()->init();
 	}
 
 	void update(float deltaTime, float gameTime)
@@ -307,7 +309,7 @@ public:
 		prog->bind();
 		glm::mat4 proj = glm::ortho(0.0f, static_cast<GLfloat>(width), 0.0f, static_cast<GLfloat>(height));
 		glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, glm::value_ptr(proj));
-		textRenderer->drawText("Active Objects: " + to_string(Spawner::getInstance()->getSpawned() - player->getScore()), 25.0f, height - 50.0f, 0.75f, glm::vec3(0.2f, 1.0f, 0.2f));
+		textRenderer->drawText("Active Objects: " + to_string(Entities::getInstance()->getNumActive()), 25.0f, height - 50.0f, 0.75f, glm::vec3(0.2f, 1.0f, 0.2f));
 		sprintf(stamina_stat, "%.1f %%", 100*player->getStamina()/MAX_STAMINA);
 		textRenderer->drawText("Stamina: " + string(stamina_stat), 25.0f, height - 100.0f, 0.75f, glm::vec3(0.2f, 1.0f, 0.2f));
 		textRenderer->drawText("FPS: " + to_string(fps), 25.0f, 25.0f, 0.75f, glm::vec3(0.1));
