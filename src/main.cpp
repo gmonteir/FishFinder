@@ -271,7 +271,7 @@ public:
 		prog->unbind();
 
 		/* FreeType */
-		char stamina_stat[6];
+		char stamina_stat[15];
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		prog = ShaderManager::getInstance()->getShader(GLYPHPROG);
