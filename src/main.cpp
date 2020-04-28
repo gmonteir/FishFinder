@@ -62,6 +62,10 @@ public:
 
 	// sample terrain size
 	float terrain[MAP_X][MAP_Z];
+	unsigned planeVaoID;
+	unsigned planePosBufID;
+	unsigned planeEleBufID;
+	unsigned numElements;
 
 	// texture for skymap
 	unsigned int cubeMapTexture;
@@ -214,6 +218,8 @@ public:
 		Shapes::getInstance()->addShape(RESOURCE_DIR + "/tree_coral.obj", TREE_CORAL_SHAPE);
 		Shapes::getInstance()->addShape(RESOURCE_DIR + "/soft_coral.obj", SOFT_CORAL_SHAPE);
 		Shapes::getInstance()->addShape(RESOURCE_DIR + "/elkhorn_coral.obj", ELKHORN_CORAL_SHAPE);
+
+		initSamplePlane();
 	}
 
 	void initEntities()
@@ -237,13 +243,82 @@ public:
 
 	/* helper functions for sending matrix data to the GPU */
 	mat4 SetProjectionMatrix(shared_ptr<Program> curShade) {
-	   int width, height;
-	   glfwGetFramebufferSize(windowManager->getHandle(), &width, &height);
-	   float aspect = width/(float)height;
-	   mat4 Projection = perspective(radians(50.0f), aspect, 0.1f, 100.0f);
-	   glUniformMatrix4fv(curShade->getUniform("P"), 1, GL_FALSE, value_ptr(Projection));
-	   return Projection;
-	 }
+	    int width, height;
+	    glfwGetFramebufferSize(windowManager->getHandle(), &width, &height);
+	    float aspect = width/(float)height;
+	    mat4 Projection = perspective(radians(50.0f), aspect, 0.1f, 100.0f);
+	    glUniformMatrix4fv(curShade->getUniform("P"), 1, GL_FALSE, value_ptr(Projection));
+	    return Projection;
+	}
+
+	void initSamplePlane()
+	{
+		std::vector<unsigned int> eleBuf;
+		std::vector<float> posBuf;
+
+		for (size_t z = 0; z < MAP_Z; z++)
+		{
+			for (size_t x = 0; x < MAP_X; x++)
+			{
+				posBuf.push_back(x);
+				posBuf.push_back(terrain[x][z]);
+				posBuf.push_back(z);
+			}
+		}
+
+		for (size_t z = 0; z < MAP_Z - 1; z++)
+		{
+			for (size_t x = 0; x < MAP_X - 1; x++)
+			{
+				unsigned int i1 = x + MAP_X * z;
+				unsigned int i2 = i1 + 1;
+				unsigned int i3 = i1 + MAP_X;
+				unsigned int i4 = i3 + 1;
+
+				eleBuf.push_back(i1);
+				eleBuf.push_back(i2);
+				eleBuf.push_back(i3);
+
+				eleBuf.push_back(i2);
+				eleBuf.push_back(i3);
+				eleBuf.push_back(i4);
+			}
+		}
+
+		numElements = eleBuf.size();
+
+		glGenVertexArrays(1, &planeVaoID);
+		glBindVertexArray(planeVaoID);
+
+		glGenBuffers(1, &planePosBufID);
+		glBindBuffer(GL_ARRAY_BUFFER, planePosBufID);
+		glBufferData(GL_ARRAY_BUFFER, posBuf.size() * sizeof(float), &posBuf[0], GL_STATIC_DRAW);
+
+		glGenBuffers(1, &planeEleBufID);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, planeEleBufID);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, eleBuf.size() * sizeof(unsigned int), &eleBuf[0], GL_STATIC_DRAW);
+
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	}
+
+	void drawSamplePlane(const shared_ptr<Program> prog)
+	{
+		glBindVertexArray(planeVaoID);
+		int h_pos = prog->getAttribute("vertPos");
+
+		GLSL::enableVertexAttribArray(h_pos);
+		glBindBuffer(GL_ARRAY_BUFFER, planePosBufID);
+		glVertexAttribPointer(h_pos, 3, GL_FLOAT, GL_FALSE, 0, (const void*)0);
+
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, planeEleBufID);
+
+		glDrawElements(GL_TRIANGLES, (int)numElements, GL_UNSIGNED_INT, (const void*)0);
+
+		GLSL::disableVertexAttribArray(h_pos);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	}
 
 	void render(int fps)
 	{
@@ -263,7 +338,7 @@ public:
 		auto Model = make_shared<MatrixStack>();
 		// Apply perspective projection.
 		P->pushMatrix();
-		P->perspective(45.0f, aspect, 0.01f, 200.0f);
+		P->perspective(45.0f, aspect, 0.01f, 10000.0f);
 		mat4 V = camera.getView();
 
 		uniforms *commonUniforms = new uniforms {P->topMatrix(), V, lightDir, vec3(1), camera.getEye()};
@@ -277,8 +352,11 @@ public:
 		glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, value_ptr(P->topMatrix()));
 		glUniformMatrix4fv(prog->getUniform("V"), 1, GL_FALSE, value_ptr(V));
 		Model->pushMatrix();
-			
+			Model->loadIdentity();
+			Model->translate(vec3(100, -200, -120));
+			Model->scale(vec3(50, 1, 50));
 			glUniformMatrix4fv(prog->getUniform("M"), 1, GL_FALSE, value_ptr(Model->topMatrix()));
+			drawSamplePlane(prog);
 		Model->popMatrix();
 		prog->unbind();
 		
@@ -293,7 +371,7 @@ public:
 			Model->translate(vec3(0, 5, 0));
 			Model->translate(camera.getEye());
 			Model->rotate(radians(-180.f), vec3(0, 1, 0));
-			Model->scale(vec3(100));
+			Model->scale(vec3(1000));
 			glUniformMatrix4fv(prog->getUniform("M"), 1, GL_FALSE,value_ptr(Model->topMatrix()) );
 			glBindTexture(GL_TEXTURE_CUBE_MAP, cubeMapTexture);
 			Shapes::getInstance()->getShape(CUBE_SHAPE)->at(0)->draw(prog);
