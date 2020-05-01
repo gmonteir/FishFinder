@@ -2,6 +2,7 @@
 #include "Shapes.h"
 #include "Powerup.h"
 #include "Entities.h"
+#include "Random.h"
 
 using namespace std;
 using namespace glm;
@@ -43,25 +44,36 @@ void Spawner::update(float deltaTime, float gameTime)
 
 void Spawner::spawnNemo()
 {
+	shared_ptr<Entity> e = spawnRandom(*Shapes::getInstance()->getShape(NEMO_SHAPE), NEMO_TAG);
+	e->getTransform()
+		.setVelocity(Random::spawnVel())
+		.setSize(Random::spawnSize())
+		.syncFacing();
+	e->bringToFloor();
 	totalSpawned++;
-	spawnRandom(*Shapes::getInstance()->getShape(NEMO_SHAPE), NEMO_TAG);
 	Entities::getInstance()->incrementNumActive();
 }
 
 void Spawner::spawnPowerup()
 {
-	totalSpawned++;
 	shared_ptr<Entity> e = spawnRandom(*Shapes::getInstance()->getShape(CUBE_SHAPE), POWERUP_TAG);
-	Entities::getInstance()->incrementNumActive();
+	e->getTransform()
+		.setSize(vec3(POWERUP_SIZE))
+		.setFacing(Random::facingXZ());
 	e->setMaterial(POWERUP_MATERIAL);
-	e->getTransform().setVelocity(ORIGIN);
+	e->bringToFloor();
+	totalSpawned++;
+	Entities::getInstance()->incrementNumActive();
 }
 
 void Spawner::spawnCoral(int type)
 {	
 	shared_ptr<Entity> e = spawnRandom(*Shapes::getInstance()->getShape(coralTypes[type]), CORAL_TAG);
-	e->getTransform().setVelocity(ORIGIN);
+	e->getTransform()
+		.setSize(Random::spawnSize())
+		.setFacing(Random::facingXZ());
 	e->setMaterial(coralMaterials[type]);
+	e->bringToFloor();
 }
 
 shared_ptr<Entity> Spawner::spawnRandom(vector<shared_ptr<Shape>>& shapes, string tag)
@@ -77,12 +89,17 @@ shared_ptr<Entity> Spawner::spawnRandom(vector<shared_ptr<Shape>>& shapes, strin
 		entity = make_shared<Entity>(shapes);
 	}
 	
+	findSpawnPosition(entity);
 	entity->setTag(tag);
-	entity->randomRespawn();
-	while (entity->hasCollided(*Entities::getInstance()))
-	{
-		entity->randomRespawn();
-	}
 	Entities::getInstance()->push_back(entity);
 	return entity;
+}
+
+void Spawner::findSpawnPosition(shared_ptr<Entity>& entity)
+{
+	entity->getTransform().setPosition(Random::spawnPos());
+	while (entity->hasCollided(*Entities::getInstance()))
+	{
+		entity->getTransform().setPosition(Random::spawnPos());
+	}
 }

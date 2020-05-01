@@ -1,29 +1,14 @@
 #include "Entity.h"
 #include "Draw.h"
+#include "Random.h"
 
 #include <iostream>
-#include <random>
 
 #define _USE_MATH_DEFINES
 #include <math.h>
 
 using namespace std;
 using namespace glm;
-
-void Entity::randomRespawn()
-{
-	random_device rd;
-	uniform_real_distribution<float> randPos(-MAX_SPAWN_DISTANCE, MAX_SPAWN_DISTANCE);
-	uniform_real_distribution<float> randVel(-MAX_SPAWN_VELOCITY, MAX_SPAWN_VELOCITY);
-	uniform_real_distribution<float> randSize(MIN_SPAWN_SIZE, MAX_SPAWN_SIZE);
-
-	transform
-		.setPosition(vec3(randPos(rd), 0, randPos(rd)))
-		.setVelocity(vec3(randVel(rd), 0, randVel(rd)))
-		.setSize(tag == POWERUP_TAG ? vec3(POWERUP_SIZE) : vec3(randSize(rd)))
-		.syncFacing();
-	bringToFloor();
-}
 
 void Entity::update(float deltaTime, std::vector<std::shared_ptr<Entity>> &entities)
 {

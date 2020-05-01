@@ -21,6 +21,8 @@ public:
 	void spawnPowerup();
 	void spawnCoral(int type);
 	std::shared_ptr<Entity> spawnRandom(std::vector<std::shared_ptr<Shape>>& shapes, std::string name);
+	void findSpawnPosition(std::shared_ptr<Entity>& entity);
+
 	int getSpawned() const { return totalSpawned; }
 
 private:

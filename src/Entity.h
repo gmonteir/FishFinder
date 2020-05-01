@@ -9,7 +9,6 @@
 #include "Transform.h"
 
 #include <vector>
-#include <functional>
 
 // value_ptr for glm
 #include <glm/gtc/type_ptr.hpp>
@@ -27,8 +26,6 @@ public:
 		extractMinMax();
 	}
 	virtual ~Entity() {}
-
-	void randomRespawn();
 
 	virtual void update(float deltaTime, std::vector<std::shared_ptr<Entity>>& entities);
 	virtual void draw(std::shared_ptr<MatrixStack> &M);
