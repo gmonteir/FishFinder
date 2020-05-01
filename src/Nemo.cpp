@@ -60,23 +60,23 @@ void Nemo::draw(shared_ptr<MatrixStack> &M)
 	M->loadIdentity();
 	M->translate(transform.getPosition());											// move dory to its world position
 	M->rotate(transform.getXZAngle(), YAXIS);	// orient dory to face forward
-	M->scale(scale*transform.getSize()); 			  								// scale dory at the origin
-	M->translate(vec3(-1)*shift); 									// shift dory to origin
-	int shapeSize = shapes.size();
+	M->scale(model.getScale()*transform.getSize()); 			  								// scale dory at the origin
+	M->translate(-model.getShift()); 									// shift dory to origin
+	int shapeSize = model.getShapes().size();
 	for (int i = 0; i < shapeSize; ++i)
 	{
 		if (i == 2) // left fin
-			setupPart(shapes, M, i, 7, &leftFin);
+			setupPart(model.getShapes(), M, i, 7, &leftFin);
 		else if (i == 3) // right fin
-			setupPart(shapes, M, i, 8, &rightFin);
+			setupPart(model.getShapes(), M, i, 8, &rightFin);
 		else if (i == 4) // left foot
-			setupPart(shapes, M, i, 9, &leftFoot);
+			setupPart(model.getShapes(), M, i, 9, &leftFoot);
 		else if (i == 5) // right foot
-			setupPart(shapes, M, i, 10, &rightFoot);
+			setupPart(model.getShapes(), M, i, 10, &rightFoot);
 		else if (i == 6) // tail
-			setupPart(shapes, M, i, 11, &tail);
+			setupPart(model.getShapes(), M, i, 11, &tail);
 		glUniformMatrix4fv(prog->getUniform("M"), 1, GL_FALSE, value_ptr(M->topMatrix()));
-		shapes.at(i)->draw(prog);
+		model.getShapes().at(i)->draw(prog);
 		if (i >= 2  && i <= 6)
 			M->popMatrix();
 	}

@@ -17,7 +17,7 @@ public:
 		// override Entity defaults:
 		transform.setSize(glm::vec3(PLAYER_SIZE));
 		bringToFloor();
-		material = PLAYER_MATERIAL;
+		model.setMaterial(PLAYER_MATERIAL);
 	}
 	virtual ~Player() {}
 

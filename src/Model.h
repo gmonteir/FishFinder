@@ -22,18 +22,24 @@ public:
 		: shapes(shapes), material(DEFAULT_MATERIAL), program(SIMPLEPROG), texture(nullptr)
 	{
 		extractMinMax();
+		extractShiftScale();
 	}
 	virtual ~Model() {}
 
 	virtual void draw(std::shared_ptr<MatrixStack> &M, const Transform& transform) const;
 
+	glm::vec3 getScaledMin() const { return min * scale; }
+	glm::vec3 getScaledMax() const { return max * scale; }
+	glm::vec3 getScaledSize() const { return (max - min) * scale; }
 	glm::vec3 getShift() const { return shift; }
+	glm::vec3 getScale() const { return scale; }
+	const std::vector<std::shared_ptr<Shape>>& getShapes() const { return shapes; }
 
 	void setMaterial(int material) { this->material = material; }
 	void setTexture(std::shared_ptr<Texture>& tex) { texture = tex; }
 
 protected:
-	std::vector<std::shared_ptr<Shape>> shapes;
+	const std::vector<std::shared_ptr<Shape>>& shapes;
 	std::shared_ptr<Texture> texture;
 	int material, program;
 	glm::vec3 max, min, shift, scale;

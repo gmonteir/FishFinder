@@ -108,26 +108,26 @@ void Player::draw(shared_ptr<MatrixStack> &M)
 	M->pushMatrix();
 	M->loadIdentity();
 	M->translate(transform.getPosition());											// move dory to its world position
-	M->rotate(atan2(transform.getFacing().x, transform.getFacing().z) + radians(80.f), YAXIS);	// orient dory to face forward
-	M->scale(scale*transform.getSize()); 			  								// scale dory at the origin
-	M->translate(vec3(-1)*shift); 									// shift dory to origin
-	int shapeSize = shapes.size();
+	M->rotate(transform.getXZAngle() + radians(80.f), YAXIS);	// orient dory to face forward
+	M->scale(model.getScale()*transform.getSize()); 			  								// scale dory at the origin
+	M->translate(-model.getShift()); 									// shift dory to origin
+	int shapeSize = model.getShapes().size();
 	for (int i = 0; i < shapeSize; ++i)
 	{
 		if (i == 4)
 		{
-			setupPart(shapes, M, i, 2, &leftFin);
+			setupPart(model.getShapes(), M, i, 2, &leftFin);
 		}
 		else if (i == 5)
 		{
-			setupPart(shapes, M, i, 3, &rightFin);
+			setupPart(model.getShapes(), M, i, 3, &rightFin);
 		}
 		else if (i == 6)
 		{
-			setupPart(shapes, M, i, 7, &tail);
+			setupPart(model.getShapes(), M, i, 7, &tail);
 		}
 		glUniformMatrix4fv(prog->getUniform("M"), 1, GL_FALSE, value_ptr(M->topMatrix()));
-		shapes.at(i)->draw(prog);
+		model.getShapes().at(i)->draw(prog);
 		if (i == 4 || i == 5 || i == 6)
 		{
 			M->popMatrix();

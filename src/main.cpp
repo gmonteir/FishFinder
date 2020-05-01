@@ -213,7 +213,7 @@ public:
 	void initEntities()
 	{
 		floor = make_shared<Entity>(*Shapes::getInstance()->getShape(CUBE_SHAPE));
-		floor->setMaterial(2);
+		floor->getModel().setMaterial(2);
 		floor->getTransform()
 			.setPosition(FLOOR_POSITION)
 			.setSize(FLOOR_SIZE);

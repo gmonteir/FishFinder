@@ -17,7 +17,7 @@ public:
 		transform.setSize(glm::vec3(NEMO_SIZE))
 			.setPosition(-10.0f * ZAXIS);
 		bringToFloor();
-		material = NEMO_MATERIAL;
+		model.setMaterial(NEMO_MATERIAL);
 	}
 	virtual ~Nemo() {}
 

@@ -60,7 +60,7 @@ void Spawner::spawnPowerup()
 	e->getTransform()
 		.setSize(vec3(POWERUP_SIZE))
 		.setFacing(Random::facingXZ());
-	e->setMaterial(POWERUP_MATERIAL);
+	e->getModel().setMaterial(POWERUP_MATERIAL);
 	e->bringToFloor();
 	totalSpawned++;
 	Entities::getInstance()->incrementNumActive();
@@ -72,7 +72,7 @@ void Spawner::spawnCoral(int type)
 	e->getTransform()
 		.setSize(Random::spawnSize())
 		.setFacing(Random::facingXZ());
-	e->setMaterial(coralMaterials[type]);
+	e->getModel().setMaterial(coralMaterials[type]);
 	e->bringToFloor();
 }
 

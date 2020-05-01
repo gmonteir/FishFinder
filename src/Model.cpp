@@ -3,9 +3,6 @@
 
 #include <iostream>
 
-#define _USE_MATH_DEFINES
-#include <math.h>
-
 using namespace std;
 using namespace glm;
 
@@ -52,7 +49,6 @@ void Model::extractMinMax()
 		if (shape->min.z < min.z) min.z = shape->min.z;
 		if (shape->max.z > max.z) max.z = shape->max.z;
 	}
-	extractShiftScale();
 }
 
 void Model::extractShiftScale()
