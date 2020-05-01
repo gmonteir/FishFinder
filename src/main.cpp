@@ -338,7 +338,7 @@ public:
 		Entities::getInstance()->draw(Model);
 
 		// draw test heightmap plane
-		shared_ptr<Program> prog = ShaderManager::getInstance()->getShader(SIMPLEPROG);
+		prog = ShaderManager::getInstance()->getShader(SIMPLEPROG);
 		prog->bind();
 		glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, value_ptr(P->topMatrix()));
 		glUniformMatrix4fv(prog->getUniform("V"), 1, GL_FALSE, value_ptr(V));
