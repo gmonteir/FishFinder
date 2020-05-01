@@ -3,6 +3,11 @@
 using namespace std;
 using namespace glm;
 
+unique_ptr<Animator> Animator::createAnimator(const string& modelName)
+{
+	return unique_ptr<Animator>(new NoAnimator);
+}
+
 void Animator::animatePart(float dt, float *angle, bool *movingRight, float low, float high)
 {
 	if (*movingRight)
