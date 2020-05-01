@@ -24,7 +24,7 @@ public:
 		extractMinMax();
 		extractShiftScale();
 	}
-	virtual ~Model() {}
+	~Model() {}
 
 	virtual void draw(std::shared_ptr<MatrixStack> &M, const Transform& transform) const;
 
