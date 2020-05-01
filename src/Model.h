@@ -4,6 +4,7 @@
 #include "MatrixStack.h"
 #include "Texture.h"
 #include "Shape.h"
+#include "Shapes.h"
 #include "Constants.h"
 #include "ShaderManager.h"
 #include "Transform.h"
@@ -18,8 +19,9 @@ class Model
 {
 public:
 	/* shape, position, velocity, size, facing, material */
-	Model(std::vector<std::shared_ptr<Shape>>& shapes)
-		: shapes(shapes), material(DEFAULT_MATERIAL), program(SIMPLEPROG), texture(nullptr)
+	Model(const std::string shapeName)
+		: shapes(*Shapes::getInstance()->getShape(shapeName)), 
+			material(DEFAULT_MATERIAL), program(SIMPLEPROG), texture(nullptr)
 	{
 		extractMinMax();
 		extractShiftScale();

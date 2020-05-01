@@ -10,8 +10,8 @@
 class Player : public Entity
 {
 public:
-	Player(std::vector<std::shared_ptr<Shape>>& shapes) 
-		: Entity(shapes), score(0), speed(PLAYER_SPEED), stamina(INITIAL_STAMINA),
+	Player(const std::string shapeName) 
+		: Entity(shapeName), score(0), speed(PLAYER_SPEED), stamina(INITIAL_STAMINA),
 		rotationSpeed(CAMERA_SPEED), alpha(0), beta(-M_PI_2), leftFinRight(false), rightFinRight(false), 
 		tailRight(false), tail(ORIGIN), rightFin(ORIGIN), leftFin(ORIGIN) {
 		// override Entity defaults:

@@ -10,8 +10,8 @@
 class Nemo : public Entity
 {
 public:
-	Nemo(std::vector<std::shared_ptr<Shape>>& shapes, std::shared_ptr<Entity> player) 
-		: Entity(shapes), player(player), speed(NEMO_SPEED), offset(NEMO_OFFSET), leftFin(ORIGIN), rightFin(ORIGIN), tail(ORIGIN), leftFoot(ORIGIN), rightFoot(ORIGIN),
+	Nemo(const std::string& shapeName, std::shared_ptr<Entity> player) 
+		: Entity(shapeName), player(player), speed(NEMO_SPEED), offset(NEMO_OFFSET), leftFin(ORIGIN), rightFin(ORIGIN), tail(ORIGIN), leftFoot(ORIGIN), rightFoot(ORIGIN),
 		  leftFinRight(false), rightFinRight(false), tailRight(false), leftFootRight(false), rightFootRight(false) {
 		// override Entity defaults:
 		transform.setSize(glm::vec3(NEMO_SIZE))

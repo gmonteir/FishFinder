@@ -212,13 +212,13 @@ public:
 
 	void initEntities()
 	{
-		floor = make_shared<Entity>(*Shapes::getInstance()->getShape(CUBE_SHAPE));
+		floor = make_shared<Entity>(CUBE_SHAPE);
 		floor->getModel().setMaterial(2);
 		floor->getTransform()
 			.setPosition(FLOOR_POSITION)
 			.setSize(FLOOR_SIZE);
-		player = make_shared<Player>(*Shapes::getInstance()->getShape(DORY_SHAPE));
-		nemo = make_shared<Nemo>(*Shapes::getInstance()->getShape(NEMO_SHAPE), static_pointer_cast<Entity>(player));
+		player = make_shared<Player>(DORY_SHAPE);
+		nemo = make_shared<Nemo>(NEMO_SHAPE, static_pointer_cast<Entity>(player));
 		//player->setTexture(Textures::getInstance()->getTexture(DORY_TEXTURE));
 
 		Entities::getInstance()->push_back(player);

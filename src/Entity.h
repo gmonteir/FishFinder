@@ -18,8 +18,8 @@
 class Entity
 {
 public:
-	Entity(std::vector<std::shared_ptr<Shape>>& shapes)
-		: transform(), model(shapes), tag("DEFAULT"), isDead(false), toRemove(false) {}
+	Entity(const std::string shapeName)
+		: transform(), model(shapeName), tag("DEFAULT"), isDead(false), toRemove(false) {}
 	virtual ~Entity() {}
 
 	virtual void update(float deltaTime, std::vector<std::shared_ptr<Entity>>& entities);
