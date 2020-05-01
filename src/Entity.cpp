@@ -16,13 +16,13 @@ void Entity::randomRespawn()
 	uniform_real_distribution<float> randPos(-MAX_SPAWN_DISTANCE, MAX_SPAWN_DISTANCE);
 	uniform_real_distribution<float> randVel(-MAX_SPAWN_VELOCITY, MAX_SPAWN_VELOCITY);
 	uniform_real_distribution<float> randSize(MIN_SPAWN_SIZE, MAX_SPAWN_SIZE);
-	if (tag == POWERUP_TAG)
-		size = vec3(POWERUP_SIZE);
-	else
-		size = vec3(randSize(rd));
-	position = vec3(randPos(rd), scale.y*size.y*(max.y-min.y)/2 + FLOOR_POSITION.y + 0.2, randPos(rd));
-	velocity = vec3(randVel(rd), 0, randVel(rd));
-	facing = velocity;
+
+	transform
+		.setPosition(vec3(randPos(rd), 0, randPos(rd)))
+		.setVelocity(vec3(randVel(rd), 0, randVel(rd)))
+		.setSize(tag == POWERUP_TAG ? vec3(POWERUP_SIZE) : vec3(randSize(rd)))
+		.syncFacing();
+	bringToFloor();
 }
 
 void Entity::update(float deltaTime, std::vector<std::shared_ptr<Entity>> &entities)
@@ -30,16 +30,16 @@ void Entity::update(float deltaTime, std::vector<std::shared_ptr<Entity>> &entit
 	if (!isAlive())
 		return;
 
-	vec3 change = velocity * deltaTime;
-	position.x += change.x;
+	vec3 change = transform.getVelocity() * deltaTime;
+	transform.move(change.x * XAXIS);
 	if (hasCollided(entities))
-		position.x -= change.x;
-	position.y += change.y;
+		transform.move(-change.x * XAXIS);
+	transform.move(change.y * YAXIS);
 	if (hasCollided(entities))
-		position.y -= change.y;
-	position.z += change.z;
+		transform.move(-change.y * YAXIS);
+	transform.move(change.z * ZAXIS);
 	if (hasCollided(entities))
-		position.z -= change.z;
+		transform.move(-change.z * ZAXIS);
 
 	if (isOutOfBounds()) // event trigger check 
 		onOutOfBounds(deltaTime);
@@ -47,13 +47,13 @@ void Entity::update(float deltaTime, std::vector<std::shared_ptr<Entity>> &entit
 
 void Entity::draw(shared_ptr<MatrixStack> &M)
 {
-	shared_ptr<Program> prog = ShaderManager::getInstance()->getShader(SIMPLEPROG);
+	shared_ptr<Program> prog = ShaderManager::getInstance()->getShader(program);
 	prog->bind();
-	ShaderManager::getInstance()->sendUniforms(SIMPLEPROG);
+	ShaderManager::getInstance()->sendUniforms(program);
 	M->pushMatrix();
-	M->translate(position);
-	M->rotate(atan2(facing.x, facing.z), YAXIS);
-	M->scale(scale*size);
+	M->translate(transform.getPosition());
+	M->rotate(transform.getXZAngle(), YAXIS);
+	M->scale(scale*transform.getSize());
 	M->translate(vec3(-1)*shift);
 	if (texture)
 	{
@@ -74,9 +74,9 @@ void Entity::draw(shared_ptr<MatrixStack> &M)
 
 void Entity::onOutOfBounds(float deltaTime)
 {
-	velocity = -velocity;
-	position += velocity * deltaTime;
-	facing = velocity;
+	transform.setVelocity(-transform.getVelocity())
+		.move(deltaTime)
+		.syncFacing();
 }
 
 bool Entity::hasCollided(Entity &entity) const

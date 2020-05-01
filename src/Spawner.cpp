@@ -54,13 +54,13 @@ void Spawner::spawnPowerup()
 	shared_ptr<Entity> e = spawnRandom(*Shapes::getInstance()->getShape(CUBE_SHAPE), POWERUP_TAG);
 	Entities::getInstance()->incrementNumActive();
 	e->setMaterial(POWERUP_MATERIAL);
-	e->setVelocity(vec3(0, 0, 0));
+	e->getTransform().setVelocity(ORIGIN);
 }
 
 void Spawner::spawnCoral(int type)
 {	
 	shared_ptr<Entity> e = spawnRandom(*Shapes::getInstance()->getShape(coralTypes[type]), CORAL_TAG);
-	e->setVelocity(vec3(0, 0, 0));
+	e->getTransform().setVelocity(ORIGIN);
 	e->setMaterial(coralMaterials[type]);
 }
 

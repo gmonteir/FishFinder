@@ -212,7 +212,11 @@ public:
 
 	void initEntities()
 	{
-		floor = make_shared<Entity>(*Shapes::getInstance()->getShape(CUBE_SHAPE), FLOOR_POSITION, ORIGIN, FLOOR_SIZE, -ZAXIS, 2);
+		floor = make_shared<Entity>(*Shapes::getInstance()->getShape(CUBE_SHAPE));
+		floor->setMaterial(2);
+		floor->getTransform()
+			.setPosition(FLOOR_POSITION)
+			.setSize(FLOOR_SIZE);
 		player = make_shared<Player>(*Shapes::getInstance()->getShape(DORY_SHAPE));
 		nemo = make_shared<Nemo>(*Shapes::getInstance()->getShape(NEMO_SHAPE), static_pointer_cast<Entity>(player));
 		//player->setTexture(Textures::getInstance()->getTexture(DORY_TEXTURE));
@@ -228,7 +232,7 @@ public:
 		player->keyUpdate(deltaTime, keyInput);
 		Spawner::getInstance()->update(deltaTime, gameTime);
 		Entities::getInstance()->update(deltaTime);
-		camera.update(player->getPosition(), player->getFacing());
+		camera.update(player->getTransform());
 	}
 
 	/* helper functions for sending matrix data to the GPU */

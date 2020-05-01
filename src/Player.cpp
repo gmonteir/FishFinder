@@ -60,10 +60,10 @@ void Player::keyUpdate(float deltaTime, Keys input)
 	if (input.keyPressed(Keys::ROTRIGHT))
 		rotate(-rotationSpeed, 0);
 
-	deltas.x = forward * facing.x + right * -facing.z;
-	deltas.y = forward * facing.y;
-	deltas.z = forward * facing.z + right * facing.x;
-	velocity = (right == 0 && forward == 0) ? ORIGIN : normalize(deltas) * (speed + boost);
+	deltas.x = forward * transform.getFacing().x + right * -transform.getFacing().z;
+	deltas.y = forward * transform.getFacing().y;
+	deltas.z = forward * transform.getFacing().z + right * transform.getFacing().x;
+	transform.setVelocity(right == 0 && forward == 0 ? ORIGIN : normalize(deltas) * (speed + boost));
     
     if (boost > 0)
     	deltaTime *= 3;
@@ -87,7 +87,7 @@ void Player::rotate(float dx, float dy)
 		alpha = radians(70.f);
 	else if (alpha < radians(-70.f))
 		alpha = radians(-70.f);
-	facing = normalize(vec3(cos(alpha) * cos(beta), sin(alpha), cos(alpha) * cos(M_PI_2 - beta)));
+	transform.setFacing(normalize(vec3(cos(alpha) * cos(beta), sin(alpha), cos(alpha) * cos(M_PI_2 - beta))));
 }
 
 void Player::draw(shared_ptr<MatrixStack> &M)
@@ -107,9 +107,9 @@ void Player::draw(shared_ptr<MatrixStack> &M)
 	ShaderManager::getInstance()->sendUniforms(TEXTUREPROG, DORY_TEXTURE);
 	M->pushMatrix();
 	M->loadIdentity();
-	M->translate(position);											// move dory to its world position
-	M->rotate(atan2(facing.x, facing.z) + radians(80.f), YAXIS);	// orient dory to face forward
-	M->scale(scale*size); 			  								// scale dory at the origin
+	M->translate(transform.getPosition());											// move dory to its world position
+	M->rotate(atan2(transform.getFacing().x, transform.getFacing().z) + radians(80.f), YAXIS);	// orient dory to face forward
+	M->scale(scale*transform.getSize()); 			  								// scale dory at the origin
 	M->translate(vec3(-1)*shift); 									// shift dory to origin
 	int shapeSize = shapes.size();
 	for (int i = 0; i < shapeSize; ++i)

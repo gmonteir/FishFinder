@@ -15,7 +15,7 @@ public:
 		rotationSpeed(CAMERA_SPEED), alpha(0), beta(-M_PI_2), leftFinRight(false), rightFinRight(false), 
 		tailRight(false), tail(ORIGIN), rightFin(ORIGIN), leftFin(ORIGIN) {
 		// override Entity defaults:
-		setSize(glm::vec3(PLAYER_SIZE));
+		transform.setSize(glm::vec3(PLAYER_SIZE));
 		bringToFloor();
 		material = PLAYER_MATERIAL;
 	}
@@ -24,7 +24,6 @@ public:
 	void onOutOfBounds(float deltaTime) override {}
 	void onCollision(Entity& collider) override;
 
-	glm::vec3 getFacing() const { return facing; }
 	void rotate(float dx, float dy);
 
 	int getScore() const { return score; }

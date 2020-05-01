@@ -10,19 +10,11 @@ using namespace glm;
 
 void Nemo::setPathVelocity()
 {
-	vec3 direction(player->getPosition() - getPosition());
+	vec3 direction(player->getTransform().getPosition() - transform.getPosition());
 	vec3 normal(normalize(direction));
 
-	if (length(direction) > offset)
-	{
-		velocity = normal * speed;
-		facing = normal;
-	}
-	else
-	{
-		velocity = ORIGIN;
-	}
-
+	transform.setVelocity(length(direction) > offset ? normal * speed : ORIGIN)
+		.syncFacing();
 }
 
 void Nemo::update(float deltaTime, std::vector<std::shared_ptr<Entity>>& entities)
@@ -66,9 +58,9 @@ void Nemo::draw(shared_ptr<MatrixStack> &M)
 	ShaderManager::getInstance()->sendUniforms(TEXTUREPROG, NEMO_TEXTURE);
 	M->pushMatrix();
 	M->loadIdentity();
-	M->translate(position);											// move dory to its world position
-	M->rotate(atan2(facing.x, facing.z) + radians(80.f), YAXIS);	// orient dory to face forward
-	M->scale(scale*size); 			  								// scale dory at the origin
+	M->translate(transform.getPosition());											// move dory to its world position
+	M->rotate(transform.getXZAngle(), YAXIS);	// orient dory to face forward
+	M->scale(scale*transform.getSize()); 			  								// scale dory at the origin
 	M->translate(vec3(-1)*shift); 									// shift dory to origin
 	int shapeSize = shapes.size();
 	for (int i = 0; i < shapeSize; ++i)
