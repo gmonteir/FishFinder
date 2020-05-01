@@ -14,8 +14,9 @@ public:
 		: Entity(shapes), player(player), speed(NEMO_SPEED), offset(NEMO_OFFSET), leftFin(ORIGIN), rightFin(ORIGIN), tail(ORIGIN), leftFoot(ORIGIN), rightFoot(ORIGIN),
 		  leftFinRight(false), rightFinRight(false), tailRight(false), leftFootRight(false), rightFootRight(false) {
 		// override Entity defaults:
-		size = glm::vec3(NEMO_SIZE);
-		position = glm::vec3(0, size.y*scale.y*(max.y-min.y)/2 + FLOOR_POSITION.y + 0.1, -10);
+		setSize(glm::vec3(NEMO_SIZE));
+		setPosition(-10.0f * ZAXIS);
+		bringToFloor();
 		material = NEMO_MATERIAL;
 	}
 	virtual ~Nemo() {}

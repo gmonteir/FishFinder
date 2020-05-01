@@ -28,6 +28,7 @@ void Nemo::setPathVelocity()
 void Nemo::update(float deltaTime, std::vector<std::shared_ptr<Entity>>& entities)
 {
 	setPathVelocity();
+	animate(deltaTime);
 	Entity::update(deltaTime, entities);
 }
 

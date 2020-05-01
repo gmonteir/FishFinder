@@ -15,8 +15,8 @@ public:
 		rotationSpeed(CAMERA_SPEED), alpha(0), beta(-M_PI_2), leftFinRight(false), rightFinRight(false), 
 		tailRight(false), tail(ORIGIN), rightFin(ORIGIN), leftFin(ORIGIN) {
 		// override Entity defaults:
-		size = glm::vec3(PLAYER_SIZE);
-		position = glm::vec3(0, size.y*scale.y*(max.y-min.y)/2 + FLOOR_POSITION.y + 0.1, 0);
+		setSize(glm::vec3(PLAYER_SIZE));
+		bringToFloor();
 		material = PLAYER_MATERIAL;
 	}
 	virtual ~Player() {}

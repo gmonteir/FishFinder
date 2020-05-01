@@ -14,7 +14,7 @@ using namespace std;
 
 class Shapes {
 
-	Shapes() {};
+	Shapes();
 
 public:
 

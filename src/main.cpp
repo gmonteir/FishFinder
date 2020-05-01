@@ -45,9 +45,6 @@ public:
 
 	WindowManager * windowManager = nullptr;
 
-	// Our shader program
-	std::shared_ptr<Program> prog;
-
 	// Shape to be used (from obj file)
 	shared_ptr<Shape> shape;
 
@@ -213,18 +210,6 @@ public:
 		textRenderer = new RenderText(&ft, ShaderManager::getInstance()->getShader(GLYPHPROG));
 	 }
 
-	void initGeom()
-	{
-		Shapes::getInstance()->addShape(RESOURCE_DIR + "/cube.obj", CUBE_SHAPE);
-		Shapes::getInstance()->addShape(RESOURCE_DIR + "/dory.obj", DORY_SHAPE);
-		Shapes::getInstance()->addShape(RESOURCE_DIR + "/nemo.obj", NEMO_SHAPE);
-		Shapes::getInstance()->addShape(RESOURCE_DIR + "/tree_coral.obj", TREE_CORAL_SHAPE);
-		Shapes::getInstance()->addShape(RESOURCE_DIR + "/soft_coral.obj", SOFT_CORAL_SHAPE);
-		Shapes::getInstance()->addShape(RESOURCE_DIR + "/elkhorn_coral.obj", ELKHORN_CORAL_SHAPE);
-
-		initSamplePlane();
-	}
-
 	void initEntities()
 	{
 		floor = make_shared<Entity>(*Shapes::getInstance()->getShape(CUBE_SHAPE), FLOOR_POSITION, ORIGIN, FLOOR_SIZE, -ZAXIS, 2);
@@ -241,7 +226,6 @@ public:
 	void update(float deltaTime, float gameTime)
 	{
 		player->keyUpdate(deltaTime, keyInput);
-		nemo->animate(deltaTime);
 		Spawner::getInstance()->update(deltaTime, gameTime);
 		Entities::getInstance()->update(deltaTime);
 		camera.update(player->getPosition(), player->getFacing());
@@ -328,6 +312,7 @@ public:
 
 	void render(int fps)
 	{
+		shared_ptr<Program> prog;
 		// Get current frame buffer size.
 		int width, height;
 		glfwGetFramebufferSize(windowManager->getHandle(), &width, &height);
@@ -353,7 +338,7 @@ public:
 		Entities::getInstance()->draw(Model);
 
 		// draw test heightmap plane
-		prog = ShaderManager::getInstance()->getShader(SIMPLEPROG);
+		shared_ptr<Program> prog = ShaderManager::getInstance()->getShader(SIMPLEPROG);
 		prog->bind();
 		glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, value_ptr(P->topMatrix()));
 		glUniformMatrix4fv(prog->getUniform("V"), 1, GL_FALSE, value_ptr(V));
@@ -419,7 +404,7 @@ int main(int argc, char **argv)
 	// This is the code that will likely change program to program as you
 	// may need to initialize or set up different data and state
 	application->init();
-	application->initGeom();
+	application->initSamplePlane();
 	application->initEntities();
 	double gameTime = 0; // keep track of how long we have been in the game.
 	int frameCount = 0;

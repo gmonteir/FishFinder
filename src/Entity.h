@@ -52,6 +52,7 @@ public:
 	bool shouldRemove() { return toRemove; }
 	void remove() { toRemove = true; }
 
+	void bringToFloor() { position.y = size.y * scale.y * (max.y - min.y) / 2 + FLOOR_POSITION.y + 0.1; }
 	void setPosition(glm::vec3 pos) { this->position = pos; }
 	void setVelocity(glm::vec3 vel) { this->velocity = vel; }
 	void setSize(glm::vec3 size) { this->size = size; }
