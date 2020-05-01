@@ -22,6 +22,7 @@
 #include "ShaderManager.h"
 #include "RenderText.h"
 #include "Player.h"
+#include "Nemo.h"
 #include "Textures.h"
 
 #define _USE_MATH_DEFINES
@@ -73,6 +74,7 @@ public:
 	int drawMode = 0;
 
 	shared_ptr<Player> player;
+	shared_ptr<Nemo> nemo;
 	shared_ptr<Entity> floor;
 	Camera camera;
 	Keys keyInput;
@@ -165,6 +167,7 @@ public:
 	void initTex(const std::string& resourceDirectory)
 	{
 		Textures::getInstance()->addTexture(resourceDirectory + "/dory.jpg", DORY_TEXTURE, GL_CLAMP_TO_EDGE);
+		Textures::getInstance()->addTexture(resourceDirectory + "/nemo.jpg", NEMO_TEXTURE, GL_CLAMP_TO_EDGE);
 
 		vector<std::string> faces {
     	"uw_rt.jpg",
@@ -226,9 +229,11 @@ public:
 	{
 		floor = make_shared<Entity>(*Shapes::getInstance()->getShape(CUBE_SHAPE), FLOOR_POSITION, ORIGIN, FLOOR_SIZE, -ZAXIS, 2);
 		player = make_shared<Player>(*Shapes::getInstance()->getShape(DORY_SHAPE));
+		nemo = make_shared<Nemo>(*Shapes::getInstance()->getShape(NEMO_SHAPE));
 		//player->setTexture(Textures::getInstance()->getTexture(DORY_TEXTURE));
 
 		Entities::getInstance()->push_back(player);
+		Entities::getInstance()->push_back(nemo);
 		Entities::getInstance()->push_back(floor);
 		Spawner::getInstance()->init();
 	}
@@ -236,6 +241,7 @@ public:
 	void update(float deltaTime, float gameTime)
 	{
 		player->keyUpdate(deltaTime, keyInput);
+		nemo->animate(deltaTime);
 		Spawner::getInstance()->update(deltaTime, gameTime);
 		Entities::getInstance()->update(deltaTime);
 		camera.update(player->getPosition(), player->getFacing());

@@ -35,7 +35,6 @@ public:
 
 	void draw(std::shared_ptr<MatrixStack> &M) override;
 	void animate(float dt);
-	void animatePart(float dt, float *angle, bool *movingRight, float low, float high);
 
 	//static vec3 getInputDirection(int direction);
 
@@ -49,9 +48,5 @@ private:
 	bool leftFinRight, rightFinRight, tailRight;
 
 	Keys keys;
-
-	float calculateShift(float minCoord, float maxCoord);
-	void setupPart(const std::vector<std::shared_ptr<Shape>> shape,
-		std::shared_ptr<MatrixStack> Model, int i, int pivot, glm::vec3* angle);
 };
 

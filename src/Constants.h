@@ -14,6 +14,8 @@ const glm::vec3 ZAXIS = glm::vec3(0.0, 0.0, 1.0);
 
 // Assets
 const std::string DORY_TEXTURE = "DORY";
+const std::string NEMO_TEXTURE = "NEMO_TXT";
+
 const std::string CUBE_SHAPE = "CUBE";
 const std::string DORY_SHAPE = "DORY";
 const std::string NEMO_SHAPE = "NEMO";
@@ -70,3 +72,8 @@ constexpr int ELKHORN_CORAL_INDEX = 2;
 constexpr int TREE_CORAL_MATERIAL = 8;
 constexpr int SOFT_CORAL_MATERIAL = 6;
 constexpr int ELKHORN_CORAL_MATERIAL = 7;
+
+// Nemo Constants
+constexpr float NEMO_SPEED = 20;
+constexpr float NEMO_SIZE = 2;
+constexpr int NEMO_MATERIAL = 5;

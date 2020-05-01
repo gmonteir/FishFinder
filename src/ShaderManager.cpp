@@ -107,7 +107,7 @@ shared_ptr<Program> ShaderManager::initGlyphProg()
 	return glyphProg;
 }
 
- void ShaderManager::sendUniforms(int i)
+ void ShaderManager::sendUniforms(int i, const std::string texture_name)
  {
  	shared_ptr<Program> prog = getShader(i);
  	if (i == SIMPLEPROG)
@@ -124,7 +124,7 @@ shared_ptr<Program> ShaderManager::initGlyphProg()
 		glUniformMatrix4fv(prog->getUniform("V"), 1, GL_FALSE, value_ptr(uniformData->V));
  		glUniform3f(prog->getUniform("lightDir"), uniformData->lightDir.x, uniformData->lightDir.y, uniformData->lightDir.z);
 		// This probably should be updated in the future to work with different textures
-		Textures::getInstance()->getTexture(DORY_TEXTURE)->bind(prog->getUniform("Texture0"));
+		Textures::getInstance()->getTexture(texture_name)->bind(prog->getUniform("Texture0"));
  	}
 
  }
