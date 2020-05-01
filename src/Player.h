@@ -24,7 +24,6 @@ public:
 	void onOutOfBounds(float deltaTime) override {}
 	void onCollision(Entity& collider) override;
 
-	glm::vec3 getPosition() const { return position; }
 	glm::vec3 getFacing() const { return facing; }
 	void rotate(float dx, float dy);
 

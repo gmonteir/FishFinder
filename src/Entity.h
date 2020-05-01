@@ -42,6 +42,7 @@ public:
 	bool hasCollided(std::vector<std::shared_ptr<Entity>> &entities);
 
 	void stop() { velocity = ORIGIN; material = STOPPED_MATERIAL; }
+	glm::vec3 getPosition() const { return position; }
 	glm::vec3 getVelocity() const { return velocity; }
 	glm::vec3 getShift() const { return shift; }
 	glm::vec3 getMaxBoundCoordinate() const { return max * scale * size + position; } // note: max already shifted

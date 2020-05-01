@@ -229,7 +229,7 @@ public:
 	{
 		floor = make_shared<Entity>(*Shapes::getInstance()->getShape(CUBE_SHAPE), FLOOR_POSITION, ORIGIN, FLOOR_SIZE, -ZAXIS, 2);
 		player = make_shared<Player>(*Shapes::getInstance()->getShape(DORY_SHAPE));
-		nemo = make_shared<Nemo>(*Shapes::getInstance()->getShape(NEMO_SHAPE));
+		nemo = make_shared<Nemo>(*Shapes::getInstance()->getShape(NEMO_SHAPE), static_pointer_cast<Entity>(player));
 		//player->setTexture(Textures::getInstance()->getTexture(DORY_TEXTURE));
 
 		Entities::getInstance()->push_back(player);
