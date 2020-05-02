@@ -31,16 +31,11 @@ public:
 
 	void keyUpdate(float deltaTime, Keys keyInput);
 
-	//static vec3 getInputDirection(int direction);
-
 private:
 	int score;
 	float speed, rotationSpeed;
 	float alpha, beta;
 	float stamina;
-
-	glm::vec3 leftFin, rightFin, tail;
-	bool leftFinRight, rightFinRight, tailRight;
 
 	Keys keys;
 };

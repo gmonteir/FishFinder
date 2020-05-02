@@ -1,7 +1,7 @@
 #include "Player.h"
 #include "Entities.h"
 #include "Spawner.h"
-#include <algorithm>
+
 #include <iostream>
 
 using namespace std;

@@ -23,7 +23,7 @@ public:
 	virtual ~Entity() {}
 
 	virtual void update(float deltaTime, std::vector<std::shared_ptr<Entity>>& entities);
-	virtual void draw(std::shared_ptr<MatrixStack> &M);
+	void draw(std::shared_ptr<MatrixStack> &M);
 
 	virtual void onOutOfBounds(float deltaTime);
 	bool isOutOfBounds() const 
