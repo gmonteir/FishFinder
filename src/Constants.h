@@ -37,22 +37,23 @@ constexpr int PLAYER_MATERIAL = 5;
 constexpr float INITIAL_STAMINA = 3;
 constexpr float MAX_STAMINA = 10;
 
+// Camera
 constexpr float CAMERA_SPEED = 5;
 const glm::vec2 FIRST_PERSON_OFFSET = glm::vec2(PLAYER_SIZE * 1.5, 0);
 const glm::vec2 SECOND_PERSON_OFFSET = glm::vec2(PLAYER_SIZE + 10, PLAYER_SIZE + 0.3);
 const glm::vec2 THIRD_PERSON_OFFSET = glm::vec2(-SECOND_PERSON_OFFSET.x, SECOND_PERSON_OFFSET.y);
 
+constexpr float MAX_VIEW = 80.0 / 180 * M_PI;
+
 const glm::vec3 FLOOR_POSITION = glm::vec3(0, -2, 0);
 const glm::vec3 FLOOR_SIZE = glm::vec3(60, .05, 60);
-
-constexpr float MAX_VIEW = 80.0 / 180 * M_PI;
 
 // Entity Constants
 constexpr int MAX_SPAWN_ENTITIES = 30;
 constexpr float MAX_SPAWN_DISTANCE = 50.0;
 constexpr float MAX_SPAWN_VELOCITY = 15;
-constexpr float MIN_SPAWN_SIZE = 1;
-constexpr float MAX_SPAWN_SIZE = 3;
+constexpr float MIN_SPAWN_SIZE = 3;
+constexpr float MAX_SPAWN_SIZE = 6;
 constexpr float WORLD_SIZE = 55.0;
 constexpr int DEFAULT_MATERIAL = 3;
 constexpr int STOPPED_MATERIAL = 0;
@@ -79,6 +80,7 @@ constexpr int ELKHORN_CORAL_MATERIAL = 7;
 constexpr float NEMO_SPEED = 20;
 constexpr float NEMO_SIZE = 2;
 constexpr int NEMO_MATERIAL = 5;
+constexpr float NEMO_OFFSET = 8;
 
 // Squirt Constants
 constexpr float SQUIRT_SIZE = 3;

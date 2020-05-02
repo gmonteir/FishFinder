@@ -8,6 +8,7 @@
 #include "Program.h"
 #include "MatrixStack.h"
 #include "Shape.h"
+#include "Transform.h"
 
 // value_ptr for glm
 #include <glm/gtc/type_ptr.hpp>
@@ -28,7 +29,7 @@ public:
 	glm::mat4 getView() { return glm::lookAt(eye, LA, upVector); }
 	glm::vec3 getEye() { return eye; }
 
-	void update(glm::vec3 position, glm::vec3 facing);
+	void update(const Transform& transform);
 	
 	void firstPerson() { reverse = false; offset = FIRST_PERSON_OFFSET; }
 	void secondPerson() { reverse = true; offset = SECOND_PERSON_OFFSET; }

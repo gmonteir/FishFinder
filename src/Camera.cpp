@@ -4,10 +4,10 @@
 using namespace std;
 using namespace glm;
 
-void Camera::update(vec3 position, vec3 facing)
+void Camera::update(const Transform& transform)
 {
-	eye = position + offset.x * facing + offset.y * upVector;
-	LA = eye + float(getReverse()) * facing;
+	eye = transform.getPosition() + offset.x * transform.getFacing() + offset.y * upVector;
+	LA = eye + float(getReverse()) * transform.getFacing();
 }
 //
 //void Camera::rotate(float dx, float dy)

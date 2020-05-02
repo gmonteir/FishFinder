@@ -6,9 +6,10 @@
 #include "Shape.h"
 #include "Constants.h"
 #include "ShaderManager.h"
+#include "Transform.h"
+#include "Model.h"
 
 #include <vector>
-#include <functional>
 
 // value_ptr for glm
 #include <glm/gtc/type_ptr.hpp>
@@ -17,48 +18,46 @@
 class Entity
 {
 public:
-	/* shape, position, velocity, size, facing, material */
-	Entity(std::vector<std::shared_ptr<Shape>>& shapes, glm::vec3 position = ORIGIN, glm::vec3 velocity = ORIGIN,
-		glm::vec3 size = glm::vec3(1.0), glm::vec3 facing = -ZAXIS, int material = DEFAULT_MATERIAL, string tag = "DEFAULT", int program = SIMPLEPROG)
-		: shapes(shapes), position(position), velocity(velocity), size(size), facing(facing), material(material), tag(tag),
-		program(program), isDead(false), texture(nullptr), toRemove(false)
-
-	{
-		extractMinMax();
-	}
+	Entity(const std::string shapeName)
+		: transform(), model(shapeName), tag("DEFAULT"), isDead(false), toRemove(false) {}
 	virtual ~Entity() {}
 
-	void randomRespawn();
-
 	virtual void update(float deltaTime, std::vector<std::shared_ptr<Entity>>& entities);
-	virtual void draw(std::shared_ptr<MatrixStack> &M);
+	void draw(std::shared_ptr<MatrixStack> &M);
 
 	virtual void onOutOfBounds(float deltaTime);
 	bool isOutOfBounds() const 
-		{ return !isInside(position, glm::vec3(WORLD_SIZE), glm::vec3(-WORLD_SIZE)); }
+		{ return !isInside(transform.getPosition(), glm::vec3(WORLD_SIZE), glm::vec3(-WORLD_SIZE)); }
 
 	virtual void onCollision(Entity& collider) {} // Note: called twice per collision check, once for this and once for the collider
 	bool hasCollided(Entity &entity) const;
 	bool hasCollided(std::vector<std::shared_ptr<Entity>> &entities);
 
-	void stop() { velocity = ORIGIN; material = STOPPED_MATERIAL; }
-	glm::vec3 getVelocity() const { return velocity; }
-	glm::vec3 getShift() const { return shift; }
-	glm::vec3 getMaxBoundCoordinate() const { return max * scale * size + position; } // note: max already shifted
-	glm::vec3 getMinBoundCoordinate() const { return min * scale * size + position; } // note: min already shifted
+	// Getters
+	Transform& getTransform() { return transform; }
+	Model& getModel() { return model; }
+	std::string getTag() const { return this->tag; }
+
+	glm::vec3 getMaxBoundCoordinate() const { return model.getScaledMax() * transform.getSize() + transform.getPosition(); } // note: max already shifted
+	glm::vec3 getMinBoundCoordinate() const { return model.getScaledMin() * transform.getSize() + transform.getPosition(); } // note: min already shifted
+
+	// Setters
+	void setTag(std::string tag) { this->tag = tag; }
+	void stop() { transform.setVelocity(ORIGIN); model.setMaterial(STOPPED_MATERIAL); }
+	void remove() { toRemove = true; }
+
+	void bringToFloor() {
+		transform.setPosition(glm::vec3(
+			transform.getPosition().x,
+			transform.getSize().y * model.getScaledSize().y / 2 + FLOOR_POSITION.y + 0.2,
+			transform.getPosition().z)
+		);
+	}
+
+	// Conditions
 	bool isAlive() { return !isDead; }
 	void kill() { isDead = true; }
 	bool shouldRemove() { return toRemove; }
-	void remove() { toRemove = true; }
-
-	void setPosition(glm::vec3 pos) { this->position = pos; }
-	void setVelocity(glm::vec3 vel) { this->velocity = vel; }
-	void setSize(glm::vec3 size) { this->size = size; }
-	void setTag(std::string tag) { this->tag = tag; }
-	void setMaterial(int material) { this->material = material; }
-	std::string getTag() { return this->tag; }
-
-	void setTexture(std::shared_ptr<Texture>& tex) { texture = tex; }
 
 	// checks if point is inside the bounding box defined by max and min
 	static bool isInside(glm::vec3 pt, glm::vec3 max, glm::vec3 min) { 
@@ -68,19 +67,10 @@ public:
 	}
 
 protected:
-	glm::vec3 position, velocity, size, facing;
+	Transform transform;
+	Model model;
 	bool isDead;
 	bool toRemove;
 	string tag;
-
-	std::vector<std::shared_ptr<Shape>> shapes;
-	std::shared_ptr<Texture> texture;
-	int material, program;
-	glm::vec3 max, min, shift, scale;
-private:
-
-	void extractMinMax();
-	void extractShiftScale();
-	
 };
 

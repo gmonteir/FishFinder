@@ -1,3 +1,4 @@
+/*
 #include "Squirt.h"
 #include "Entities.h"
 #include "Spawner.h"
@@ -8,19 +9,10 @@
 using namespace std;
 using namespace glm;
 
-void Squirt::animate(float dt)
-{
-	animatePart(dt, &leftFin.z, &leftFinRight, -0.6, 0.6);
-	leftFin.x = leftFin.z;
-	animatePart(dt, &rightFin.z, &rightFinRight, -0.6, 0.6);
-	rightFin.x = -rightFin.z;
-	animatePart(dt, &leftFoot.z, &leftFootRight, -0.6, 0.6);
-	rightFoot.z = -leftFoot.z;
-}
 
 void Squirt::draw(shared_ptr<MatrixStack> &M)
 {
-	/* Dory Parts by Index
+	 Dory Parts by Index
 	0 - body
 	1 - left fin
 	2 - right fin
@@ -30,7 +22,7 @@ void Squirt::draw(shared_ptr<MatrixStack> &M)
 	6 - right fin joint
 	7 - left foot joint
 	8 - right foot joint
-	*/
+	
 
 	shared_ptr<Program> prog = ShaderManager::getInstance()->getShader(TEXTUREPROG);
 	prog->bind();
@@ -60,3 +52,4 @@ void Squirt::draw(shared_ptr<MatrixStack> &M)
 	M->popMatrix();
 	prog->unbind();
 }
+*/

@@ -23,7 +23,6 @@
 #include "RenderText.h"
 #include "Player.h"
 #include "Nemo.h"
-#include "Squirt.h"
 #include "Textures.h"
 
 #define _USE_MATH_DEFINES
@@ -45,9 +44,6 @@ class Application : public EventCallbacks
 public:
 
 	WindowManager * windowManager = nullptr;
-
-	// Our shader program
-	std::shared_ptr<Program> prog;
 
 	// Shape to be used (from obj file)
 	shared_ptr<Shape> shape;
@@ -76,7 +72,7 @@ public:
 
 	shared_ptr<Player> player;
 	shared_ptr<Nemo> nemo;
-	shared_ptr<Squirt> squirt;
+	shared_ptr<Entity> squirt;
 	shared_ptr<Entity> floor;
 	Camera camera;
 	Keys keyInput;
@@ -216,26 +212,20 @@ public:
 		textRenderer = new RenderText(&ft, ShaderManager::getInstance()->getShader(GLYPHPROG));
 	 }
 
-	void initGeom()
-	{
-		Shapes::getInstance()->addShape(RESOURCE_DIR + "/cube.obj", CUBE_SHAPE);
-		Shapes::getInstance()->addShape(RESOURCE_DIR + "/dory.obj", DORY_SHAPE);
-		Shapes::getInstance()->addShape(RESOURCE_DIR + "/nemo.obj", NEMO_SHAPE);
-		Shapes::getInstance()->addShape(RESOURCE_DIR + "/squirt.obj", SQUIRT_SHAPE);
-		Shapes::getInstance()->addShape(RESOURCE_DIR + "/tree_coral.obj", TREE_CORAL_SHAPE);
-		Shapes::getInstance()->addShape(RESOURCE_DIR + "/soft_coral.obj", SOFT_CORAL_SHAPE);
-		Shapes::getInstance()->addShape(RESOURCE_DIR + "/elkhorn_coral.obj", ELKHORN_CORAL_SHAPE);
-
-		initSamplePlane();
-	}
-
 	void initEntities()
 	{
-		floor = make_shared<Entity>(*Shapes::getInstance()->getShape(CUBE_SHAPE), FLOOR_POSITION, ORIGIN, FLOOR_SIZE, -ZAXIS, 2);
-		player = make_shared<Player>(*Shapes::getInstance()->getShape(DORY_SHAPE));
-		nemo = make_shared<Nemo>(*Shapes::getInstance()->getShape(NEMO_SHAPE));
-		squirt = make_shared<Squirt>(*Shapes::getInstance()->getShape(SQUIRT_SHAPE));
-		//player->setTexture(Textures::getInstance()->getTexture(DORY_TEXTURE));
+		floor = make_shared<Entity>(CUBE_SHAPE);
+		floor->getModel().setMaterial(2);
+		floor->getTransform()
+			.setPosition(FLOOR_POSITION)
+			.setSize(FLOOR_SIZE);
+		player = make_shared<Player>(DORY_SHAPE);
+		nemo = make_shared<Nemo>(NEMO_SHAPE, static_pointer_cast<Entity>(player));
+
+		squirt = make_shared<Entity>(SQUIRT_SHAPE);
+		squirt->getModel().setTexture(SQUIRT_TEXTURE);
+		squirt->getModel().setProgram(TEXTUREPROG);
+		squirt->getTransform().setPosition(vec3(5, 0, -10));
 
 		Entities::getInstance()->push_back(player);
 		Entities::getInstance()->push_back(nemo);
@@ -247,11 +237,9 @@ public:
 	void update(float deltaTime, float gameTime)
 	{
 		player->keyUpdate(deltaTime, keyInput);
-		nemo->animate(deltaTime);
-		squirt->animate(deltaTime);
 		Spawner::getInstance()->update(deltaTime, gameTime);
 		Entities::getInstance()->update(deltaTime);
-		camera.update(player->getPosition(), player->getFacing());
+		camera.update(player->getTransform());
 	}
 
 	/* helper functions for sending matrix data to the GPU */
@@ -335,6 +323,7 @@ public:
 
 	void render(int fps)
 	{
+		shared_ptr<Program> prog;
 		// Get current frame buffer size.
 		int width, height;
 		glfwGetFramebufferSize(windowManager->getHandle(), &width, &height);
@@ -426,7 +415,7 @@ int main(int argc, char **argv)
 	// This is the code that will likely change program to program as you
 	// may need to initialize or set up different data and state
 	application->init();
-	application->initGeom();
+	application->initSamplePlane();
 	application->initEntities();
 	double gameTime = 0; // keep track of how long we have been in the game.
 	int frameCount = 0;

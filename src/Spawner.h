@@ -20,15 +20,15 @@ public:
 	void spawnNemo();
 	void spawnPowerup();
 	void spawnCoral(int type);
-	std::shared_ptr<Entity> spawnRandom(std::vector<std::shared_ptr<Shape>>& shapes, std::string name);
+	std::shared_ptr<Entity> spawnRandom(const std::string& shapeName, std::string name);
+	void findSpawnPosition(std::shared_ptr<Entity>& entity);
+
 	int getSpawned() const { return totalSpawned; }
 
 private:
 	float lastFrameTime;
 	int totalSpawned;
 
-	std::vector<std::shared_ptr<Shape>> nemos;
-	std::vector<std::shared_ptr<Shape>> powerups;
 	std::vector<std::string> coralTypes;
 	int coralMaterials[3];
 };

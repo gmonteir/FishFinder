@@ -1,3 +1,4 @@
+/*
 #pragma once
 
 #include "Entity.h"
@@ -26,3 +27,4 @@ private:
 	glm::vec3 leftFin, rightFin, leftFoot, rightFoot;
 	bool leftFinRight, rightFinRight, leftFootRight, rightFootRight;
 };
+*/

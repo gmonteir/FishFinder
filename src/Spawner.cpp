@@ -1,7 +1,7 @@
 #include "Spawner.h"
-#include "Shapes.h"
 #include "Powerup.h"
 #include "Entities.h"
+#include "Random.h"
 
 using namespace std;
 using namespace glm;
@@ -43,46 +43,62 @@ void Spawner::update(float deltaTime, float gameTime)
 
 void Spawner::spawnNemo()
 {
+	shared_ptr<Entity> e = spawnRandom(NEMO_SHAPE, NEMO_TAG);
+	e->getTransform()
+		.setVelocity(Random::spawnVel())
+		.setSize(Random::spawnSize())
+		.syncFacing();
+	e->bringToFloor();
 	totalSpawned++;
-	spawnRandom(*Shapes::getInstance()->getShape(NEMO_SHAPE), NEMO_TAG);
 	Entities::getInstance()->incrementNumActive();
 }
 
 void Spawner::spawnPowerup()
 {
+	shared_ptr<Entity> e = spawnRandom(CUBE_SHAPE, POWERUP_TAG);
+	e->getTransform()
+		.setSize(vec3(POWERUP_SIZE))
+		.setFacing(Random::facingXZ());
+	e->getModel().setMaterial(POWERUP_MATERIAL);
+	e->bringToFloor();
 	totalSpawned++;
-	shared_ptr<Entity> e = spawnRandom(*Shapes::getInstance()->getShape(CUBE_SHAPE), POWERUP_TAG);
 	Entities::getInstance()->incrementNumActive();
-	e->setMaterial(POWERUP_MATERIAL);
-	e->setVelocity(vec3(0, 0, 0));
 }
 
 void Spawner::spawnCoral(int type)
 {	
-	shared_ptr<Entity> e = spawnRandom(*Shapes::getInstance()->getShape(coralTypes[type]), CORAL_TAG);
-	e->setVelocity(vec3(0, 0, 0));
-	e->setMaterial(coralMaterials[type]);
+	shared_ptr<Entity> e = spawnRandom(coralTypes[type], CORAL_TAG);
+	e->getTransform()
+		.setSize(Random::spawnSize())
+		.setFacing(Random::facingXZ());
+	e->getModel().setMaterial(coralMaterials[type]);
+	e->bringToFloor();
 }
 
-shared_ptr<Entity> Spawner::spawnRandom(vector<shared_ptr<Shape>>& shapes, string tag)
+shared_ptr<Entity> Spawner::spawnRandom(const string& shapeName, string tag)
 {
 	shared_ptr<Entity> entity;
 	
 	if (tag == POWERUP_TAG)
 	{
-		entity = make_shared<Powerup>(shapes);
+		entity = make_shared<Powerup>(shapeName);
 	}
 	else
 	{
-		entity = make_shared<Entity>(shapes);
+		entity = make_shared<Entity>(shapeName);
 	}
 	
+	findSpawnPosition(entity);
 	entity->setTag(tag);
-	entity->randomRespawn();
-	while (entity->hasCollided(*Entities::getInstance()))
-	{
-		entity->randomRespawn();
-	}
 	Entities::getInstance()->push_back(entity);
 	return entity;
+}
+
+void Spawner::findSpawnPosition(shared_ptr<Entity>& entity)
+{
+	entity->getTransform().setPosition(Random::spawnPos());
+	while (entity->hasCollided(*Entities::getInstance()))
+	{
+		entity->getTransform().setPosition(Random::spawnPos());
+	}
 }
