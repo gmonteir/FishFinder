@@ -164,9 +164,6 @@ public:
 	// Code to load in the textures
 	void initTex(const std::string& resourceDirectory)
 	{
-		Textures::getInstance()->addTexture(resourceDirectory + "/dory.jpg", DORY_TEXTURE, GL_CLAMP_TO_EDGE);
-		Textures::getInstance()->addTexture(resourceDirectory + "/nemo.jpg", NEMO_TEXTURE, GL_CLAMP_TO_EDGE);
-		Textures::getInstance()->addTexture(resourceDirectory + "/squirt.jpg", SQUIRT_TEXTURE, GL_CLAMP_TO_EDGE);
 
 		vector<std::string> faces {
     	"uw_rt.jpg",

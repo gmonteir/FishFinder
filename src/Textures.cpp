@@ -1,5 +1,12 @@
 #include "Textures.h"
+#include "Constants.h"
 
+Textures::Textures()
+{
+	addTexture(RESOURCE_DIR + "/dory.jpg", DORY_TEXTURE, GL_CLAMP_TO_EDGE);
+	addTexture(RESOURCE_DIR + "/nemo.jpg", NEMO_TEXTURE, GL_CLAMP_TO_EDGE);
+	addTexture(RESOURCE_DIR + "/squirt.jpg", SQUIRT_TEXTURE, GL_CLAMP_TO_EDGE);
+}
 
 shared_ptr<Textures> Textures::getInstance()
 {
