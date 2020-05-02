@@ -107,11 +107,6 @@ shared_ptr<Program> ShaderManager::initGlyphProg()
 	return glyphProg;
 }
 
-void ShaderManager::sendUniforms(int i, const std::string texture_name)
-{
-	sendUniforms(i, Textures::getInstance()->getTexture(texture_name));
-}
-
  void ShaderManager::sendUniforms(int i, const shared_ptr<Texture> texture)
  {
 	 shared_ptr<Program> prog = getShader(i);

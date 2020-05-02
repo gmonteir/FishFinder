@@ -42,7 +42,6 @@ class ShaderManager
 
 	    shared_ptr<Program> getShader(int i) { return shaderProgs[i]; }
 	    void setData(uniforms *common) { uniformData = common; }
-	    void sendUniforms(int i, const std::string texture_name = "");
 		void sendUniforms(int i, const std::shared_ptr<Texture> texture);
 
 	private:
