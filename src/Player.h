@@ -12,12 +12,13 @@ class Player : public Entity
 public:
 	Player(const std::string shapeName) 
 		: Entity(shapeName), score(0), speed(PLAYER_SPEED), stamina(INITIAL_STAMINA),
-		rotationSpeed(CAMERA_SPEED), alpha(0), beta(-M_PI_2), leftFinRight(false), rightFinRight(false), 
-		tailRight(false), tail(ORIGIN), rightFin(ORIGIN), leftFin(ORIGIN) {
+		rotationSpeed(CAMERA_SPEED), alpha(0), beta(-M_PI_2) {
 		// override Entity defaults:
 		transform.setSize(glm::vec3(PLAYER_SIZE));
 		bringToFloor();
+		model.setTexture(DORY_TEXTURE);
 		model.setMaterial(PLAYER_MATERIAL);
+		model.setProgram(TEXTUREPROG);
 	}
 	virtual ~Player() {}
 
@@ -30,9 +31,6 @@ public:
 	float getStamina() const { return stamina; }
 
 	void keyUpdate(float deltaTime, Keys keyInput);
-
-	void draw(std::shared_ptr<MatrixStack> &M) override;
-	void animate(float dt);
 
 	//static vec3 getInputDirection(int direction);
 

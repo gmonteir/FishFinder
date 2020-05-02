@@ -31,3 +31,10 @@ shared_ptr<vector<shared_ptr<Shape>>> Shapes::getShape(const string& key)
 {
 	return allShapes[key];
 }
+
+float Shapes::getRotationOffset(const string& key)
+{
+	if (key == DORY_SHAPE)
+		return radians(80.0f);
+	return 0;
+}

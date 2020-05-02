@@ -10,25 +10,17 @@ void Model::draw(shared_ptr<MatrixStack> &M, const Transform& transform) const
 {
 	shared_ptr<Program> prog = ShaderManager::getInstance()->getShader(program);
 	prog->bind();
-	ShaderManager::getInstance()->sendUniforms(program);
+	ShaderManager::getInstance()->sendUniforms(program, texture);
 	M->pushMatrix();
 	M->translate(transform.getPosition());
 	M->rotate(transform.getXZAngle(), YAXIS);
 	M->scale(scale*transform.getSize());
 	M->translate(vec3(-1)*shift);
-	if (texture)
-	{
-		texture->bind(prog->getUniform("Texture0"));
-	}
-	else
+	if (!texture)
 	{
 		SetMaterial(prog, material);
 	}
-	glUniformMatrix4fv(prog->getUniform("M"), 1, GL_FALSE, value_ptr(M->topMatrix()));
-	for (auto& shape : shapes)
-	{
-		shape->draw(prog);
-	}
+	animator->drawModel(M, prog, shapes);
 	M->popMatrix();
 	prog->unbind();
 }

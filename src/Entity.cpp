@@ -28,6 +28,7 @@ void Entity::update(float deltaTime, std::vector<std::shared_ptr<Entity>> &entit
 
 	if (isOutOfBounds()) // event trigger check 
 		onOutOfBounds(deltaTime);
+	model.getAnimator().animate(deltaTime);
 }
 
 void Entity::draw(shared_ptr<MatrixStack> &M)

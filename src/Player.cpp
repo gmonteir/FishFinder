@@ -65,18 +65,7 @@ void Player::keyUpdate(float deltaTime, Keys input)
 	deltas.z = forward * transform.getFacing().z + right * transform.getFacing().x;
 	transform.setVelocity(right == 0 && forward == 0 ? ORIGIN : normalize(deltas) * (speed + boost));
     
-    if (boost > 0)
-    	deltaTime *= 3;
-	animate(deltaTime);
-}
-
-void Player::animate(float dt)
-{
-	animatePart(dt, &tail.y, &tailRight, -0.7, 0.7);
-	animatePart(dt, &leftFin.y, &leftFinRight, -0.3, 0.3);
-	leftFin.x = leftFin.y;
-	animatePart(dt, &rightFin.y, &rightFinRight, -0.3, 0.3);
-	rightFin.x = -rightFin.y;
+    model.getAnimator().setAnimationSpeed(boost > 0 ? 3 : 1);
 }
 
 void Player::rotate(float dx, float dy)
@@ -88,51 +77,4 @@ void Player::rotate(float dx, float dy)
 	else if (alpha < radians(-70.f))
 		alpha = radians(-70.f);
 	transform.setFacing(normalize(vec3(cos(alpha) * cos(beta), sin(alpha), cos(alpha) * cos(M_PI_2 - beta))));
-}
-
-void Player::draw(shared_ptr<MatrixStack> &M)
-{
-	/* Dory Parts by Index
-	0 - Face
-	1 - Top Fin
-	2 - Left Fin Joint
-	3 - Right Fin Joint
-	4 - Left Fin
-	5 - Right Fin
-	6 - Tail
-	7 - Tail Joint */
-
-	shared_ptr<Program> prog = ShaderManager::getInstance()->getShader(TEXTUREPROG);
-	prog->bind();
-	ShaderManager::getInstance()->sendUniforms(TEXTUREPROG, DORY_TEXTURE);
-	M->pushMatrix();
-	M->loadIdentity();
-	M->translate(transform.getPosition());											// move dory to its world position
-	M->rotate(transform.getXZAngle() + radians(80.f), YAXIS);	// orient dory to face forward
-	M->scale(model.getScale()*transform.getSize()); 			  								// scale dory at the origin
-	M->translate(-model.getShift()); 									// shift dory to origin
-	int shapeSize = model.getShapes().size();
-	for (int i = 0; i < shapeSize; ++i)
-	{
-		if (i == 4)
-		{
-			setupPart(model.getShapes(), M, i, 2, &leftFin);
-		}
-		else if (i == 5)
-		{
-			setupPart(model.getShapes(), M, i, 3, &rightFin);
-		}
-		else if (i == 6)
-		{
-			setupPart(model.getShapes(), M, i, 7, &tail);
-		}
-		glUniformMatrix4fv(prog->getUniform("M"), 1, GL_FALSE, value_ptr(M->topMatrix()));
-		model.getShapes().at(i)->draw(prog);
-		if (i == 4 || i == 5 || i == 6)
-		{
-			M->popMatrix();
-		}
-	}
-	M->popMatrix();
-	prog->unbind();
 }

@@ -107,24 +107,29 @@ shared_ptr<Program> ShaderManager::initGlyphProg()
 	return glyphProg;
 }
 
- void ShaderManager::sendUniforms(int i, const std::string texture_name)
+void ShaderManager::sendUniforms(int i, const std::string texture_name)
+{
+	sendUniforms(i, Textures::getInstance()->getTexture(texture_name));
+}
+
+ void ShaderManager::sendUniforms(int i, const shared_ptr<Texture> texture)
  {
- 	shared_ptr<Program> prog = getShader(i);
- 	if (i == SIMPLEPROG)
- 	{
- 		glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, value_ptr(uniformData->P));
-		glUniformMatrix4fv(prog->getUniform("V"), 1, GL_FALSE, value_ptr(uniformData->V));
-		glUniform3f(prog->getUniform("lightDir"), uniformData->lightDir.x, uniformData->lightDir.y, uniformData->lightDir.z);
-		glUniform3f(prog->getUniform("lightCol"), uniformData->lightCol.x, uniformData->lightCol.y, uniformData->lightCol.z);
-		glUniform3f(prog->getUniform("eye"), uniformData->eye.x, uniformData->eye.y, uniformData->eye.z);
- 	}
- 	else if (i == TEXTUREPROG)
- 	{
- 		glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, value_ptr(uniformData->P));
-		glUniformMatrix4fv(prog->getUniform("V"), 1, GL_FALSE, value_ptr(uniformData->V));
- 		glUniform3f(prog->getUniform("lightDir"), uniformData->lightDir.x, uniformData->lightDir.y, uniformData->lightDir.z);
-		// This probably should be updated in the future to work with different textures
-		Textures::getInstance()->getTexture(texture_name)->bind(prog->getUniform("Texture0"));
- 	}
+	 shared_ptr<Program> prog = getShader(i);
+	 if (i == SIMPLEPROG)
+	 {
+		 glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, value_ptr(uniformData->P));
+		 glUniformMatrix4fv(prog->getUniform("V"), 1, GL_FALSE, value_ptr(uniformData->V));
+		 glUniform3f(prog->getUniform("lightDir"), uniformData->lightDir.x, uniformData->lightDir.y, uniformData->lightDir.z);
+		 glUniform3f(prog->getUniform("lightCol"), uniformData->lightCol.x, uniformData->lightCol.y, uniformData->lightCol.z);
+		 glUniform3f(prog->getUniform("eye"), uniformData->eye.x, uniformData->eye.y, uniformData->eye.z);
+	 }
+	 else if (i == TEXTUREPROG)
+	 {
+		 glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, value_ptr(uniformData->P));
+		 glUniformMatrix4fv(prog->getUniform("V"), 1, GL_FALSE, value_ptr(uniformData->V));
+		 glUniform3f(prog->getUniform("lightDir"), uniformData->lightDir.x, uniformData->lightDir.y, uniformData->lightDir.z);
+		 // This probably should be updated in the future to work with different textures
+		 texture->bind(prog->getUniform("Texture0"));
+	 }
 
  }
