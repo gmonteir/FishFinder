@@ -1,5 +1,6 @@
 #include "Spawner.h"
 #include "Powerup.h"
+#include "Nemo.h"
 #include "Entities.h"
 #include "Random.h"
 
@@ -82,6 +83,10 @@ shared_ptr<Entity> Spawner::spawnRandom(const string& shapeName, string tag)
 	if (tag == POWERUP_TAG)
 	{
 		entity = make_shared<Powerup>(shapeName);
+	}
+	else if (tag == NEMO_TAG)
+	{
+		entity = make_shared<Nemo>(shapeName);
 	}
 	else
 	{

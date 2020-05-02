@@ -217,7 +217,8 @@ public:
 			.setPosition(FLOOR_POSITION)
 			.setSize(FLOOR_SIZE);
 		player = make_shared<Player>(DORY_SHAPE);
-		nemo = make_shared<Nemo>(NEMO_SHAPE, static_pointer_cast<Entity>(player));
+		nemo = make_shared<Nemo>(NEMO_SHAPE);
+		nemo->setTarget(&*player);
 
 		squirt = make_shared<Entity>(SQUIRT_SHAPE);
 		squirt->getModel().setTexture(SQUIRT_TEXTURE);

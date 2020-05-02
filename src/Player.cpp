@@ -1,4 +1,5 @@
 #include "Player.h"
+#include "Nemo.h"
 #include "Entities.h"
 #include "Spawner.h"
 
@@ -13,7 +14,7 @@ void Player::onCollision(Entity& collider)
 	{
 		if (collider.getTag() == NEMO_TAG)
 		{
-			collider.stop();
+			dynamic_cast<Nemo&>(collider).setTarget(this);
 			collider.kill();
 			Spawner::getInstance()->spawnNemo();
 			Entities::getInstance()->decrementNumActive();

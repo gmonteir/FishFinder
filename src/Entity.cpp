@@ -12,9 +12,6 @@ using namespace glm;
 
 void Entity::update(float deltaTime, std::vector<std::shared_ptr<Entity>> &entities)
 {
-	if (!isAlive())
-		return;
-
 	vec3 change = transform.getVelocity() * deltaTime;
 	transform.move(change.x * XAXIS);
 	if (hasCollided(entities))
