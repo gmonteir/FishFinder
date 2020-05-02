@@ -1,6 +1,5 @@
 #include "Constants.h"
 #include "ShaderManager.h"
-#include "Textures.h"
 
 shared_ptr<ShaderManager> ShaderManager::getInstance()
 {
