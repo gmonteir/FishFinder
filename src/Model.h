@@ -24,6 +24,7 @@ public:
 	Model(const std::string shapeName)
 		: shapes(*Shapes::getInstance()->getShape(shapeName)), 
 		animator(Animator::createAnimator(shapeName)),
+		rotationOffset(Shapes::getInstance()->getRotationOffset(shapeName)),
 		material(DEFAULT_MATERIAL), program(SIMPLEPROG), texture(nullptr)
 	{
 		extractMinMax();
@@ -51,6 +52,7 @@ private:
 	const std::vector<std::shared_ptr<Shape>>& shapes;
 	std::shared_ptr<Texture> texture;
 	const unique_ptr<Animator> animator;
+	float rotationOffset;
 
 	int material, program;
 	glm::vec3 max, min, shift, scale;

@@ -13,9 +13,9 @@ void Model::draw(shared_ptr<MatrixStack> &M, const Transform& transform) const
 	ShaderManager::getInstance()->sendUniforms(program, texture);
 	M->pushMatrix();
 	M->translate(transform.getPosition());
-	M->rotate(transform.getXZAngle(), YAXIS);
+	M->rotate(transform.getXZAngle() + rotationOffset, YAXIS);
 	M->scale(scale*transform.getSize());
-	M->translate(vec3(-1)*shift);
+	M->translate(-shift);
 	if (!texture)
 	{
 		SetMaterial(prog, material);
