@@ -17,7 +17,6 @@ public:
 		transform.setSize(glm::vec3(PLAYER_SIZE));
 		bringToFloor();
 		model.setTexture(DORY_TEXTURE);
-		model.setMaterial(PLAYER_MATERIAL);
 		model.setProgram(TEXTUREPROG);
 	}
 	virtual ~Player() {}

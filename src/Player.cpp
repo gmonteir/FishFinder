@@ -1,6 +1,5 @@
 #include "Player.h"
 #include "Entities.h"
-#include "Animate.h"
 #include "Spawner.h"
 #include <algorithm>
 #include <iostream>

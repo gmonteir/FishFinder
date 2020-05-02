@@ -12,6 +12,7 @@ class Animator
 public:
 	class NoAnimator;
 	class DoryAnimator;
+	class NemoAnimator;
 
 	Animator() : animationSpeed(1) {}
 	virtual ~Animator() {}
@@ -57,4 +58,20 @@ public:
 private:
 	glm::vec3 leftFin, rightFin, tail;
 	bool leftFinRight, rightFinRight, tailRight;
+};
+
+class Animator::NemoAnimator : public Animator
+{
+public:
+	NemoAnimator() : Animator(), leftFin(ORIGIN), rightFin(ORIGIN), tail(ORIGIN), leftFoot(ORIGIN), rightFoot(ORIGIN),
+		leftFinRight(false), rightFinRight(false), tailRight(false), leftFootRight(false), rightFootRight(false) {}
+	virtual ~NemoAnimator() {}
+
+	void animate(float deltaTime) override;
+	void drawModel(std::shared_ptr<MatrixStack>& M, std::shared_ptr<Program> prog,
+		const std::vector<std::shared_ptr<Shape>>& shapes) const override;
+
+private:
+	glm::vec3 leftFin, rightFin, tail, leftFoot, rightFoot;
+	bool leftFinRight, rightFinRight, tailRight, leftFootRight, rightFootRight;
 };
