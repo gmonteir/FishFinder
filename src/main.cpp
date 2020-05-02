@@ -23,6 +23,7 @@
 #include "RenderText.h"
 #include "Player.h"
 #include "Nemo.h"
+#include "Squirt.h"
 #include "Textures.h"
 
 #define _USE_MATH_DEFINES
@@ -75,6 +76,7 @@ public:
 
 	shared_ptr<Player> player;
 	shared_ptr<Nemo> nemo;
+	shared_ptr<Squirt> squirt;
 	shared_ptr<Entity> floor;
 	Camera camera;
 	Keys keyInput;
@@ -168,6 +170,7 @@ public:
 	{
 		Textures::getInstance()->addTexture(resourceDirectory + "/dory.jpg", DORY_TEXTURE, GL_CLAMP_TO_EDGE);
 		Textures::getInstance()->addTexture(resourceDirectory + "/nemo.jpg", NEMO_TEXTURE, GL_CLAMP_TO_EDGE);
+		Textures::getInstance()->addTexture(resourceDirectory + "/squirt.jpg", SQUIRT_TEXTURE, GL_CLAMP_TO_EDGE);
 
 		vector<std::string> faces {
     	"uw_rt.jpg",
@@ -218,6 +221,7 @@ public:
 		Shapes::getInstance()->addShape(RESOURCE_DIR + "/cube.obj", CUBE_SHAPE);
 		Shapes::getInstance()->addShape(RESOURCE_DIR + "/dory.obj", DORY_SHAPE);
 		Shapes::getInstance()->addShape(RESOURCE_DIR + "/nemo.obj", NEMO_SHAPE);
+		Shapes::getInstance()->addShape(RESOURCE_DIR + "/squirt.obj", SQUIRT_SHAPE);
 		Shapes::getInstance()->addShape(RESOURCE_DIR + "/tree_coral.obj", TREE_CORAL_SHAPE);
 		Shapes::getInstance()->addShape(RESOURCE_DIR + "/soft_coral.obj", SOFT_CORAL_SHAPE);
 		Shapes::getInstance()->addShape(RESOURCE_DIR + "/elkhorn_coral.obj", ELKHORN_CORAL_SHAPE);
@@ -230,10 +234,12 @@ public:
 		floor = make_shared<Entity>(*Shapes::getInstance()->getShape(CUBE_SHAPE), FLOOR_POSITION, ORIGIN, FLOOR_SIZE, -ZAXIS, 2);
 		player = make_shared<Player>(*Shapes::getInstance()->getShape(DORY_SHAPE));
 		nemo = make_shared<Nemo>(*Shapes::getInstance()->getShape(NEMO_SHAPE));
+		squirt = make_shared<Squirt>(*Shapes::getInstance()->getShape(SQUIRT_SHAPE));
 		//player->setTexture(Textures::getInstance()->getTexture(DORY_TEXTURE));
 
 		Entities::getInstance()->push_back(player);
 		Entities::getInstance()->push_back(nemo);
+		Entities::getInstance()->push_back(squirt);
 		Entities::getInstance()->push_back(floor);
 		Spawner::getInstance()->init();
 	}
@@ -242,6 +248,7 @@ public:
 	{
 		player->keyUpdate(deltaTime, keyInput);
 		nemo->animate(deltaTime);
+		squirt->animate(deltaTime);
 		Spawner::getInstance()->update(deltaTime, gameTime);
 		Entities::getInstance()->update(deltaTime);
 		camera.update(player->getPosition(), player->getFacing());

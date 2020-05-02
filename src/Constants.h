@@ -13,12 +13,14 @@ const glm::vec3 YAXIS = glm::vec3(0.0, 1.0, 0.0);
 const glm::vec3 ZAXIS = glm::vec3(0.0, 0.0, 1.0);
 
 // Assets
-const std::string DORY_TEXTURE = "DORY";
+const std::string DORY_TEXTURE = "DORY_TXT";
 const std::string NEMO_TEXTURE = "NEMO_TXT";
+const std::string SQUIRT_TEXTURE = "SQUIRT_TXT";
 
 const std::string CUBE_SHAPE = "CUBE";
 const std::string DORY_SHAPE = "DORY";
 const std::string NEMO_SHAPE = "NEMO";
+const std::string SQUIRT_SHAPE = "SQUIRT";
 const std::string TREE_CORAL_SHAPE = "TREE_CORAL";
 const std::string SOFT_CORAL_SHAPE = "SOFT_CORAL";
 const std::string ELKHORN_CORAL_SHAPE = "ELKHORN_CORAL";
@@ -77,3 +79,6 @@ constexpr int ELKHORN_CORAL_MATERIAL = 7;
 constexpr float NEMO_SPEED = 20;
 constexpr float NEMO_SIZE = 2;
 constexpr int NEMO_MATERIAL = 5;
+
+// Squirt Constants
+constexpr float SQUIRT_SIZE = 3;
