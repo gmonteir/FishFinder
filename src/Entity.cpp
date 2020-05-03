@@ -48,8 +48,7 @@ void Entity::update(float deltaTime, std::vector<std::shared_ptr<Entity>> &entit
 		onOutOfBounds(deltaTime);
 	else if (wasInFloorX || wasInFloorY || wasInFloorZ) // event trigger check 
 	{
-		onOutOfBounds(deltaTime);
-		transform.move(YAXIS * (deltaTime + abs(change.y)));
+		transform.move(2 * deltaTime * YAXIS * (1 + abs(transform.getVelocity().y)));
 	}
 }
 
