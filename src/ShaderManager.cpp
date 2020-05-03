@@ -124,7 +124,7 @@ shared_ptr<Program> ShaderManager::initFloorProg()
 	texProg->addUniform("V");
 	texProg->addUniform("lightDir");
 	texProg->addUniform("Texture0");
-	//texProg->addUniform("Texture1");
+	texProg->addUniform("Texture1");
 	texProg->addAttribute("vertPos");
 	texProg->addAttribute("vertNor");
 	texProg->addAttribute("vertTex");
@@ -152,6 +152,14 @@ shared_ptr<Program> ShaderManager::initFloorProg()
 	 }
 	 else if (i == FLOORPROG)
 	 {
+	 	 glActiveTexture(GL_TEXTURE0);
+	 	 glBindTexture(GL_TEXTURE_2D, texture->getID());
+	 	 glUniform1i(prog->getUniform("Texture0"), 0);
+
+	 	 glActiveTexture(GL_TEXTURE1);
+	 	 glBindTexture(GL_TEXTURE_2D, blendTexture->getID());
+	 	 glUniform1i(prog->getUniform("Texture1"), 1);
+
 		 glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, value_ptr(uniformData->P));
 		 glUniformMatrix4fv(prog->getUniform("V"), 1, GL_FALSE, value_ptr(uniformData->V));
 		 glUniform3f(prog->getUniform("lightDir"), uniformData->lightDir.x, uniformData->lightDir.y, uniformData->lightDir.z);

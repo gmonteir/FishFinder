@@ -173,7 +173,7 @@ public:
 		//Textures::getInstance()->addTexture(resourceDirectory + "/caustics/caustic1.jpg", CAUSTIC_TEXTURE, GL_REPEAT);
 		//Textures::getInstance()->addTexture(resourceDirectory + "/save.01.tif", CAUSTIC_TEXTURE, GL_REPEAT);
 		initCausticsText(resourceDirectory);
-		//Textures::getInstance()->addTexture(resourceDirectory + "/ground.bmp", FLOOR_TEXTURE, GL_CLAMP_TO_EDGE);
+		Textures::getInstance()->addTexture(resourceDirectory + "/ground.bmp", FLOOR_TEXTURE, GL_CLAMP_TO_EDGE);
 		//Textures::getInstance()->addTexture(resourceDirectory + "/caustics/caustic1.jpg", CAUSTIC_TEXTURE+t, GL_CLAMP_TO_EDGE);
 
 		vector<std::string> faces {
