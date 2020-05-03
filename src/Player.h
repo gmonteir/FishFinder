@@ -15,7 +15,7 @@ public:
 		rotationSpeed(CAMERA_SPEED), alpha(0), beta(-M_PI_2) {
 		// override Entity defaults:
 		transform.setSize(glm::vec3(PLAYER_SIZE));
-		bringToFloor();
+		bringToFloor(FLOOR_OFFSET);
 		model.setTexture(DORY_TEXTURE);
 		model.setProgram(TEXTUREPROG);
 	}

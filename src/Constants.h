@@ -53,16 +53,17 @@ constexpr int MAP_Z = 256;
 
 const glm::vec3 FLOOR_SIZE = glm::vec3(2, 1, 2);
 const glm::vec3 FLOOR_POSITION = glm::vec3((-MAP_X / 2) * FLOOR_SIZE.x, -200, (-MAP_Z / 2) * FLOOR_SIZE.z);
+constexpr float WORLD_SIZE = 255;
 
 // Entity Constants
-constexpr int MAX_SPAWN_ENTITIES = 30;
-constexpr float MAX_SPAWN_DISTANCE = 50.0;
+constexpr int MAX_SPAWN_ENTITIES = 50;
+constexpr float MAX_SPAWN_DISTANCE = 200;
 constexpr float MAX_SPAWN_VELOCITY = 15;
 constexpr float MIN_SPAWN_SIZE = 3;
 constexpr float MAX_SPAWN_SIZE = 6;
-constexpr float WORLD_SIZE = 55.0;
 constexpr int DEFAULT_MATERIAL = 3;
 constexpr int STOPPED_MATERIAL = 0;
+constexpr float FLOOR_OFFSET = 1.0;
 
 // Powerup Constants
 constexpr float POWERUP_SIZE = 0.7;
@@ -70,7 +71,7 @@ constexpr int POWERUP_MATERIAL = 5;
 constexpr float POWERUP_DESPAWN_TIME = 10.0;
 
 // Coral Constants
-constexpr int NUM_CORAL = 20;
+constexpr int NUM_CORAL = 50;
 constexpr int TREE_CORAL_INDEX = 0;
 constexpr int SOFT_CORAL_INDEX = 1;
 constexpr int ELKHORN_CORAL_INDEX = 2;

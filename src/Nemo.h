@@ -9,9 +9,7 @@ public:
 	Nemo(const std::string& shapeName) 
 		: Entity(shapeName), target(nullptr), speed(NEMO_SPEED), offset(NEMO_OFFSET) {
 		// override Entity defaults:
-		transform.setSize(glm::vec3(NEMO_SIZE))
-			.setPosition(-10.0f * ZAXIS);
-		bringToFloor();
+		transform.setSize(glm::vec3(NEMO_SIZE));
 		model.setTexture(NEMO_TEXTURE);
 		model.setProgram(TEXTUREPROG);
 	}

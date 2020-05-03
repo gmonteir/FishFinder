@@ -64,13 +64,12 @@ shared_ptr<Floor> Floor::getInstance()
 	return instance;
 }
 
-void Floor::draw(shared_ptr<MatrixStack>& M)
+void Floor::draw(shared_ptr<MatrixStack>& M) const
 {
 	shared_ptr<Program> prog = ShaderManager::getInstance()->getShader(TEXTUREPROG);
 	prog->bind();
 	ShaderManager::getInstance()->sendUniforms(TEXTUREPROG, Textures::getInstance()->getTexture(FLOOR_TEXTURE));
 	M->pushMatrix();
-	//M->loadIdentity();
 		M->translate(FLOOR_POSITION);
 		M->scale(FLOOR_SIZE);
 		glUniformMatrix4fv(prog->getUniform("M"), 1, GL_FALSE, value_ptr(M->topMatrix()));
@@ -79,10 +78,15 @@ void Floor::draw(shared_ptr<MatrixStack>& M)
 	prog->unbind();
 }
 
-float Floor::getHeight(float x, float z)
+float Floor::getHeight(float x, float z) const
 {
 	int idX = (((floor(x) / MAP_X) + 1) / FLOOR_SIZE.x) * MAP_X;
 	int idZ = (((floor(z) / MAP_Z) + 1) / FLOOR_SIZE.z) * MAP_Z;
 
 	return terrain[idX][idZ] + FLOOR_POSITION.y;
+}
+
+bool Floor::isAboveFloor(const vec3 min, const vec3 max) const
+{
+	return min.y >= getHeight(min.x, min.z) && min.y >= getHeight(max.x, max.z);
 }

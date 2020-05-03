@@ -190,7 +190,10 @@ public:
 	{
 		player = make_shared<Player>(DORY_SHAPE);
 		nemo = make_shared<Nemo>(NEMO_SHAPE);
+		nemo->getTransform().setPosition(-10.0f * ZAXIS);
+		nemo->bringToFloor(FLOOR_OFFSET);
 		nemo->setTarget(&*player);
+		nemo->kill();
 
 		squirt = make_shared<Entity>(SQUIRT_SHAPE);
 		squirt->getModel().setTexture(SQUIRT_TEXTURE);

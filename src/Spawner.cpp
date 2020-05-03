@@ -12,6 +12,7 @@ shared_ptr<Spawner> Spawner::getInstance() {
 	return instance;
 }
 
+// must be done after player is in Entities
 void Spawner::init()
 {
 	spawnNemo();

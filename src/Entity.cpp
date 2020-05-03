@@ -12,18 +12,21 @@ using namespace glm;
 
 void Entity::update(float deltaTime, std::vector<std::shared_ptr<Entity>> &entities)
 {
+	bool wasOutOfBoundsX = false;
+	bool wasOutOfBoundsY = false;
+	bool wasOutOfBoundsZ = false;
 	vec3 change = transform.getVelocity() * deltaTime;
 	transform.move(change.x * XAXIS);
-	if (hasCollided(entities))
+	if (hasCollided(entities) || (wasOutOfBoundsX = isOutOfBounds()))
 		transform.move(-change.x * XAXIS);
 	transform.move(change.y * YAXIS);
-	if (hasCollided(entities))
+	if (hasCollided(entities) || (wasOutOfBoundsY = isOutOfBounds()))
 		transform.move(-change.y * YAXIS);
 	transform.move(change.z * ZAXIS);
-	if (hasCollided(entities))
+	if (hasCollided(entities) || (wasOutOfBoundsZ = isOutOfBounds()))
 		transform.move(-change.z * ZAXIS);
 
-	if (isOutOfBounds()) // event trigger check 
+	if (wasOutOfBoundsX || wasOutOfBoundsY || wasOutOfBoundsZ) // event trigger check 
 		onOutOfBounds(deltaTime);
 	model.getAnimator().animate(deltaTime);
 }
@@ -35,9 +38,18 @@ void Entity::draw(shared_ptr<MatrixStack> &M)
 
 void Entity::onOutOfBounds(float deltaTime)
 {
+	if (!isAlive())
+		return;
+
 	transform.setVelocity(-transform.getVelocity())
 		.move(deltaTime)
 		.syncFacing();
+}
+
+bool Entity::isOutOfBounds() const
+{
+	return !isInside(transform.getPosition(), glm::vec3(WORLD_SIZE), glm::vec3(-WORLD_SIZE))
+		|| !Floor::getInstance()->isAboveFloor(getMinBoundCoordinate(), getMaxBoundCoordinate());
 }
 
 bool Entity::hasCollided(Entity &entity) const
@@ -67,4 +79,13 @@ bool Entity::hasCollided(std::vector<std::shared_ptr<Entity>> &entities)
 		}
 	}
 	return false;
+}
+
+void Entity::bringToFloor(float offset) {
+	transform.setPosition(glm::vec3(
+		transform.getPosition().x,
+		transform.getSize().y * model.getScaledSize().y / 2 + offset
+		+ Floor::getInstance()->getHeight(transform.getPosition().x, transform.getPosition().z),
+		transform.getPosition().z
+	));
 }
