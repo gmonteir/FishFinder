@@ -20,6 +20,7 @@ public:
 
 	Transform& syncFacing() { if (velocity != ORIGIN) setFacing(velocity); return *this; }
 	Transform& move(const glm::vec3& change) { position += change; return *this; }
+	/* Move by velocity and deltaTime */
 	Transform& move(const float deltaTime) { return move(velocity * deltaTime); }
 
 	Transform& setPosition(const glm::vec3& pos) { this->position = pos; return *this; }

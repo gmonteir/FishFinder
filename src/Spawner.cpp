@@ -35,7 +35,6 @@ void Spawner::init()
 
 void Spawner::update(float deltaTime, float gameTime)
 {
-	// pull this out into a spawner class -- can be used for general random spawns
 	if (gameTime - lastFrameTime > SPAWN_DELAY)
 	{
 		spawnPowerup();

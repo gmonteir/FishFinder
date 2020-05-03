@@ -15,20 +15,42 @@ void Entity::update(float deltaTime, std::vector<std::shared_ptr<Entity>> &entit
 	bool wasOutOfBoundsX = false;
 	bool wasOutOfBoundsY = false;
 	bool wasOutOfBoundsZ = false;
+
+	bool wasInFloorX = false;
+	bool wasInFloorY = false;
+	bool wasInFloorZ = false;
+
 	vec3 change = transform.getVelocity() * deltaTime;
+
+	model.getAnimator().animate(deltaTime);
+	if (change == ORIGIN) // if not moving, skip calculations
+		return;
+
 	transform.move(change.x * XAXIS);
-	if (hasCollided(entities) || (wasOutOfBoundsX = isOutOfBounds()))
+	wasOutOfBoundsX = isOutOfBounds();
+	wasInFloorX = isInFloor();
+	if (wasOutOfBoundsX || wasInFloorX || hasCollided(entities))
 		transform.move(-change.x * XAXIS);
+
 	transform.move(change.y * YAXIS);
-	if (hasCollided(entities) || (wasOutOfBoundsY = isOutOfBounds()))
+	wasOutOfBoundsY = isOutOfBounds();
+	wasInFloorY = isInFloor();
+	if (wasOutOfBoundsY || wasInFloorY || hasCollided(entities))
 		transform.move(-change.y * YAXIS);
+
 	transform.move(change.z * ZAXIS);
-	if (hasCollided(entities) || (wasOutOfBoundsZ = isOutOfBounds()))
+	wasOutOfBoundsZ = isOutOfBounds();
+	wasInFloorZ = isInFloor();
+	if (wasOutOfBoundsZ || wasInFloorZ || hasCollided(entities))
 		transform.move(-change.z * ZAXIS);
 
 	if (wasOutOfBoundsX || wasOutOfBoundsY || wasOutOfBoundsZ) // event trigger check 
 		onOutOfBounds(deltaTime);
-	model.getAnimator().animate(deltaTime);
+	else if (wasInFloorX || wasInFloorY || wasInFloorZ) // event trigger check 
+	{
+		onOutOfBounds(deltaTime);
+		transform.move(YAXIS * (deltaTime + abs(change.y)));
+	}
 }
 
 void Entity::draw(shared_ptr<MatrixStack> &M)
@@ -44,12 +66,6 @@ void Entity::onOutOfBounds(float deltaTime)
 	transform.setVelocity(-transform.getVelocity())
 		.move(deltaTime)
 		.syncFacing();
-}
-
-bool Entity::isOutOfBounds() const
-{
-	return !isInside(transform.getPosition(), glm::vec3(WORLD_SIZE), glm::vec3(-WORLD_SIZE))
-		|| !Floor::getInstance()->isAboveFloor(getMinBoundCoordinate(), getMaxBoundCoordinate());
 }
 
 bool Entity::hasCollided(Entity &entity) const
