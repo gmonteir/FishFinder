@@ -161,12 +161,28 @@ public:
 		return textureID;
 	}
 
+	void initCausticsText(const std::string& resourceDirectory)
+	{
+		/*
+		string title;
+		for (int i = 0; i < NUM_CAUSTICS; ++i)
+		{
+			title = "/caustics/caustic" + to_string(i) + ".bw";
+			cout << title << endl;
+			cout << CAUSTIC_TEXTURE + to_string(i) << endl;
+			Textures::getInstance()->addTexture(resourceDirectory + title.c_str(), CAUSTIC_TEXTURE+to_string(i), GL_REPEAT);
+		}
+		*/
+	}
 	// Code to load in the textures
 	void initTex(const std::string& resourceDirectory)
 	{
 		Textures::getInstance()->addTexture(resourceDirectory + "/dory.jpg", DORY_TEXTURE, GL_CLAMP_TO_EDGE);
 		Textures::getInstance()->addTexture(resourceDirectory + "/nemo.jpg", NEMO_TEXTURE, GL_CLAMP_TO_EDGE);
 		Textures::getInstance()->addTexture(resourceDirectory + "/squirt.jpg", SQUIRT_TEXTURE, GL_CLAMP_TO_EDGE);
+		Textures::getInstance()->addTexture(resourceDirectory + "/caustics/caustic1.jpg", CAUSTIC_TEXTURE, GL_REPEAT);
+		//Textures::getInstance()->addTexture(resourceDirectory + "/save.01.tif", CAUSTIC_TEXTURE, GL_REPEAT);
+		//initCausticsText(resourceDirectory);
 
 		vector<std::string> faces {
     	"uw_rt.jpg",
@@ -216,6 +232,8 @@ public:
 	{
 		floor = make_shared<Entity>(CUBE_SHAPE);
 		floor->getModel().setMaterial(2);
+		floor->getModel().setTexture(CAUSTIC_TEXTURE);
+		floor->getModel().setProgram(TEXTUREPROG);
 		floor->getTransform()
 			.setPosition(FLOOR_POSITION)
 			.setSize(FLOOR_SIZE);
