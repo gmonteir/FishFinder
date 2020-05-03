@@ -16,6 +16,7 @@ const glm::vec3 ZAXIS = glm::vec3(0.0, 0.0, 1.0);
 const std::string DORY_TEXTURE = "DORY_TXT";
 const std::string NEMO_TEXTURE = "NEMO_TXT";
 const std::string SQUIRT_TEXTURE = "SQUIRT_TXT";
+const std::string FLOOR_TEXTURE = "FLOOR_TXT";
 
 const std::string CUBE_SHAPE = "CUBE";
 const std::string DORY_SHAPE = "DORY";
@@ -24,6 +25,7 @@ const std::string SQUIRT_SHAPE = "SQUIRT";
 const std::string TREE_CORAL_SHAPE = "TREE_CORAL";
 const std::string SOFT_CORAL_SHAPE = "SOFT_CORAL";
 const std::string ELKHORN_CORAL_SHAPE = "ELKHORN_CORAL";
+const std::string FLOOR_SHAPE = "FLOOR_SHAPE";
 const std::string RESOURCE_DIR = "../resources";
 
 // Tags
@@ -45,8 +47,12 @@ const glm::vec2 THIRD_PERSON_OFFSET = glm::vec2(-SECOND_PERSON_OFFSET.x, SECOND_
 
 constexpr float MAX_VIEW = 80.0 / 180 * M_PI;
 
-const glm::vec3 FLOOR_POSITION = glm::vec3(0, -2, 0);
-const glm::vec3 FLOOR_SIZE = glm::vec3(60, .05, 60);
+// Tile Constants
+constexpr int MAP_X = 256;
+constexpr int MAP_Z = 256;
+
+const glm::vec3 FLOOR_SIZE = glm::vec3(2, 1, 2);
+const glm::vec3 FLOOR_POSITION = glm::vec3((-MAP_X / 2) * FLOOR_SIZE.x, -200, (-MAP_Z / 2) * FLOOR_SIZE.z);
 
 // Entity Constants
 constexpr int MAX_SPAWN_ENTITIES = 30;
@@ -62,10 +68,6 @@ constexpr int STOPPED_MATERIAL = 0;
 constexpr float POWERUP_SIZE = 0.7;
 constexpr int POWERUP_MATERIAL = 5;
 constexpr float POWERUP_DESPAWN_TIME = 10.0;
-
-// Tile Constants
-constexpr int MAP_X = 32;
-constexpr int MAP_Z = 32;
 
 // Coral Constants
 constexpr int NUM_CORAL = 20;

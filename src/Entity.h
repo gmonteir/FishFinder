@@ -8,6 +8,7 @@
 #include "ShaderManager.h"
 #include "Transform.h"
 #include "Model.h"
+#include "Floor.h"
 
 #include <vector>
 
@@ -49,7 +50,8 @@ public:
 	void bringToFloor() {
 		transform.setPosition(glm::vec3(
 			transform.getPosition().x,
-			transform.getSize().y * model.getScaledSize().y / 2 + FLOOR_POSITION.y + 0.2,
+			transform.getSize().y * model.getScaledSize().y / 2 + Floor::getInstance()->getHeight(
+				transform.getPosition().x, transform.getPosition().z) + 0.2,
 			transform.getPosition().z)
 		);
 	}
