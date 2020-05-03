@@ -81,8 +81,8 @@ void Floor::draw(shared_ptr<MatrixStack>& M)
 
 float Floor::getHeight(float x, float z)
 {
-	int idX = ((floor(x) - FLOOR_POSITION.x) / FLOOR_SIZE.x) * 2;
-	int idZ = ((floor(z) - FLOOR_POSITION.z) / FLOOR_SIZE.z) * 2;
+	int idX = (((floor(x) / MAP_X) + 1) / FLOOR_SIZE.x) * MAP_X;
+	int idZ = (((floor(z) / MAP_Z) + 1) / FLOOR_SIZE.z) * MAP_Z;
 
 	return terrain[idX][idZ] + FLOOR_POSITION.y;
 }

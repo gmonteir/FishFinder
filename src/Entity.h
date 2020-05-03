@@ -52,6 +52,7 @@ public:
 			transform.getPosition().x,
 			transform.getSize().y * model.getScaledSize().y / 2 + Floor::getInstance()->getHeight(
 				transform.getPosition().x, transform.getPosition().z) + 0.2,
+			//Floor::getInstance()->getHeight(transform.getPosition().x, transform.getPosition().z) + 0.2,
 			transform.getPosition().z)
 		);
 	}
