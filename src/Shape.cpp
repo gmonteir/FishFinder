@@ -179,6 +179,24 @@ void Shape::loadMultipleShapeMesh(shared_ptr<vector<shared_ptr<Shape>>> shapes,
 	}	
 }
 
+void Shape::setBuffers(shared_ptr<vector<shared_ptr<Shape>>> shapes,
+	vector<float>& posBuf,
+	vector<float>& texBuf,
+	vector<unsigned int>& eleBuf)
+{
+	shared_ptr<Shape> shape = make_shared<Shape>();
+	tinyobj::shape_t TOshape;
+
+	TOshape.mesh.positions = posBuf;
+	TOshape.mesh.texcoords = texBuf;
+	TOshape.mesh.indices = eleBuf;
+
+	shape->createShape(TOshape);
+	shape->measure();
+	shape->init();
+	shapes->push_back(shape);
+}
+
 // Updates global min and max coordinates for each shape
 void updateBounds(int i, const shared_ptr<Shape> shape,
 				  glm::vec3 *gMin, glm::vec3 *gMax)

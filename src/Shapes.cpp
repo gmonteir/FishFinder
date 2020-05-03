@@ -28,6 +28,16 @@ void Shapes::addShape(const string& filename, const string& key)
 	allShapes[key] = shapes;
 }
 
+void Shapes::addShape(vector<float>& posBuf,
+	vector<float>& texBuf,
+	vector<unsigned int>& eleBuf,
+	const string& key)
+{
+	shared_ptr<vector<shared_ptr<Shape>>> shapes(new vector<shared_ptr<Shape>>);
+	Shape::setBuffers(shapes, posBuf, texBuf, eleBuf);
+	allShapes[key] = shapes;
+}
+
 shared_ptr<vector<shared_ptr<Shape>>> Shapes::getShape(const string& key)
 {
 	return allShapes[key];
