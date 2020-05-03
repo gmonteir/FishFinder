@@ -28,6 +28,10 @@ public:
 
 	static void loadMultipleShapeMesh(std::shared_ptr<std::vector<std::shared_ptr<Shape>>> shapes,
 		glm::vec3* gMin, glm::vec3* gMax, const std::string& meshName);
+	static void setBuffers(std::shared_ptr<std::vector<std::shared_ptr<Shape>>> shapes,
+		std::vector<float>& posBuf,
+		std::vector<float>& texBuf,
+		std::vector<unsigned int>& eleBuf);
 	
 private:
 	std::vector<unsigned int> eleBuf;
