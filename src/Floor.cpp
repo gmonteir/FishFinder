@@ -80,6 +80,15 @@ void Floor::draw(shared_ptr<MatrixStack>& M) const
 
 float Floor::getHeight(float x, float z) const
 {
+	float minY = coordsToTerrain(floor(x), floor(z));
+	float maxY = coordsToTerrain(ceil(x), ceil(z));
+
+	// attempt to interpolate between x and z spots
+	return minY + (maxY - minY) * (x - floor(x) + z - floor(z)) / 2;
+}
+
+float Floor::coordsToTerrain(float x, float z) const
+{
 	int idX = (((floor(x) / MAP_X) + 1) / FLOOR_SIZE.x) * MAP_X;
 	int idZ = (((floor(z) / MAP_Z) + 1) / FLOOR_SIZE.z) * MAP_Z;
 

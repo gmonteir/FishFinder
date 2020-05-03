@@ -30,6 +30,8 @@ public:
 	bool isAboveFloor(const glm::vec3 min, const glm::vec3 max) const;
 
 private:
+	float coordsToTerrain(float x, float z) const;
+
 	float terrain[MAP_X][MAP_Z];
 };
 
