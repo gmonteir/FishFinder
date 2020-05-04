@@ -21,6 +21,9 @@ public:
 	}
 	virtual ~Player() {}
 
+	void setPathVelocity(float deltaTime);
+	void update(float deltaTime, std::vector<std::shared_ptr<Entity>>& entities);
+
 	void onOutOfBounds(float deltaTime) override {}
 	void onCollision(Entity& collider) override;
 
@@ -29,14 +32,10 @@ public:
 	int getScore() const { return score; }
 	float getStamina() const { return stamina; }
 
-	void keyUpdate(float deltaTime, Keys keyInput);
-
 private:
 	int score;
 	float speed, rotationSpeed;
 	float alpha, beta;
 	float stamina;
-
-	Keys keys;
 };
 

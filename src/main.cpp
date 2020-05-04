@@ -69,7 +69,6 @@ public:
 	shared_ptr<Entity> squirt;
 	shared_ptr<Entity> floor;
 	Camera camera;
-	Keys keyInput;
 	RenderText *textRenderer;
 
 	void keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods)
@@ -98,7 +97,7 @@ public:
 		{
 			camera.thirdPerson();
 		}
-		keyInput.update(key, action);
+		Keys::getInstance().update(key, action);
 	}
 
 	void scrollCallback(GLFWwindow* window, double deltaX, double deltaY)
@@ -207,7 +206,6 @@ public:
 
 	void update(float deltaTime, float gameTime)
 	{
-		player->keyUpdate(deltaTime, keyInput);
 		Spawner::getInstance()->update(deltaTime, gameTime);
 		Entities::getInstance()->update(deltaTime);
 		camera.update(player->getTransform());
