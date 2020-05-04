@@ -155,9 +155,20 @@ public:
 		return textureID;
 	}
 
+	void initCausticsText()
+	{
+		string title;
+		for (int i = 0; i < NUM_CAUSTICS; ++i)
+		{
+			title = "/caustics/caustic" + to_string(i) + ".jpg";
+			Textures::getInstance()->addTexture(RESOURCE_DIR + title.c_str(), CAUSTIC_TEXTURE+to_string(i), GL_REPEAT);
+		}
+	}
 	// Code to load in the textures
 	void initTex()
 	{
+		initCausticsText();
+
 		vector<std::string> faces {
     	"uw_rt.jpg",
     	"uw_lf.jpg",

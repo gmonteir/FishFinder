@@ -14,6 +14,7 @@ ShaderManager::ShaderManager(const string& resourceDirectory) :
 	shaderProgs[SKYBOXPROG] = initSkyboxProg();
 	shaderProgs[TEXTUREPROG] = initTextureProg();
 	shaderProgs[GLYPHPROG] = initGlyphProg();
+	shaderProgs[FLOORPROG] = initFloorProg();
 }
 
 shared_ptr<Program> ShaderManager::initSimpleProg()
@@ -106,7 +107,31 @@ shared_ptr<Program> ShaderManager::initGlyphProg()
 	return glyphProg;
 }
 
- void ShaderManager::sendUniforms(int i, const shared_ptr<Texture> texture)
+shared_ptr<Program> ShaderManager::initFloorProg()
+{
+	std::shared_ptr<Program> texProg = make_shared<Program>();
+	texProg->setVerbose(true);
+	texProg->setShaderNames(
+		resourceDirectory + "/tex_vert.glsl",
+		resourceDirectory + "/floor_frag.glsl");
+	if (! texProg->init())
+	{
+		std::cerr << "One or more shaders failed to compile... exiting!" << std::endl;
+		exit(1);
+	}
+	texProg->addUniform("P");
+	texProg->addUniform("M");
+	texProg->addUniform("V");
+	texProg->addUniform("lightDir");
+	texProg->addUniform("Texture0");
+	texProg->addUniform("Texture1");
+	texProg->addAttribute("vertPos");
+	texProg->addAttribute("vertNor");
+	texProg->addAttribute("vertTex");
+	return texProg;
+}
+
+ void ShaderManager::sendUniforms(int i, const shared_ptr<Texture> texture, const std::shared_ptr<Texture> blendTexture)
  {
 	 shared_ptr<Program> prog = getShader(i);
 	 if (i == SIMPLEPROG)
@@ -124,6 +149,22 @@ shared_ptr<Program> ShaderManager::initGlyphProg()
 		 glUniform3f(prog->getUniform("lightDir"), uniformData->lightDir.x, uniformData->lightDir.y, uniformData->lightDir.z);
 		 // This probably should be updated in the future to work with different textures
 		 texture->bind(prog->getUniform("Texture0"));
+	 }
+	 else if (i == FLOORPROG)
+	 {
+	 	 glActiveTexture(GL_TEXTURE0);
+	 	 glBindTexture(GL_TEXTURE_2D, texture->getID());
+	 	 glUniform1i(prog->getUniform("Texture0"), 0);
+
+	 	 glActiveTexture(GL_TEXTURE1);
+	 	 glBindTexture(GL_TEXTURE_2D, blendTexture->getID());
+	 	 glUniform1i(prog->getUniform("Texture1"), 1);
+
+		 glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, value_ptr(uniformData->P));
+		 glUniformMatrix4fv(prog->getUniform("V"), 1, GL_FALSE, value_ptr(uniformData->V));
+		 glUniform3f(prog->getUniform("lightDir"), uniformData->lightDir.x, uniformData->lightDir.y, uniformData->lightDir.z);
+		 texture->bind(prog->getUniform("Texture0"));
+		 //blendTexture->bind(prog->getUniform("Texture1"));
 	 }
 
  }

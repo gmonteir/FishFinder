@@ -66,9 +66,12 @@ shared_ptr<Floor> Floor::getInstance()
 
 void Floor::draw(shared_ptr<MatrixStack>& M) const
 {
-	shared_ptr<Program> prog = ShaderManager::getInstance()->getShader(TEXTUREPROG);
+	static int counter = 1;
+	shared_ptr<Program> prog = ShaderManager::getInstance()->getShader(FLOORPROG);
 	prog->bind();
-	ShaderManager::getInstance()->sendUniforms(TEXTUREPROG, Textures::getInstance()->getTexture(FLOOR_TEXTURE));
+	ShaderManager::getInstance()->sendUniforms(FLOORPROG,
+		          Textures::getInstance()->getTexture(CAUSTIC_TEXTURE+to_string(counter)),
+		          Textures::getInstance()->getTexture(FLOOR_TEXTURE));
 	M->pushMatrix();
 		M->translate(FLOOR_POSITION);
 		M->scale(FLOOR_SIZE);
@@ -76,6 +79,7 @@ void Floor::draw(shared_ptr<MatrixStack>& M) const
 		Shapes::getInstance()->getShape(FLOOR_SHAPE)->at(0)->draw(prog);
 	M->popMatrix();
 	prog->unbind();
+	counter = (counter + 1) % NUM_CAUSTICS;
 }
 
 float Floor::getHeight(float x, float z) const
