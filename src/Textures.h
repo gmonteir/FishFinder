@@ -15,8 +15,7 @@ using namespace std;
 
 class Textures {
 
-	//static shared_ptr<Textures> instance;
-	Textures() {};
+	Textures();
 
 public:
 

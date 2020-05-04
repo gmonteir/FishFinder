@@ -27,8 +27,13 @@ public:
 	void draw(std::shared_ptr<MatrixStack> &M);
 
 	virtual void onOutOfBounds(float deltaTime);
-	bool isOutOfBounds() const 
-		{ return !isInside(transform.getPosition(), glm::vec3(WORLD_SIZE), glm::vec3(-WORLD_SIZE)); }
+	bool isOutOfBounds() const {
+		return !isInside(transform.getPosition(), glm::vec3(WORLD_SIZE), glm::vec3(-WORLD_SIZE));
+	}
+
+	bool isInFloor() { 
+		return !Floor::getInstance()->isAboveFloor(getMinBoundCoordinate(), getMaxBoundCoordinate()); 
+	}
 
 	virtual void onCollision(Entity& collider) {} // Note: called twice per collision check, once for this and once for the collider
 	bool hasCollided(Entity &entity) const;
@@ -47,15 +52,7 @@ public:
 	void stop() { transform.setVelocity(ORIGIN); model.setMaterial(STOPPED_MATERIAL); }
 	void remove() { toRemove = true; }
 
-	void bringToFloor() {
-		transform.setPosition(glm::vec3(
-			transform.getPosition().x,
-			transform.getSize().y * model.getScaledSize().y / 2 + Floor::getInstance()->getHeight(
-				transform.getPosition().x, transform.getPosition().z) + 0.2,
-			//Floor::getInstance()->getHeight(transform.getPosition().x, transform.getPosition().z) + 0.2,
-			transform.getPosition().z)
-		);
-	}
+	void bringToFloor(float offset=0);
 
 	// Conditions
 	bool isAlive() { return !isDead; }

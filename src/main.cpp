@@ -155,26 +155,19 @@ public:
 		return textureID;
 	}
 
-	void initCausticsText(const std::string& resourceDirectory)
+	void initCausticsText()
 	{
 		string title;
 		for (int i = 0; i < NUM_CAUSTICS; ++i)
 		{
 			title = "/caustics/caustic" + to_string(i) + ".jpg";
-			Textures::getInstance()->addTexture(resourceDirectory + title.c_str(), CAUSTIC_TEXTURE+to_string(i), GL_REPEAT);
+			Textures::getInstance()->addTexture(RESOURCE_DIR + title.c_str(), CAUSTIC_TEXTURE+to_string(i), GL_REPEAT);
 		}
 	}
 	// Code to load in the textures
-	void initTex(const std::string& resourceDirectory)
+	void initTex()
 	{
-		Textures::getInstance()->addTexture(resourceDirectory + "/dory.jpg", DORY_TEXTURE, GL_CLAMP_TO_EDGE);
-		Textures::getInstance()->addTexture(resourceDirectory + "/nemo.jpg", NEMO_TEXTURE, GL_CLAMP_TO_EDGE);
-		Textures::getInstance()->addTexture(resourceDirectory + "/squirt.jpg", SQUIRT_TEXTURE, GL_CLAMP_TO_EDGE);
-		//Textures::getInstance()->addTexture(resourceDirectory + "/caustics/caustic1.jpg", CAUSTIC_TEXTURE, GL_REPEAT);
-		//Textures::getInstance()->addTexture(resourceDirectory + "/save.01.tif", CAUSTIC_TEXTURE, GL_REPEAT);
-		initCausticsText(resourceDirectory);
-		Textures::getInstance()->addTexture(resourceDirectory + "/ground.bmp", FLOOR_TEXTURE, GL_CLAMP_TO_EDGE);
-		//Textures::getInstance()->addTexture(resourceDirectory + "/caustics/caustic1.jpg", CAUSTIC_TEXTURE+t, GL_CLAMP_TO_EDGE);
+		initCausticsText();
 
 		vector<std::string> faces {
     	"uw_rt.jpg",
@@ -184,7 +177,7 @@ public:
     	"uw_ft.jpg",
     	"uw_bk.jpg"
 		}; 
-		cubeMapTexture = createSky(resourceDirectory + "/underwater/",  faces);
+		cubeMapTexture = createSky(RESOURCE_DIR + "/underwater/",  faces);
 	}
 
 	void init()
@@ -198,8 +191,7 @@ public:
 		// Enable z-buffer test.
 		glEnable(GL_DEPTH_TEST);
 
-		//initialize the textures we might use
-		initTex(RESOURCE_DIR);
+		initTex();
 
 		FT_Library ft;
 		textRenderer = new RenderText(&ft, ShaderManager::getInstance()->getShader(GLYPHPROG));
@@ -208,7 +200,11 @@ public:
 	void initEntities()
 	{
 		player = make_shared<Player>(DORY_SHAPE);
-		nemo = make_shared<Nemo>(NEMO_SHAPE, static_pointer_cast<Entity>(player));
+		nemo = make_shared<Nemo>(NEMO_SHAPE);
+		nemo->getTransform().setPosition(-10.0f * ZAXIS);
+		nemo->bringToFloor(FLOOR_OFFSET);
+		nemo->setTarget(&*player);
+		nemo->kill();
 
 		squirt = make_shared<Entity>(SQUIRT_SHAPE);
 		squirt->getModel().setTexture(SQUIRT_TEXTURE);

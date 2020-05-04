@@ -43,7 +43,6 @@ public:
 	Animator& getAnimator() { return *animator; }
 
 	void setMaterial(int material) { this->material = material; }
-	void setTexture(std::shared_ptr<Texture>& tex) { texture = tex; }
 	void setTexture(const std::string textureName) 
 		{ texture = Textures::getInstance()->getTexture(textureName); }
 	void setProgram(int prog) { program = prog; }

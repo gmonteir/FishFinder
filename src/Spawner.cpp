@@ -1,5 +1,6 @@
 #include "Spawner.h"
 #include "Powerup.h"
+#include "Nemo.h"
 #include "Entities.h"
 #include "Random.h"
 
@@ -11,6 +12,7 @@ shared_ptr<Spawner> Spawner::getInstance() {
 	return instance;
 }
 
+// must be done after player is in Entities
 void Spawner::init()
 {
 	spawnNemo();
@@ -33,7 +35,6 @@ void Spawner::init()
 
 void Spawner::update(float deltaTime, float gameTime)
 {
-	// pull this out into a spawner class -- can be used for general random spawns
 	if (gameTime - lastFrameTime > SPAWN_DELAY)
 	{
 		spawnPowerup();
@@ -82,6 +83,10 @@ shared_ptr<Entity> Spawner::spawnRandom(const string& shapeName, string tag)
 	if (tag == POWERUP_TAG)
 	{
 		entity = make_shared<Powerup>(shapeName);
+	}
+	else if (tag == NEMO_TAG)
+	{
+		entity = make_shared<Nemo>(shapeName);
 	}
 	else
 	{

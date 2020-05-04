@@ -7,7 +7,7 @@ using namespace glm;
 
 void Nemo::setPathVelocity()
 {
-	vec3 direction(player->getTransform().getPosition() - transform.getPosition());
+	vec3 direction(target->getTransform().getPosition() - transform.getPosition());
 	vec3 normal(normalize(direction));
 
 	transform.setVelocity(length(direction) > offset ? normal * speed : ORIGIN)
@@ -16,6 +16,7 @@ void Nemo::setPathVelocity()
 
 void Nemo::update(float deltaTime, std::vector<std::shared_ptr<Entity>>& entities)
 {
-	setPathVelocity();
+	if (target)
+		setPathVelocity();
 	Entity::update(deltaTime, entities);
 }

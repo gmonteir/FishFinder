@@ -12,23 +12,44 @@ using namespace glm;
 
 void Entity::update(float deltaTime, std::vector<std::shared_ptr<Entity>> &entities)
 {
-	if (!isAlive())
-		return;
+	bool wasOutOfBoundsX = false;
+	bool wasOutOfBoundsY = false;
+	bool wasOutOfBoundsZ = false;
+
+	bool wasInFloorX = false;
+	bool wasInFloorY = false;
+	bool wasInFloorZ = false;
 
 	vec3 change = transform.getVelocity() * deltaTime;
+
+	model.getAnimator().animate(deltaTime);
+	if (change == ORIGIN) // if not moving, skip calculations
+		return;
+
 	transform.move(change.x * XAXIS);
-	if (hasCollided(entities))
+	wasOutOfBoundsX = isOutOfBounds();
+	wasInFloorX = isInFloor();
+	if (wasOutOfBoundsX || wasInFloorX || hasCollided(entities))
 		transform.move(-change.x * XAXIS);
+
 	transform.move(change.y * YAXIS);
-	if (hasCollided(entities))
+	wasOutOfBoundsY = isOutOfBounds();
+	wasInFloorY = isInFloor();
+	if (wasOutOfBoundsY || wasInFloorY || hasCollided(entities))
 		transform.move(-change.y * YAXIS);
+
 	transform.move(change.z * ZAXIS);
-	if (hasCollided(entities))
+	wasOutOfBoundsZ = isOutOfBounds();
+	wasInFloorZ = isInFloor();
+	if (wasOutOfBoundsZ || wasInFloorZ || hasCollided(entities))
 		transform.move(-change.z * ZAXIS);
 
-	if (isOutOfBounds()) // event trigger check 
+	if (wasOutOfBoundsX || wasOutOfBoundsY || wasOutOfBoundsZ) // event trigger check 
 		onOutOfBounds(deltaTime);
-	model.getAnimator().animate(deltaTime);
+	else if (wasInFloorX || wasInFloorY || wasInFloorZ) // event trigger check 
+	{
+		transform.move(2 * deltaTime * YAXIS * (1 + abs(transform.getVelocity().y)));
+	}
 }
 
 void Entity::draw(shared_ptr<MatrixStack> &M)
@@ -38,6 +59,9 @@ void Entity::draw(shared_ptr<MatrixStack> &M)
 
 void Entity::onOutOfBounds(float deltaTime)
 {
+	if (!isAlive())
+		return;
+
 	transform.setVelocity(-transform.getVelocity())
 		.move(deltaTime)
 		.syncFacing();
@@ -70,4 +94,13 @@ bool Entity::hasCollided(std::vector<std::shared_ptr<Entity>> &entities)
 		}
 	}
 	return false;
+}
+
+void Entity::bringToFloor(float offset) {
+	transform.setPosition(glm::vec3(
+		transform.getPosition().x,
+		transform.getSize().y * model.getScaledSize().y / 2 + offset
+		+ Floor::getInstance()->getHeight(transform.getPosition().x, transform.getPosition().z),
+		transform.getPosition().z
+	));
 }

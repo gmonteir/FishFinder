@@ -64,7 +64,7 @@ shared_ptr<Floor> Floor::getInstance()
 	return instance;
 }
 
-void Floor::draw(shared_ptr<MatrixStack>& M)
+void Floor::draw(shared_ptr<MatrixStack>& M) const
 {
 	static int counter = 1;
 	shared_ptr<Program> prog = ShaderManager::getInstance()->getShader(FLOORPROG);
@@ -73,7 +73,6 @@ void Floor::draw(shared_ptr<MatrixStack>& M)
 		          Textures::getInstance()->getTexture(CAUSTIC_TEXTURE+to_string(counter)),
 		          Textures::getInstance()->getTexture(FLOOR_TEXTURE));
 	M->pushMatrix();
-	//M->loadIdentity();
 		M->translate(FLOOR_POSITION);
 		M->scale(FLOOR_SIZE);
 		glUniformMatrix4fv(prog->getUniform("M"), 1, GL_FALSE, value_ptr(M->topMatrix()));
@@ -83,10 +82,24 @@ void Floor::draw(shared_ptr<MatrixStack>& M)
 	counter = (counter + 1) % NUM_CAUSTICS;
 }
 
-float Floor::getHeight(float x, float z)
+float Floor::getHeight(float x, float z) const
+{
+	float minY = coordsToTerrain(floor(x), floor(z));
+	float maxY = coordsToTerrain(ceil(x), ceil(z));
+
+	// attempt to interpolate between x and z spots
+	return minY + (maxY - minY) * (x - floor(x) + z - floor(z)) / 2;
+}
+
+float Floor::coordsToTerrain(float x, float z) const
 {
 	int idX = (((floor(x) / MAP_X) + 1) / FLOOR_SIZE.x) * MAP_X;
 	int idZ = (((floor(z) / MAP_Z) + 1) / FLOOR_SIZE.z) * MAP_Z;
 
 	return terrain[idX][idZ] + FLOOR_POSITION.y;
+}
+
+bool Floor::isAboveFloor(const vec3 min, const vec3 max) const
+{
+	return min.y >= getHeight(min.x, min.z) && min.y >= getHeight(max.x, max.z);
 }

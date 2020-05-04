@@ -25,8 +25,13 @@ class Floor {
 public:
 
 	static shared_ptr<Floor> getInstance();
-	void draw(shared_ptr<MatrixStack>& M);
-	float getHeight(float x, float z);
+	void draw(shared_ptr<MatrixStack>& M) const;
+	float getHeight(float x, float z) const;
+	bool isAboveFloor(const glm::vec3 min, const glm::vec3 max) const;
+
+private:
+	float coordsToTerrain(float x, float z) const;
+
 	float terrain[MAP_X][MAP_Z];
 };
 

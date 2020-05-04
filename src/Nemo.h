@@ -6,12 +6,10 @@
 class Nemo : public Entity
 {
 public:
-	Nemo(const std::string& shapeName, std::shared_ptr<Entity> player) 
-		: Entity(shapeName), player(player), speed(NEMO_SPEED), offset(NEMO_OFFSET) {
+	Nemo(const std::string& shapeName) 
+		: Entity(shapeName), target(nullptr), speed(NEMO_SPEED), offset(NEMO_OFFSET) {
 		// override Entity defaults:
-		transform.setSize(glm::vec3(NEMO_SIZE))
-			.setPosition(-10.0f * ZAXIS);
-		bringToFloor();
+		transform.setSize(glm::vec3(NEMO_SIZE));
 		model.setTexture(NEMO_TEXTURE);
 		model.setProgram(TEXTUREPROG);
 	}
@@ -20,7 +18,9 @@ public:
 	void setPathVelocity();
 	void update(float deltaTime, std::vector<std::shared_ptr<Entity>>& entities);
 
+	void setTarget(Entity* newTarget) { target = newTarget; }
+
 private:
-	std::shared_ptr<Entity> player;
+	Entity *target;
 	float speed, offset;
 };
