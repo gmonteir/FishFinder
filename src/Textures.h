@@ -18,16 +18,18 @@ class Textures {
 	Textures();
 
 public:
-
 	static shared_ptr<Textures> getInstance();
 
+	~Textures() {}
+
 	unordered_map<string, shared_ptr<Texture>> allTextures;
-	void initCausticsText();
 	void addTexture(const string& filename, const string& key, int mode);
 	shared_ptr<Texture> getTexture(const string& key);
 
 private:
 	int currentUnit = 0;
+
+	void initCausticsText();
 };
 
 #endif

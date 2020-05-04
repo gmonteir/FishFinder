@@ -7,6 +7,28 @@
 using namespace std;
 using namespace glm;
 
+const int* Spawner::coralMaterials()
+{
+	// protect against potential static initialization ordering error
+	static const int materials[] = {
+		TREE_CORAL_MATERIAL,
+		SOFT_CORAL_MATERIAL,
+		ELKHORN_CORAL_MATERIAL
+	};
+	return materials;
+}
+
+const string* Spawner::coralTypes()
+{
+	// protect against potential static initialization ordering error
+	static const string types[] = {
+		TREE_CORAL_SHAPE,
+		SOFT_CORAL_SHAPE,
+		ELKHORN_CORAL_SHAPE
+	};
+	return types;
+}
+
 shared_ptr<Spawner> Spawner::getInstance() {
 	static shared_ptr<Spawner> instance(new Spawner);
 	return instance;
@@ -17,13 +39,6 @@ void Spawner::init()
 {
 	spawnNemo();
 	spawnPowerup();
-
-	coralTypes.push_back(TREE_CORAL_SHAPE);
-	coralTypes.push_back(SOFT_CORAL_SHAPE);
-	coralTypes.push_back(ELKHORN_CORAL_SHAPE);
-	coralMaterials[0] = TREE_CORAL_MATERIAL;
-	coralMaterials[1] = SOFT_CORAL_MATERIAL;
-	coralMaterials[2] = ELKHORN_CORAL_MATERIAL;
 	
 	for (size_t i = 0; i < NUM_CORAL; i++)
 	{
@@ -68,11 +83,11 @@ void Spawner::spawnPowerup()
 
 void Spawner::spawnCoral(int type)
 {	
-	shared_ptr<Entity> e = spawnRandom(coralTypes[type], CORAL_TAG);
+	shared_ptr<Entity> e = spawnRandom(coralTypes()[type], CORAL_TAG);
 	e->getTransform()
 		.setSize(Random::spawnSize())
 		.setFacing(Random::facingXZ());
-	e->getModel().setMaterial(coralMaterials[type]);
+	e->getModel().setMaterial(coralMaterials()[type]);
 	e->bringToFloor();
 }
 
