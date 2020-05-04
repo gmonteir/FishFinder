@@ -14,10 +14,13 @@ void Player::onCollision(Entity& collider)
 	{
 		if (collider.getTag() == NEMO_TAG)
 		{
-			dynamic_cast<Nemo&>(collider).setTarget(this);
+			if (!previousCharacter)
+				previousCharacter = this;
+			dynamic_cast<Nemo&>(collider).setTarget(previousCharacter);
 			collider.kill();
 			Spawner::getInstance()->spawnNemo();
 			Entities::getInstance()->decrementNumActive();
+			previousCharacter = &collider;
 		}
 		else if (collider.getTag() == POWERUP_TAG)
 		{

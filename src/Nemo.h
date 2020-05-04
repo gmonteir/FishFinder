@@ -7,9 +7,8 @@ class Nemo : public Entity
 {
 public:
 	Nemo(const std::string& shapeName) 
-		: Entity(shapeName), target(nullptr), speed(NEMO_SPEED), offset(NEMO_OFFSET) {
+		: Entity(shapeName), target(nullptr), speed(NEMO_SPEED), offset(FOLLOWING_OFFSET) {
 		// override Entity defaults:
-		transform.setSize(glm::vec3(NEMO_SIZE));
 		model.setTexture(NEMO_TEXTURE);
 		model.setProgram(TEXTUREPROG);
 	}

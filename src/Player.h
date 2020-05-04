@@ -12,7 +12,7 @@ class Player : public Entity
 public:
 	Player(const std::string shapeName) 
 		: Entity(shapeName), score(0), speed(PLAYER_SPEED), stamina(INITIAL_STAMINA),
-		rotationSpeed(CAMERA_SPEED), alpha(0), beta(-M_PI_2) {
+		rotationSpeed(CAMERA_SPEED), alpha(0), beta(-M_PI_2), previousCharacter(nullptr) {
 		// override Entity defaults:
 		transform.setSize(glm::vec3(PLAYER_SIZE));
 		bringToFloor(FLOOR_OFFSET);
@@ -37,5 +37,7 @@ private:
 	float speed, rotationSpeed;
 	float alpha, beta;
 	float stamina;
+
+	Entity* previousCharacter;
 };
 

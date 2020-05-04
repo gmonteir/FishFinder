@@ -65,7 +65,6 @@ public:
 	int drawMode = 0;
 
 	shared_ptr<Player> player;
-	shared_ptr<Nemo> nemo;
 	shared_ptr<Entity> squirt;
 	shared_ptr<Entity> floor;
 	Camera camera;
@@ -187,19 +186,14 @@ public:
 	void initEntities()
 	{
 		player = make_shared<Player>(DORY_SHAPE);
-		nemo = make_shared<Nemo>(NEMO_SHAPE);
-		nemo->getTransform().setPosition(-10.0f * ZAXIS);
-		nemo->bringToFloor(FLOOR_OFFSET);
-		nemo->setTarget(&*player);
-		nemo->kill();
 
 		squirt = make_shared<Entity>(SQUIRT_SHAPE);
 		squirt->getModel().setTexture(SQUIRT_TEXTURE);
 		squirt->getModel().setProgram(TEXTUREPROG);
 		squirt->getTransform().setPosition(vec3(5, 0, -10));
+		squirt->bringToFloor();
 
 		Entities::getInstance()->push_back(player);
-		Entities::getInstance()->push_back(nemo);
 		Entities::getInstance()->push_back(squirt);
 		Spawner::getInstance()->init();
 	}

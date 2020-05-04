@@ -84,7 +84,7 @@ constexpr int ELKHORN_CORAL_MATERIAL = 7;
 constexpr float NEMO_SPEED = 20;
 constexpr float NEMO_SIZE = 2;
 constexpr int NEMO_MATERIAL = 5;
-constexpr float NEMO_OFFSET = 8;
+constexpr float FOLLOWING_OFFSET = 10;
 
 // Squirt Constants
 constexpr float SQUIRT_SIZE = 3;
