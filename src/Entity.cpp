@@ -22,6 +22,7 @@ void Entity::update(float deltaTime, std::vector<std::shared_ptr<Entity>> &entit
 
 	vec3 change = transform.getVelocity() * deltaTime;
 
+	behavior->update(deltaTime);
 	model.getAnimator().animate(deltaTime);
 	if (change == ORIGIN) // if not moving, skip calculations
 		return;
@@ -45,7 +46,11 @@ void Entity::update(float deltaTime, std::vector<std::shared_ptr<Entity>> &entit
 		transform.move(-change.z * ZAXIS);
 
 	if (wasOutOfBoundsX || wasOutOfBoundsY || wasOutOfBoundsZ) // event trigger check 
+	{
+
+		behavior->onOutOfBounds(deltaTime);
 		onOutOfBounds(deltaTime);
+	}
 	else if (wasInFloorX || wasInFloorY || wasInFloorZ) // event trigger check 
 	{
 		transform.move(2 * deltaTime * YAXIS * (1 + abs(transform.getVelocity().y)));
@@ -88,8 +93,8 @@ bool Entity::hasCollided(std::vector<std::shared_ptr<Entity>> &entities)
 	{
 		e = entities[i];
 		if (&(*e) != &(*this) && hasCollided(*e)) {
-			onCollision(*e); 
-			e->onCollision(*this);
+			behavior->onCollision(*e->getBehavior()); 
+			e->getBehavior()->onCollision(*getBehavior());
 			return true;
 		}
 	}

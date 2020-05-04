@@ -11,7 +11,7 @@ class Player : public Entity
 {
 public:
 	Player(const std::string shapeName) 
-		: Entity(shapeName), score(0), speed(PLAYER_SPEED), stamina(INITIAL_STAMINA),
+		: Entity(shapeName, Behavior::PLAYER), score(0), speed(PLAYER_SPEED), stamina(INITIAL_STAMINA),
 		rotationSpeed(CAMERA_SPEED), alpha(0), beta(-M_PI_2), previousCharacter(nullptr) {
 		// override Entity defaults:
 		transform.setSize(glm::vec3(PLAYER_SIZE));
@@ -29,8 +29,8 @@ public:
 
 	void rotate(float dx, float dy);
 
-	int getScore() const { return score; }
-	float getStamina() const { return stamina; }
+	int getScore() const { return static_pointer_cast<Behavior::PlayerBehavior>(behavior)->getScore(); }
+	float getStamina() const { return static_pointer_cast<Behavior::PlayerBehavior>(behavior)->getStamina(); }
 
 private:
 	int score;

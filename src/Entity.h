@@ -1,5 +1,8 @@
 #pragma once
 
+#ifndef ENTITY_H
+#define ENTITY_H
+
 #include "Program.h"
 #include "MatrixStack.h"
 #include "Texture.h"
@@ -8,8 +11,10 @@
 #include "ShaderManager.h"
 #include "Transform.h"
 #include "Model.h"
+#include "Behavior.h"
 #include "Floor.h"
 
+#include <memory>
 #include <vector>
 
 // value_ptr for glm
@@ -19,8 +24,12 @@
 class Entity
 {
 public:
-	Entity(const std::string shapeName)
-		: transform(), model(shapeName), tag("DEFAULT"), isDead(false), toRemove(false) {}
+	Entity(const std::string shapeName, int behavior=Behavior::NONE)
+		: transform(), model(shapeName), behavior(Behavior::createBehavior(behavior, transform, model)), 
+		tag("DEFAULT"), isDead(false), toRemove(false) 
+	{
+		this->behavior->start();
+	}
 	virtual ~Entity() {}
 
 	virtual void update(float deltaTime, std::vector<std::shared_ptr<Entity>>& entities);
@@ -42,6 +51,7 @@ public:
 	// Getters
 	Transform& getTransform() { return transform; }
 	Model& getModel() { return model; }
+	shared_ptr<Behavior> &getBehavior() { return behavior; }
 	std::string getTag() const { return this->tag; }
 
 	glm::vec3 getMaxBoundCoordinate() const { return model.getScaledMax() * transform.getSize() + transform.getPosition(); } // note: max already shifted
@@ -69,8 +79,10 @@ public:
 protected:
 	Transform transform;
 	Model model;
+	shared_ptr<Behavior> behavior;
 	bool isDead;
 	bool toRemove;
 	string tag;
 };
 
+#endif
