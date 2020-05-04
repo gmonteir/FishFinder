@@ -7,6 +7,17 @@ Textures::Textures()
 	addTexture(RESOURCE_DIR + "/nemo.jpg", NEMO_TEXTURE, GL_CLAMP_TO_EDGE);
 	addTexture(RESOURCE_DIR + "/squirt.jpg", SQUIRT_TEXTURE, GL_CLAMP_TO_EDGE);
 	addTexture(RESOURCE_DIR + "/ground.bmp", FLOOR_TEXTURE, GL_CLAMP_TO_EDGE);
+	initCausticsText();
+}
+
+void Textures::initCausticsText()
+{
+	string title;
+	for (int i = 0; i < NUM_CAUSTICS; ++i)
+	{
+		title = "/caustics/caustic" + to_string(i) + ".jpg";
+		addTexture(RESOURCE_DIR + title.c_str(), CAUSTIC_TEXTURE + to_string(i), GL_REPEAT);
+	}
 }
 
 shared_ptr<Textures> Textures::getInstance()

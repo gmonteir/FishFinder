@@ -22,9 +22,12 @@ public:
 	static shared_ptr<Textures> getInstance();
 
 	unordered_map<string, shared_ptr<Texture>> allTextures;
-	int currentUnit = 0;
+	void initCausticsText();
 	void addTexture(const string& filename, const string& key, int mode);
 	shared_ptr<Texture> getTexture(const string& key);
+
+private:
+	int currentUnit = 0;
 };
 
 #endif
