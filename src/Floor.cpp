@@ -31,8 +31,8 @@ Floor::Floor()
 			posBuf.push_back(terrain[x][z]);
 			posBuf.push_back(z);
 
-			texBuf.push_back(((float)x) / MAP_X);
-			texBuf.push_back(((float)z) / MAP_Z);
+			texBuf.push_back(((float)x) / (MAP_X/REPEAT_FACTOR));
+			texBuf.push_back(((float)z) / (MAP_Z/REPEAT_FACTOR));
 		}
 	}
 
