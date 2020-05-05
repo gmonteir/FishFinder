@@ -65,7 +65,7 @@ constexpr float FLOOR_OFFSET = 1.0;
 // Powerup Constants
 constexpr float POWERUP_SIZE = 0.7;
 constexpr int POWERUP_MATERIAL = 5;
-constexpr float POWERUP_DESPAWN_TIME = 10.0;
+constexpr float POWERUP_DESPAWN_TIME = 50;
 
 // Coral Constants
 constexpr int NUM_CORAL = 50;
