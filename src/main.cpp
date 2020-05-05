@@ -44,7 +44,7 @@ class Application : public EventCallbacks
 
 public:
 
-	WindowManager * windowManager = nullptr;
+	WindowManager* windowManager = nullptr;
 
 	// Shape to be used (from obj file)
 	shared_ptr<Shape> shape;
@@ -70,7 +70,40 @@ public:
 	shared_ptr<Entity> floor;
 	Camera camera;
 	Keys keyInput;
-	RenderText *textRenderer;
+	RenderText* textRenderer;
+
+	//3D Data Structure
+	shared_ptr<Entity> entities[MAP_I][MAP_J][MAP_K] = { {{NULL}} };
+
+	int mapXtoI(float x) {
+		int i = x / 2 + MAP_X / 2;
+		return i;
+	}
+
+	int mapYtoJ(float y) {
+		int i = y / 2 + MAP_Y / 2;
+		return i;
+	}
+
+	int mapZtoK(float z) {
+		int i = z / 2 + MAP_Z / 2;
+		return i;
+	}
+
+	float mapItoX(int i) {
+		int x = i * 2 - MAP_X;
+		return x;
+	}
+
+	float mapJtoY(int i) {
+		int x = i * 2 - MAP_Y;
+		return x;
+	}
+
+	float mapKtoZ(int j) {
+		int z = j * 2 - MAP_Z;
+		return z;
+	}
 
 	void keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods)
 	{
