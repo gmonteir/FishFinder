@@ -76,33 +76,27 @@ public:
 	shared_ptr<Entity> entities[MAP_I][MAP_J][MAP_K] = { {{NULL}} };
 
 	int mapXtoI(float x) {
-		int i = x / 2 + MAP_X / 2;
-		return i;
+		return (x - -1 * MAP_X) * (MAP_I / (float)(MAP_X * 2));
 	}
 
 	int mapYtoJ(float y) {
-		int i = y / 2 + MAP_Y / 2;
-		return i;
+		return (y - -1 * MAP_Y) * (MAP_J / (float)(MAP_Y * 2));
 	}
 
 	int mapZtoK(float z) {
-		int i = z / 2 + MAP_Z / 2;
-		return i;
+		return (z - -1 * MAP_Z) * (MAP_K / (float)(MAP_Z * 2));
 	}
 
 	float mapItoX(int i) {
-		int x = i * 2 - MAP_X;
-		return x;
+		return i * (MAP_X * 2 / (float)MAP_I) - MAP_X;
 	}
 
-	float mapJtoY(int i) {
-		int x = i * 2 - MAP_Y;
-		return x;
+	float mapJtoY(int j) {
+		return j * (MAP_Y * 2 / (float)MAP_J) - MAP_Y;
 	}
 
-	float mapKtoZ(int j) {
-		int z = j * 2 - MAP_Z;
-		return z;
+	float mapKtoZ(int k) {
+		return k * (MAP_Z * 2 / (float)MAP_K) - MAP_Z;
 	}
 
 	void keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods)
@@ -223,6 +217,25 @@ public:
 		glClearColor(.12f, .34f, .56f, 1.0f);
 		// Enable z-buffer test.
 		glEnable(GL_DEPTH_TEST);
+
+
+		int mapx = mapXtoI(0);
+		cout << mapx << endl;
+
+		mapx = mapXtoI(-102);
+		cout << mapx  << endl;
+
+		mapx = mapXtoI(245);
+		cout << mapx << endl;
+
+		int mapi = mapItoX(0);
+		cout << mapi << endl;
+
+		mapi = mapItoX(1);
+		cout << mapi << endl;
+
+		mapi = mapItoX(26);
+		cout << mapi << endl;
 
 		initTex();
 
