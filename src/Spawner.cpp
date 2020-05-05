@@ -1,6 +1,4 @@
 #include "Spawner.h"
-#include "Powerup.h"
-#include "Nemo.h"
 #include "Entities.h"
 #include "Random.h"
 
@@ -37,7 +35,7 @@ shared_ptr<Spawner> Spawner::getInstance() {
 // must be done after player is in Entities
 void Spawner::init()
 {
-	spawnNemo();
+	spawnFollower();
 	spawnPowerup();
 	
 	for (size_t i = 0; i < NUM_CORAL; i++)
@@ -57,9 +55,10 @@ void Spawner::update(float deltaTime, float gameTime)
 	}
 }
 
-void Spawner::spawnNemo()
+void Spawner::spawnFollower()
 {
-	shared_ptr<Entity> e = spawnRandom(NEMO_SHAPE, NEMO_TAG);
+	static int i = 0;
+	shared_ptr<Entity> e = spawnRandom(i % 2 == 0 ? NEMO_SHAPE : SQUIRT_SHAPE, Behavior::FOLLOWER);
 	e->getTransform()
 		.setVelocity(Random::spawnVel())
 		.setSize(Random::spawnSize())
@@ -67,11 +66,12 @@ void Spawner::spawnNemo()
 	e->bringToFloor();
 	totalSpawned++;
 	Entities::getInstance()->incrementNumActive();
+	i++;
 }
 
 void Spawner::spawnPowerup()
 {
-	shared_ptr<Entity> e = spawnRandom(CUBE_SHAPE, POWERUP_TAG);
+	shared_ptr<Entity> e = spawnRandom(CUBE_SHAPE, Behavior::POWERUP);
 	e->getTransform()
 		.setSize(vec3(POWERUP_SIZE))
 		.setFacing(Random::facingXZ());
@@ -83,7 +83,7 @@ void Spawner::spawnPowerup()
 
 void Spawner::spawnCoral(int type)
 {	
-	shared_ptr<Entity> e = spawnRandom(coralTypes()[type], CORAL_TAG);
+	shared_ptr<Entity> e = spawnRandom(coralTypes()[type], Behavior::NONE);
 	e->getTransform()
 		.setSize(Random::spawnSize())
 		.setFacing(Random::facingXZ());
@@ -91,25 +91,10 @@ void Spawner::spawnCoral(int type)
 	e->bringToFloor();
 }
 
-shared_ptr<Entity> Spawner::spawnRandom(const string& shapeName, string tag)
+shared_ptr<Entity> Spawner::spawnRandom(const string& shapeName, int behavior)
 {
-	shared_ptr<Entity> entity;
-	
-	if (tag == POWERUP_TAG)
-	{
-		entity = make_shared<Powerup>(shapeName);
-	}
-	else if (tag == NEMO_TAG)
-	{
-		entity = make_shared<Nemo>(shapeName);
-	}
-	else
-	{
-		entity = make_shared<Entity>(shapeName);
-	}
-	
+	shared_ptr<Entity> entity = make_shared<Entity>(shapeName, behavior);
 	findSpawnPosition(entity);
-	entity->setTag(tag);
 	Entities::getInstance()->push_back(entity);
 	return entity;
 }

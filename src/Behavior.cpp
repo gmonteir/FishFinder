@@ -27,7 +27,7 @@ void Behavior::bringToFloor(float offset) {
 	transform.setPosition(glm::vec3(
 		transform.getPosition().x,
 		transform.getSize().y * model.getScaledSize().y / 2 + offset
-		+ Floor::getInstance()->getHeight(transform.getPosition().x, transform.getPosition().z),
+			+ Floor::getInstance()->getHeight(transform.getPosition().x, transform.getPosition().z),
 		transform.getPosition().z
 	));
 }
@@ -79,24 +79,26 @@ void Behavior::PlayerBehavior::update(float deltaTime)
 
 void Behavior::PlayerBehavior::onCollision(Behavior& collider)
 {
-	if (collider.getTag() == NEMO_TAG)
+	FollowerBehavior* follower;
+	switch (collider.getType())
 	{
-		FollowerBehavior& follower = dynamic_cast<FollowerBehavior&>(collider);
-		if (follower.isFollowing())
+	case FOLLOWER:
+		follower = &dynamic_cast<FollowerBehavior&>(collider);
+		if (follower->isFollowing())
 			return;
-		follower.setTarget(previousCharacter);
-		follower.followTarget();
-		Spawner::getInstance()->spawnNemo();
+		follower->setTarget(previousCharacter);
+		follower->followTarget();
+		Spawner::getInstance()->spawnFollower();
 		Entities::getInstance()->decrementNumActive();
 		previousCharacter = &collider.transform;
-	}
-	else if (collider.getTag() == POWERUP_TAG)
-	{
+		break;
+	case POWERUP:
 		collider.remove();
 		Entities::getInstance()->decrementNumActive();
 		stamina += 1;
 		if (stamina > 10)
 			stamina = 10;
+		break;
 	}
 }
 
@@ -111,20 +113,19 @@ void Behavior::PlayerBehavior::rotate(float dx, float dy)
 	transform.setFacing(normalize(vec3(cos(alpha) * cos(beta), sin(alpha), cos(alpha) * cos(M_PI_2 - beta))));
 }
 
-
+// ----------------------------- FOLLOWER ----------------------------- //
 void Behavior::FollowerBehavior::start()
 {
-	model.setTexture(NEMO_TEXTURE);
+	static int i = 0; // Need to abstract textures from behavior
+	model.setTexture(i % 2 == 0 ? NEMO_TEXTURE : SQUIRT_TEXTURE);
 	model.setProgram(TEXTUREPROG);
+	i++;
 }
 
 void Behavior::FollowerBehavior::update(float deltaTime)
 {
-	vec3 direction(target->getPosition() - transform.getPosition());
-	vec3 normal(normalize(direction));
-
-	transform.setVelocity(length(direction) > offset ? normal * speed : ORIGIN)
-		.syncFacing();
+	if (target)
+		setPathVelocity();
 }
 
 void Behavior::FollowerBehavior::onOutOfBounds(float deltaTime)
@@ -137,6 +138,17 @@ void Behavior::FollowerBehavior::onOutOfBounds(float deltaTime)
 		.syncFacing();
 }
 
+void Behavior::FollowerBehavior::setPathVelocity()
+{
+	vec3 direction(target->getPosition() - transform.getPosition());
+	vec3 normal(normalize(direction));
+
+	transform.setVelocity(length(direction) > offset ? normal * speed : ORIGIN)
+		.syncFacing();
+}
+
+
+// ----------------------------- POWERUP ----------------------------- //
 void Behavior::PowerupBehavior::update(float deltaTime)
 {
 	timer -= deltaTime;

@@ -28,8 +28,7 @@ public:
 	static std::unique_ptr<Behavior> createBehavior(int behavior, Transform& transform, Model& model);
 
 	Behavior(int type, Transform& transform, Model& model)
-		: type(type), transform(transform), model(model),
-		tag("DEFAULT"), toRemove(false) {}
+		: type(type), transform(transform), model(model), toRemove(false) {}
 	virtual ~Behavior() {}
 
 	virtual void start() = 0;
@@ -41,9 +40,7 @@ public:
 	bool isType(int type) { return this->type == type; }
 	int getType() { return type; }
 
-	std::string getTag() const { return this->tag; }
-	void setTag(std::string tag) { this->tag = tag; }
-
+	bool removed() { return toRemove; }
 	void remove() { toRemove = true; }
 
 	void bringToFloor(float offset = 0);
@@ -53,7 +50,6 @@ protected:
 	Model &model;
 
 	int type;
-	string tag;
 	bool toRemove;
 };
 
@@ -110,6 +106,7 @@ public:
 	void update(float deltaTime) override;
 
 	void onOutOfBounds(float deltaTime) override;
+	/* Note: called twice per collision check, once for this and once for the collider */
 	void onCollision(Behavior& collider) override {}
 
 	void setTarget(Transform* newTarget) { target = newTarget; }
@@ -122,6 +119,8 @@ private:
 	float speed, offset;
 
 	bool following;
+
+	void setPathVelocity();
 };
 
 class Behavior::PowerupBehavior : public Behavior

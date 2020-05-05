@@ -21,17 +21,15 @@ public:
 
 	void init();
 	void update(float deltaTime, float gameTime);
-	void spawnNemo();
+	void spawnFollower();
 	void spawnPowerup();
 	void spawnCoral(int type);
-	std::shared_ptr<Entity> spawnRandom(const std::string& shapeName, std::string name);
+	std::shared_ptr<Entity> spawnRandom(const std::string& shapeName, int behavior);
 
 	int getSpawned() const { return totalSpawned; }
 
 private:
 	float lastFrameTime;
 	int totalSpawned;
-
-	//std::vector<std::string> coralTypes;
 };
 

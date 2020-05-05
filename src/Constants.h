@@ -29,10 +29,6 @@ const std::string ELKHORN_CORAL_SHAPE = "ELKHORN_CORAL";
 const std::string FLOOR_SHAPE = "FLOOR_SHAPE";
 const std::string RESOURCE_DIR = "../resources";
 
-// Tags
-const std::string NEMO_TAG = "NEMO";
-const std::string POWERUP_TAG = "POWERUP";
-const std::string CORAL_TAG = "CORAL";
 // Player
 constexpr float PLAYER_SPEED = 20;
 constexpr float PLAYER_SIZE = 3;

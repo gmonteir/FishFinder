@@ -47,5 +47,7 @@ float Shapes::getRotationOffset(const string& key) const
 {
 	if (key == DORY_SHAPE)
 		return radians(80.0f);
+	if (key == SQUIRT_SHAPE)
+		return radians(-90.0f);
 	return 0;
 }

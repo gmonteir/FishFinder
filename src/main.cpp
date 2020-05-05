@@ -21,8 +21,6 @@
 #include "Spawner.h"
 #include "ShaderManager.h"
 #include "RenderText.h"
-#include "Player.h"
-#include "Nemo.h"
 #include "Textures.h"
 #include "Floor.h"
 
@@ -64,9 +62,9 @@ public:
 
 	int drawMode = 0;
 
-	shared_ptr<Player> player;
+	shared_ptr<Entity> player;
+	shared_ptr<Behavior::PlayerBehavior> playerBehavior;
 	shared_ptr<Entity> squirt;
-	shared_ptr<Entity> floor;
 	Camera camera;
 	RenderText *textRenderer;
 
@@ -101,7 +99,7 @@ public:
 
 	void scrollCallback(GLFWwindow* window, double deltaX, double deltaY)
 	{
-		player->rotate(deltaX, deltaY);
+		playerBehavior->rotate(deltaX, deltaY);
 
 		//int width, height;
 		//glfwGetFramebufferSize(windowManager->getHandle(), &width, &height);
@@ -185,9 +183,10 @@ public:
 
 	void initEntities()
 	{
-		player = make_shared<Player>(DORY_SHAPE);
+		player = make_shared<Entity>(DORY_SHAPE, Behavior::PLAYER);
+		playerBehavior = dynamic_pointer_cast<Behavior::PlayerBehavior>(player->getBehavior());
 
-		squirt = make_shared<Entity>(SQUIRT_SHAPE);
+		squirt = make_shared<Entity>(SQUIRT_SHAPE, Behavior::NONE);
 		squirt->getModel().setTexture(SQUIRT_TEXTURE);
 		squirt->getModel().setProgram(TEXTUREPROG);
 		squirt->getTransform().setPosition(vec3(5, 0, -10));
@@ -286,7 +285,7 @@ public:
 		glm::mat4 proj = glm::ortho(0.0f, static_cast<GLfloat>(width), 0.0f, static_cast<GLfloat>(height));
 		glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, glm::value_ptr(proj));
 		textRenderer->drawText("Active Objects: " + to_string(Entities::getInstance()->getNumActive()), 25.0f, height - 50.0f, 0.75f, glm::vec3(0.2f, 1.0f, 0.2f));
-		sprintf(stamina_stat, "%.1f %%", 100*player->getStamina()/MAX_STAMINA);
+		sprintf(stamina_stat, "%.1f %%", 100* playerBehavior->getStamina()/MAX_STAMINA);
 		textRenderer->drawText("Stamina: " + string(stamina_stat), 25.0f, height - 100.0f, 0.75f, glm::vec3(0.2f, 1.0f, 0.2f));
 		textRenderer->drawText("FPS: " + to_string(fps), 25.0f, 25.0f, 0.75f, glm::vec3(0.1));
         prog->unbind();
