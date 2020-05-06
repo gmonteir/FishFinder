@@ -112,9 +112,9 @@ public:
 
 	void cursorPosCallback(GLFWwindow* window, double xpos, double ypos) override
 	{
-		cout << "Cursor " << xpos << "," << ypos << endl;
-		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-		playerBehavior->rotate(mouseX - xpos, mouseY - ypos);
+		float deltaX = mouseX - xpos;
+		float deltaY = mouseY - ypos;
+		playerBehavior->rotate(deltaX * MOUSE_SENSITIVITY, deltaY * MOUSE_SENSITIVITY);
 
 		mouseX = xpos;
 		mouseY = ypos;
@@ -122,11 +122,7 @@ public:
 
 	void scrollCallback(GLFWwindow* window, double deltaX, double deltaY) override
 	{
-		playerBehavior->rotate(deltaX, deltaY);
-
-		//int width, height;
-		//glfwGetFramebufferSize(windowManager->getHandle(), &width, &height);
-		//player->rotate(deltaX / width, deltaY / height);
+		playerBehavior->rotate(deltaX * MOUSE_SENSITIVITY, deltaY * MOUSE_SENSITIVITY);
 	}
 
 	void resizeCallback(GLFWwindow *window, int width, int height)
@@ -328,6 +324,7 @@ int main(int argc, char **argv)
 	int fps = 0;
 	double accumulator = 0;
 	double currentTime = glfwGetTime();
+	glfwSetInputMode(windowManager->getHandle(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	// Loop until the user closes the window.
 	while (! glfwWindowShouldClose(windowManager->getHandle()))

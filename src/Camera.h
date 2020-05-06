@@ -1,21 +1,11 @@
 #pragma once
 
-#include <iostream>
-#include <glad/glad.h>
-#include <time.h>
-
-#include "GLSL.h"
-#include "Program.h"
-#include "MatrixStack.h"
-#include "Shape.h"
 #include "Transform.h"
+#include "Constants.h"
 
 // value_ptr for glm
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-
-#include "Constants.h"
-#include "Keys.h"
 
 class Camera
 {

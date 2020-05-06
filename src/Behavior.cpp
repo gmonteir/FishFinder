@@ -65,9 +65,9 @@ void Behavior::PlayerBehavior::update(float deltaTime)
 		right += 1;
 
 	if (Keys::getInstance().keyPressed(Keys::ROTLEFT))
-		rotate(rotationSpeed, 0);
+		rotate(1, 0);
 	if (Keys::getInstance().keyPressed(Keys::ROTRIGHT))
-		rotate(-rotationSpeed, 0);
+		rotate(-1, 0);
 
 	deltas.x = forward * transform.getFacing().x + right * -transform.getFacing().z;
 	deltas.y = forward * transform.getFacing().y;
@@ -102,10 +102,11 @@ void Behavior::PlayerBehavior::onCollision(Behavior& collider)
 	}
 }
 
+/* deltas should be from -1 to 1 */
 void Behavior::PlayerBehavior::rotate(float dx, float dy)
 {
-	beta -= radians(dx);
-	alpha += radians(dy);
+	beta -= radians(dx * CAMERA_SPEED);
+	alpha += radians(dy * CAMERA_SPEED);
 	if (alpha > radians(70.f))
 		alpha = radians(70.f);
 	else if (alpha < radians(-70.f))

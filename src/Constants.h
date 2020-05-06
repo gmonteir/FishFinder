@@ -37,7 +37,8 @@ constexpr float INITIAL_STAMINA = 3;
 constexpr float MAX_STAMINA = 10;
 
 // Camera
-constexpr float CAMERA_SPEED = 5;
+constexpr float CAMERA_SPEED = 3;
+constexpr float MOUSE_SENSITIVITY = 0.125;
 const glm::vec2 FIRST_PERSON_OFFSET = glm::vec2(PLAYER_SIZE * 1.5, 0);
 const glm::vec2 SECOND_PERSON_OFFSET = glm::vec2(PLAYER_SIZE + 10, PLAYER_SIZE + 0.3);
 const glm::vec2 THIRD_PERSON_OFFSET = glm::vec2(-SECOND_PERSON_OFFSET.x, SECOND_PERSON_OFFSET.y);

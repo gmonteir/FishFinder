@@ -1,6 +1,8 @@
 #include "Camera.h"
 #include "Keys.h"
 
+#include <iostream>
+
 using namespace std;
 using namespace glm;
 
