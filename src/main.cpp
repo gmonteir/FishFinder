@@ -114,7 +114,7 @@ public:
 	{
 		float deltaX = mouseX - xpos;
 		float deltaY = mouseY - ypos;
-		playerBehavior->rotate(deltaX * MOUSE_SENSITIVITY, deltaY * MOUSE_SENSITIVITY);
+		camera.rotate(deltaX * MOUSE_SENSITIVITY, deltaY * MOUSE_SENSITIVITY);
 
 		mouseX = xpos;
 		mouseY = ypos;
@@ -122,7 +122,7 @@ public:
 
 	void scrollCallback(GLFWwindow* window, double deltaX, double deltaY) override
 	{
-		playerBehavior->rotate(deltaX * MOUSE_SENSITIVITY, deltaY * MOUSE_SENSITIVITY);
+		camera.rotate(deltaX * MOUSE_SENSITIVITY, deltaY * MOUSE_SENSITIVITY);
 	}
 
 	void resizeCallback(GLFWwindow *window, int width, int height)
