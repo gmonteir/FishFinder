@@ -71,7 +71,7 @@ class Behavior::PlayerBehavior : public Behavior
 public:
 	PlayerBehavior(Transform& transform, Model& model)
 		: Behavior(PLAYER, transform, model), score(0), speed(PLAYER_SPEED), stamina(INITIAL_STAMINA),
-		rotationSpeed(CAMERA_SPEED), alpha(0), beta(-M_PI_2), previousCharacter(&transform) {}
+		rotationSpeed(CAMERA_SPEED), alpha(0), beta(-M_PI_2), previousCharacter(&transform), target(nullptr) {}
 	virtual ~PlayerBehavior() {}
 
 	void start() override;
@@ -84,6 +84,9 @@ public:
 
 	int getScore() const { return score; }
 	float getStamina() const { return stamina; }
+	vec3 getTargetPos() const { return target->getPosition(); }
+
+	void setTarget(Transform *newTarget) { target = newTarget; }
 
 private:
 	int score;
@@ -92,6 +95,7 @@ private:
 	float stamina;
 
 	Transform* previousCharacter;
+	Transform* target;
 };
 
 class Behavior::FollowerBehavior : public Behavior

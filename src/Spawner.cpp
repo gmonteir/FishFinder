@@ -35,7 +35,7 @@ shared_ptr<Spawner> Spawner::getInstance() {
 // must be done after player is in Entities
 void Spawner::init()
 {
-	spawnFollower();
+	// spawnFollower(); moved to main so we can save the first target position
 	spawnPowerup();
 	
 	for (size_t i = 0; i < NUM_CORAL; i++)
@@ -55,7 +55,7 @@ void Spawner::update(float deltaTime, float gameTime)
 	}
 }
 
-void Spawner::spawnFollower()
+shared_ptr<Entity> Spawner::spawnFollower()
 {
 	static int i = 0;
 	shared_ptr<Entity> e = spawnRandom(i % 2 == 0 ? NEMO_SHAPE : SQUIRT_SHAPE, Behavior::FOLLOWER);
@@ -67,6 +67,7 @@ void Spawner::spawnFollower()
 	totalSpawned++;
 	Entities::getInstance()->incrementNumActive();
 	i++;
+	return e;
 }
 
 void Spawner::spawnPowerup()

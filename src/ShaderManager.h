@@ -22,6 +22,7 @@ struct uniforms {
    vec3 lightDir;
    vec3 lightCol;
    vec3 eye;
+   vec3 targetPos;
  };
 
 class ShaderManager
