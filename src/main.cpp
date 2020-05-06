@@ -61,6 +61,8 @@ public:
 	unsigned int cubeMapTexture;
 
 	int drawMode = 0;
+	float mouseX = 0;
+	float mouseY = 0;
 
 	shared_ptr<Entity> player;
 	shared_ptr<Behavior::PlayerBehavior> playerBehavior;
@@ -68,7 +70,7 @@ public:
 	Camera camera;
 	RenderText *textRenderer;
 
-	void keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods)
+	void keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods) override
 	{
 		if (key == GLFW_KEY_Z && action == GLFW_PRESS) {
  			glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
@@ -97,16 +99,7 @@ public:
 		Keys::getInstance().update(key, action);
 	}
 
-	void scrollCallback(GLFWwindow* window, double deltaX, double deltaY)
-	{
-		playerBehavior->rotate(deltaX, deltaY);
-
-		//int width, height;
-		//glfwGetFramebufferSize(windowManager->getHandle(), &width, &height);
-		//player->rotate(deltaX / width, deltaY / height);
-	}
-
-	void mouseCallback(GLFWwindow *window, int button, int action, int mods)
+	void mouseCallback(GLFWwindow* window, int button, int action, int mods) override
 	{
 		double posX, posY;
 
@@ -115,6 +108,25 @@ public:
 			glfwGetCursorPos(window, &posX, &posY);
 			cout << "Pos X " << posX << " Pos Y " << posY << endl;
 		}
+	}
+
+	void cursorPosCallback(GLFWwindow* window, double xpos, double ypos) override
+	{
+		cout << "Cursor " << xpos << "," << ypos << endl;
+		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+		playerBehavior->rotate(mouseX - xpos, mouseY - ypos);
+
+		mouseX = xpos;
+		mouseY = ypos;
+	}
+
+	void scrollCallback(GLFWwindow* window, double deltaX, double deltaY) override
+	{
+		playerBehavior->rotate(deltaX, deltaY);
+
+		//int width, height;
+		//glfwGetFramebufferSize(windowManager->getHandle(), &width, &height);
+		//player->rotate(deltaX / width, deltaY / height);
 	}
 
 	void resizeCallback(GLFWwindow *window, int width, int height)
