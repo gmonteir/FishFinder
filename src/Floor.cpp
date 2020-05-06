@@ -82,6 +82,11 @@ void Floor::draw(shared_ptr<MatrixStack>& M) const
 	counter = (counter + 1) % NUM_CAUSTICS;
 }
 
+bool Floor::isAboveFloor(const vec3 min, const vec3 max) const
+{
+	return min.y >= getHeight(min.x, min.z) && min.y >= getHeight(max.x, max.z);
+}
+
 float Floor::getHeight(float x, float z) const
 {
 	float minY = coordsToTerrain(floor(x), floor(z));
@@ -93,13 +98,17 @@ float Floor::getHeight(float x, float z) const
 
 float Floor::coordsToTerrain(float x, float z) const
 {
-	int idX = (((floor(x) / MAP_X) + 1) / FLOOR_SIZE.x) * MAP_X;
-	int idZ = (((floor(z) / MAP_Z) + 1) / FLOOR_SIZE.z) * MAP_Z;
+	int idX = clamp(((floor(x) / MAP_X) + 1) / FLOOR_SIZE.x * MAP_X);
+	int idZ = clamp(((floor(z) / MAP_Z) + 1) / FLOOR_SIZE.z * MAP_Z);
 
 	return terrain[idX][idZ] + FLOOR_POSITION.y;
 }
 
-bool Floor::isAboveFloor(const vec3 min, const vec3 max) const
+int Floor::clamp(int coord)
 {
-	return min.y >= getHeight(min.x, min.z) && min.y >= getHeight(max.x, max.z);
+	if (coord >= MAP_X)
+		return MAP_X - 1;
+	if (coord < 0)
+		return 0;
+	return coord;
 }

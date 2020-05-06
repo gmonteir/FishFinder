@@ -10,6 +10,7 @@ class Keys
 		bool pressed;
 	};
 
+	Keys();
 
 	public:
 		static constexpr int FORWARD = 0;
@@ -22,7 +23,8 @@ class Keys
 		static constexpr int NUM_KEYS = 7;
 		static int DEFAULT_KEYS[NUM_KEYS];
 
-		Keys();
+		static Keys& getInstance();
+
 		~Keys() {}
 
 		void update(int keyCode, int action);
