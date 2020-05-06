@@ -29,10 +29,6 @@ const std::string ELKHORN_CORAL_SHAPE = "ELKHORN_CORAL";
 const std::string FLOOR_SHAPE = "FLOOR_SHAPE";
 const std::string RESOURCE_DIR = "../resources";
 
-// Tags
-const std::string NEMO_TAG = "NEMO";
-const std::string POWERUP_TAG = "POWERUP";
-const std::string CORAL_TAG = "CORAL";
 // Player
 constexpr float PLAYER_SPEED = 20;
 constexpr float PLAYER_SIZE = 3;
@@ -73,7 +69,7 @@ constexpr float FLOOR_OFFSET = 1.0;
 // Powerup Constants
 constexpr float POWERUP_SIZE = 0.7;
 constexpr int POWERUP_MATERIAL = 5;
-constexpr float POWERUP_DESPAWN_TIME = 10.0;
+constexpr float POWERUP_DESPAWN_TIME = 50;
 
 // Coral Constants
 constexpr int NUM_CORAL = 50;
@@ -88,7 +84,7 @@ constexpr int ELKHORN_CORAL_MATERIAL = 7;
 constexpr float NEMO_SPEED = 20;
 constexpr float NEMO_SIZE = 2;
 constexpr int NEMO_MATERIAL = 5;
-constexpr float NEMO_OFFSET = 8;
+constexpr float FOLLOWING_OFFSET = 10;
 
 // Squirt Constants
 constexpr float SQUIRT_SIZE = 3;

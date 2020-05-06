@@ -21,8 +21,6 @@
 #include "Spawner.h"
 #include "ShaderManager.h"
 #include "RenderText.h"
-#include "Player.h"
-#include "Nemo.h"
 #include "Textures.h"
 #include "Floor.h"
 
@@ -64,13 +62,11 @@ public:
 
 	int drawMode = 0;
 
-	shared_ptr<Player> player;
-	shared_ptr<Nemo> nemo;
+	shared_ptr<Entity> player;
+	shared_ptr<Behavior::PlayerBehavior> playerBehavior;
 	shared_ptr<Entity> squirt;
-	shared_ptr<Entity> floor;
 	Camera camera;
-	Keys keyInput;
-	RenderText* textRenderer;
+	RenderText *textRenderer;
 
 	//3D Data Structure
 	shared_ptr<Entity> entities[MAP_I][MAP_J][MAP_K] = { {{NULL}} };
@@ -125,12 +121,12 @@ public:
 		{
 			camera.thirdPerson();
 		}
-		keyInput.update(key, action);
+		Keys::getInstance().update(key, action);
 	}
 
 	void scrollCallback(GLFWwindow* window, double deltaX, double deltaY)
 	{
-		player->rotate(deltaX, deltaY);
+		playerBehavior->rotate(deltaX, deltaY);
 
 		//int width, height;
 		//glfwGetFramebufferSize(windowManager->getHandle(), &width, &height);
@@ -181,21 +177,9 @@ public:
 		cout << " creating cube map any errors : " << glGetError() << endl;
 		return textureID;
 	}
-
-	void initCausticsText()
-	{
-		string title;
-		for (int i = 0; i < NUM_CAUSTICS; ++i)
-		{
-			title = "/caustics/caustic" + to_string(i) + ".jpg";
-			Textures::getInstance()->addTexture(RESOURCE_DIR + title.c_str(), CAUSTIC_TEXTURE+to_string(i), GL_REPEAT);
-		}
-	}
 	// Code to load in the textures
 	void initTex()
 	{
-		initCausticsText();
-
 		vector<std::string> faces {
     	"uw_rt.jpg",
     	"uw_lf.jpg",
@@ -245,27 +229,22 @@ public:
 
 	void initEntities()
 	{
-		player = make_shared<Player>(DORY_SHAPE);
-		nemo = make_shared<Nemo>(NEMO_SHAPE);
-		nemo->getTransform().setPosition(-10.0f * ZAXIS);
-		nemo->bringToFloor(FLOOR_OFFSET);
-		nemo->setTarget(&*player);
-		nemo->kill();
+		player = make_shared<Entity>(DORY_SHAPE, Behavior::PLAYER);
+		playerBehavior = dynamic_pointer_cast<Behavior::PlayerBehavior>(player->getBehavior());
 
-		squirt = make_shared<Entity>(SQUIRT_SHAPE);
+		squirt = make_shared<Entity>(SQUIRT_SHAPE, Behavior::NONE);
 		squirt->getModel().setTexture(SQUIRT_TEXTURE);
 		squirt->getModel().setProgram(TEXTUREPROG);
 		squirt->getTransform().setPosition(vec3(5, 0, -10));
+		squirt->bringToFloor();
 
 		Entities::getInstance()->push_back(player);
-		Entities::getInstance()->push_back(nemo);
 		Entities::getInstance()->push_back(squirt);
 		Spawner::getInstance()->init();
 	}
 
 	void update(float deltaTime, float gameTime)
 	{
-		player->keyUpdate(deltaTime, keyInput);
 		Spawner::getInstance()->update(deltaTime, gameTime);
 		Entities::getInstance()->update(deltaTime);
 		camera.update(player->getTransform());
@@ -352,7 +331,7 @@ public:
 		glm::mat4 proj = glm::ortho(0.0f, static_cast<GLfloat>(width), 0.0f, static_cast<GLfloat>(height));
 		glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, glm::value_ptr(proj));
 		textRenderer->drawText("Active Objects: " + to_string(Entities::getInstance()->getNumActive()), 25.0f, height - 50.0f, 0.75f, glm::vec3(0.2f, 1.0f, 0.2f));
-		sprintf(stamina_stat, "%.1f %%", 100*player->getStamina()/MAX_STAMINA);
+		sprintf(stamina_stat, "%.1f %%", 100* playerBehavior->getStamina()/MAX_STAMINA);
 		textRenderer->drawText("Stamina: " + string(stamina_stat), 25.0f, height - 100.0f, 0.75f, glm::vec3(0.2f, 1.0f, 0.2f));
 		textRenderer->drawText("FPS: " + to_string(fps), 25.0f, 25.0f, 0.75f, glm::vec3(0.1));
         prog->unbind();

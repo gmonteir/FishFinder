@@ -10,33 +10,11 @@
 class Player : public Entity
 {
 public:
-	Player(const std::string shapeName) 
-		: Entity(shapeName), score(0), speed(PLAYER_SPEED), stamina(INITIAL_STAMINA),
-		rotationSpeed(CAMERA_SPEED), alpha(0), beta(-M_PI_2) {
-		// override Entity defaults:
-		transform.setSize(glm::vec3(PLAYER_SIZE));
-		bringToFloor(FLOOR_OFFSET);
-		model.setTexture(DORY_TEXTURE);
-		model.setProgram(TEXTUREPROG);
-	}
+	Player(const std::string shapeName) : Entity(shapeName, Behavior::PLAYER) {}
 	virtual ~Player() {}
 
-	void onOutOfBounds(float deltaTime) override {}
-	void onCollision(Entity& collider) override;
-
-	void rotate(float dx, float dy);
-
-	int getScore() const { return score; }
-	float getStamina() const { return stamina; }
-
-	void keyUpdate(float deltaTime, Keys keyInput);
-
-private:
-	int score;
-	float speed, rotationSpeed;
-	float alpha, beta;
-	float stamina;
-
-	Keys keys;
+	void rotate(float dx, float dy) { static_pointer_cast<Behavior::PlayerBehavior>(behavior)->rotate(dx, dy); }
+	int getScore() const { return static_pointer_cast<Behavior::PlayerBehavior>(behavior)->getScore(); }
+	float getStamina() const { return static_pointer_cast<Behavior::PlayerBehavior>(behavior)->getStamina(); }
 };
 

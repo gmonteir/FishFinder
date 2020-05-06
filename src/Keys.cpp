@@ -12,6 +12,12 @@ int Keys::DEFAULT_KEYS[] = {
 	GLFW_KEY_LEFT_SHIFT
 };
 
+Keys& Keys::getInstance()
+{
+	static Keys instance;
+	return instance;
+}
+
 Keys::Keys() : keys()
 {
 	for (size_t i = 0; i < NUM_KEYS; i++)

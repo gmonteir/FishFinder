@@ -12,13 +12,6 @@
 class Powerup : public Entity
 {
 public:
-	Powerup(const std::string& shapeName) : Entity(shapeName), timer(POWERUP_DESPAWN_TIME) { }
-	void update(float deltaTime, std::vector<std::shared_ptr<Entity>>& entities);
-
-protected:
-
-private:
-	float timer;
-	
+	Powerup(const std::string& shapeName) : Entity(shapeName, Behavior::POWERUP) {}
 };
 
