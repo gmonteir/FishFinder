@@ -11,6 +11,10 @@ unique_ptr<Animator> Animator::createAnimator(const string& modelName)
 		return unique_ptr<Animator>(new NemoAnimator);
 	else if (modelName == SQUIRT_SHAPE)
 		return unique_ptr<Animator>(new SquirtAnimator);
+	else if (modelName == JENNY_SHAPE)
+		return unique_ptr<Animator>(new JennyAnimator);
+	else if (modelName == CHARLIE_SHAPE)
+		return unique_ptr<Animator>(new CharlieAnimator);
 	return unique_ptr<Animator>(new NoAnimator);
 }
 
@@ -193,6 +197,80 @@ void Animator::SquirtAnimator::drawModel(shared_ptr<MatrixStack>& M,
 		glUniformMatrix4fv(prog->getUniform("M"), 1, GL_FALSE, value_ptr(M->topMatrix()));
 		shapes.at(i)->draw(prog);
 		if (i >= 1  && i <= 4)
+			M->popMatrix();
+	}
+}
+
+void Animator::JennyAnimator::animate(float deltaTime)
+{
+	animatePart(deltaTime, &tail.y, &tailRight, -0.7, 0.7);
+	animatePart(deltaTime, &leftFin.y, &leftFinRight, -0.3, 0.3);
+	leftFin.x = leftFin.y;
+	animatePart(deltaTime, &rightFin.y, &rightFinRight, -0.3, 0.3);
+	rightFin.x = -rightFin.y;
+}
+
+void Animator::JennyAnimator::drawModel(shared_ptr<MatrixStack>& M,
+	shared_ptr<Program> prog, const vector<shared_ptr<Shape>>& shapes) const
+{
+	/* Jenny Parts by Index
+	0 - Face
+	1 - Top Fin
+	2 - Left Fin
+	3 - Right Fin
+	4 - Tail
+	5 - Left Fin Joint
+	6 - Right Fin Joint
+	7 - Tail Joint */
+	int shapeSize = shapes.size();
+	for (int i = 0; i < shapeSize; ++i)
+	{
+		if (i == 2) // left fin
+			setupPart(shapes, M, i, 5, leftFin);
+		else if (i == 3)
+			setupPart(shapes, M, i, 6, rightFin);
+		else if (i == 4)
+			setupPart(shapes, M, i, 7, tail);
+		glUniformMatrix4fv(prog->getUniform("M"), 1, GL_FALSE, value_ptr(M->topMatrix()));
+		shapes[i]->draw(prog);
+		if (i == 2 || i == 3 || i == 4)
+			M->popMatrix();
+	}
+}
+
+void Animator::CharlieAnimator::animate(float deltaTime)
+{
+	animatePart(deltaTime, &tail.y, &tailRight, -0.7, 0.7);
+	animatePart(deltaTime, &leftFin.y, &leftFinRight, -0.3, 0.3);
+	leftFin.x = leftFin.y;
+	animatePart(deltaTime, &rightFin.y, &rightFinRight, -0.3, 0.3);
+	rightFin.x = -rightFin.y;
+}
+
+void Animator::CharlieAnimator::drawModel(shared_ptr<MatrixStack>& M,
+	shared_ptr<Program> prog, const vector<shared_ptr<Shape>>& shapes) const
+{
+	/* Charlie Parts by Index
+	0 - Face
+	1 - Top Fin
+	2 - Left Fin
+	3 - Right Fin
+	4 - Tail
+	5 - Left Fin Joint
+	6 - Right Fin Joint
+	7 - Tail Joint */
+	int shapeSize = shapes.size();
+	for (int i = 0; i < shapeSize; ++i)
+	{
+		if (i == 2) // left fin
+			setupPart(shapes, M, i, 5, leftFin);
+		else if (i == 3)
+			setupPart(shapes, M, i, 6, rightFin);
+		else if (i == 4)
+			setupPart(shapes, M, i, 7, tail);
+		glUniformMatrix4fv(prog->getUniform("M"), 1, GL_FALSE, value_ptr(M->topMatrix()));
+		shapes[i]->draw(prog);
+		if (i == 2 || i == 3 || i == 4)
 			M->popMatrix();
 	}
 }

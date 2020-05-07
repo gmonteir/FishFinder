@@ -14,6 +14,8 @@ public:
 	class DoryAnimator;
 	class NemoAnimator;
 	class SquirtAnimator;
+	class JennyAnimator;
+	class CharlieAnimator;
 
 	Animator() : animationSpeed(1) {}
 	virtual ~Animator() {}
@@ -91,4 +93,36 @@ public:
 private:
 	glm::vec3 leftFin, rightFin, leftFoot, rightFoot;
 	bool leftFinRight, rightFinRight, leftFootRight, rightFootRight;
+};
+
+class Animator::JennyAnimator : public Animator
+{
+public:
+	JennyAnimator() : Animator(), leftFin(ORIGIN), rightFin(ORIGIN), tail(ORIGIN),
+		leftFinRight(false), rightFinRight(false), tailRight(false) {}
+	virtual ~JennyAnimator() {}
+
+	void animate(float deltaTime) override;
+	void drawModel(std::shared_ptr<MatrixStack>& M, std::shared_ptr<Program> prog,
+		const std::vector<std::shared_ptr<Shape>>& shapes) const override;
+
+private:
+	glm::vec3 leftFin, rightFin, tail;
+	bool leftFinRight, rightFinRight, tailRight;
+};
+
+class Animator::CharlieAnimator : public Animator
+{
+public:
+	CharlieAnimator() : Animator(), leftFin(ORIGIN), rightFin(ORIGIN), tail(ORIGIN),
+		leftFinRight(false), rightFinRight(false), tailRight(false) {}
+	virtual ~CharlieAnimator() {}
+
+	void animate(float deltaTime) override;
+	void drawModel(std::shared_ptr<MatrixStack>& M, std::shared_ptr<Program> prog,
+		const std::vector<std::shared_ptr<Shape>>& shapes) const override;
+
+private:
+	glm::vec3 leftFin, rightFin, tail;
+	bool leftFinRight, rightFinRight, tailRight;
 };

@@ -183,12 +183,13 @@ public:
 
 	void initEntities()
 	{
-		player = make_shared<Entity>(DORY_SHAPE, Behavior::PLAYER);
+		player = make_shared<Entity>(DORY_SHAPE, int(Behavior::PLAYER));
 		playerBehavior = dynamic_pointer_cast<Behavior::PlayerBehavior>(player->getBehavior());
 
-		squirt = make_shared<Entity>(SQUIRT_SHAPE, Behavior::NONE);
-		squirt->getModel().setTexture(SQUIRT_TEXTURE);
+		squirt = make_shared<Entity>(CHARLIE_SHAPE, int(Behavior::NONE));
+		squirt->getModel().setTexture(CHARLIE_TEXTURE);
 		squirt->getModel().setProgram(TEXTUREPROG);
+		squirt->getTransform().setSize(vec3(PARENT_SIZE));
 		squirt->getTransform().setPosition(vec3(5, 0, -10));
 		squirt->bringToFloor();
 
