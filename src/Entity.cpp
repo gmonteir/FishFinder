@@ -109,7 +109,7 @@ bool Entity::hasCollided(vector<shared_ptr<Entity>> &collectionEntities) {
 	for (int i = 0; i < collectionEntities.size(); i++)
 	{
 		e = collectionEntities[i];
-		if (&(*e) != &(*this) && hasCollided(*e)) {
+		if (e != NULL && &(*e) != &(*this) && hasCollided(*e)) {
 			behavior->onCollision(*e->getBehavior());
 			e->getBehavior()->onCollision(*getBehavior());
 			return true;

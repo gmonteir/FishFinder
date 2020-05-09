@@ -13,18 +13,21 @@ void EntityCollection::update(float deltaTime)
 			for (int k = 0; k < MAP_K; k++) {
 				if (!entities[i][j][k]->empty()) {
 					for (int l = 0; l < entities[i][j][k]->size(); l++) {
-						entities[i][j][k]->at(l)->update(deltaTime, entities, i, j, k);
+						if (entities[i][j][k]->at(l) != NULL) {
+							entities[i][j][k]->at(l)->update(deltaTime, entities, i, j, k);
 
-						int entityI = mapXtoI(entities[i][j][k]->at(l)->getTransform().getPosition().x);
-						int entityJ = mapYtoJ(entities[i][j][k]->at(l)->getTransform().getPosition().y);
-						int entityK = mapZtoK(entities[i][j][k]->at(l)->getTransform().getPosition().z);
+							cout << "--" << endl;
 
-						if (entityI != i || entityJ != j || entityK != k) {
-							cout << "***" << endl;
-							entities[entityI][entityJ][entityK]->push_back(entities[i][j][k]->at(l));
-							entities[i][j][k]->clear();
+							int entityI = mapXtoI(entities[i][j][k]->at(l)->getTransform().getPosition().x);
+							int entityJ = mapYtoJ(entities[i][j][k]->at(l)->getTransform().getPosition().y);
+							int entityK = mapZtoK(entities[i][j][k]->at(l)->getTransform().getPosition().z);
+
+							if (entityI != i || entityJ != j || entityK != k) {
+								cout << "***" << endl;
+								entities[entityI][entityJ][entityK]->push_back(entities[i][j][k]->at(l));
+								remove(entities[i][j][k]->begin(), entities[i][j][k]->end(), entities[i][j][k]->at(l));
+							}
 						}
-
 					}
 				}
 			}
@@ -39,7 +42,8 @@ void EntityCollection::draw(std::shared_ptr<MatrixStack>& M)
 			for (int k = 0; k < MAP_K; k++) {
 				if (!entities[i][j][k]->empty()) {
 					for (int l = 0; l < entities[i][j][k]->size(); l++) {
-						entities[i][j][k]->at(l)->draw(M);
+						if (entities[i][j][k]->at(l) != NULL)
+							entities[i][j][k]->at(l)->draw(M);
 					}
 				}
 			}
