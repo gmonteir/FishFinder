@@ -22,7 +22,7 @@ void EntityCollection::update(float deltaTime)
 						if (entityI != i || entityJ != j || entityK != k) {
 							cout << "***" << endl;
 							entities[entityI][entityJ][entityK]->push_back(entities[i][j][k]->at(l));
-							remove(entities[i][j][k]->begin(), entities[i][j][k]->end(), entities[i][j][k]->at(l));
+							entities[i][j][k]->clear();
 						}
 
 					}
