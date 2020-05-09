@@ -33,6 +33,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "stb_image.h"
+#include "EntityCollection.h"
 
 using namespace std;
 using namespace glm;
@@ -67,33 +68,6 @@ public:
 	shared_ptr<Entity> squirt;
 	Camera camera;
 	RenderText *textRenderer;
-
-	//3D Data Structure
-	shared_ptr<Entity> entities[MAP_I][MAP_J][MAP_K] = { {{NULL}} };
-
-	int mapXtoI(float x) {
-		return (x - -1 * MAP_X) * (MAP_I / (float)(MAP_X * 2));
-	}
-
-	int mapYtoJ(float y) {
-		return (y - -1 * MAP_Y) * (MAP_J / (float)(MAP_Y * 2));
-	}
-
-	int mapZtoK(float z) {
-		return (z - -1 * MAP_Z) * (MAP_K / (float)(MAP_Z * 2));
-	}
-
-	float mapItoX(int i) {
-		return i * (MAP_X * 2 / (float)MAP_I) - MAP_X;
-	}
-
-	float mapJtoY(int j) {
-		return j * (MAP_Y * 2 / (float)MAP_J) - MAP_Y;
-	}
-
-	float mapKtoZ(int k) {
-		return k * (MAP_Z * 2 / (float)MAP_K) - MAP_Z;
-	}
 
 	void keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods)
 	{
@@ -202,25 +176,6 @@ public:
 		// Enable z-buffer test.
 		glEnable(GL_DEPTH_TEST);
 
-
-		int mapx = mapXtoI(0);
-		cout << mapx << endl;
-
-		mapx = mapXtoI(-102);
-		cout << mapx  << endl;
-
-		mapx = mapXtoI(245);
-		cout << mapx << endl;
-
-		int mapi = mapItoX(0);
-		cout << mapi << endl;
-
-		mapi = mapItoX(1);
-		cout << mapi << endl;
-
-		mapi = mapItoX(26);
-		cout << mapi << endl;
-
 		initTex();
 
 		FT_Library ft;
@@ -238,15 +193,17 @@ public:
 		squirt->getTransform().setPosition(vec3(5, 0, -10));
 		squirt->bringToFloor();
 
-		Entities::getInstance()->push_back(player);
-		Entities::getInstance()->push_back(squirt);
+		EntityCollection::getInstance()->addEntity(player);
+		EntityCollection::getInstance()->addEntity(squirt);
+
 		Spawner::getInstance()->init();
 	}
 
 	void update(float deltaTime, float gameTime)
 	{
 		Spawner::getInstance()->update(deltaTime, gameTime);
-		Entities::getInstance()->update(deltaTime);
+		//Entities::getInstance()->update(deltaTime);
+		EntityCollection::getInstance()->update(deltaTime);
 		camera.update(player->getTransform());
 	}
 
@@ -285,7 +242,7 @@ public:
 		uniforms *commonUniforms = new uniforms {P->topMatrix(), V, lightDir, vec3(1), camera.getEye()};
 		ShaderManager::getInstance()->setData(commonUniforms);
 		// draw the floor and the nemos
-		Entities::getInstance()->draw(Model);
+		EntityCollection::getInstance()->draw(Model);
 		Floor::getInstance()->draw(Model);
 
 		// draw test heightmap plane
@@ -330,7 +287,7 @@ public:
 		prog->bind();
 		glm::mat4 proj = glm::ortho(0.0f, static_cast<GLfloat>(width), 0.0f, static_cast<GLfloat>(height));
 		glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, glm::value_ptr(proj));
-		textRenderer->drawText("Active Objects: " + to_string(Entities::getInstance()->getNumActive()), 25.0f, height - 50.0f, 0.75f, glm::vec3(0.2f, 1.0f, 0.2f));
+		textRenderer->drawText("Active Objects: " + to_string(EntityCollection::getInstance()->getNumActive()), 25.0f, height - 50.0f, 0.75f, glm::vec3(0.2f, 1.0f, 0.2f));
 		sprintf(stamina_stat, "%.1f %%", 100* playerBehavior->getStamina()/MAX_STAMINA);
 		textRenderer->drawText("Stamina: " + string(stamina_stat), 25.0f, height - 100.0f, 0.75f, glm::vec3(0.2f, 1.0f, 0.2f));
 		textRenderer->drawText("FPS: " + to_string(fps), 25.0f, 25.0f, 0.75f, glm::vec3(0.1));

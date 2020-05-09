@@ -32,11 +32,15 @@ public:
 	}
 	virtual ~Entity() {}
 
-	void update(float deltaTime, std::vector<std::shared_ptr<Entity>>& entities);
+	void update(float deltaTime, shared_ptr<vector<shared_ptr<Entity>>> (&entities)[MAP_I][MAP_J][MAP_K],
+		int i, int j, int k);
 	void draw(std::shared_ptr<MatrixStack> &M);
 
 	bool hasCollided(Entity &entity) const;
-	bool hasCollided(std::vector<std::shared_ptr<Entity>> &entities);
+	bool hasCollided(shared_ptr<vector<shared_ptr<Entity>>>(&entities)[MAP_I][MAP_J][MAP_K],
+		int i, int j, int k);
+	bool hasCollided(vector<shared_ptr<Entity>>& collectionEntities);
+
 
 	// Getters
 	Transform& getTransform() { return transform; }

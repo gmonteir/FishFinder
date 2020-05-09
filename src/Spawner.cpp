@@ -1,6 +1,6 @@
 #include "Spawner.h"
-#include "Entities.h"
 #include "Random.h"
+#include "EntityCollection.h"
 
 using namespace std;
 using namespace glm;
@@ -65,7 +65,7 @@ void Spawner::spawnFollower()
 		.syncFacing();
 	e->bringToFloor();
 	totalSpawned++;
-	Entities::getInstance()->incrementNumActive();
+	EntityCollection::getInstance()->incrementNumActive();
 	i++;
 }
 
@@ -78,7 +78,7 @@ void Spawner::spawnPowerup()
 	e->getModel().setMaterial(POWERUP_MATERIAL);
 	e->bringToFloor();
 	totalSpawned++;
-	Entities::getInstance()->incrementNumActive();
+	EntityCollection::getInstance()->incrementNumActive();
 }
 
 void Spawner::spawnCoral(int type)
@@ -95,14 +95,19 @@ shared_ptr<Entity> Spawner::spawnRandom(const string& shapeName, int behavior)
 {
 	shared_ptr<Entity> entity = make_shared<Entity>(shapeName, behavior);
 	findSpawnPosition(entity);
-	Entities::getInstance()->push_back(entity);
+	EntityCollection::getInstance()->addEntity(entity);
 	return entity;
 }
 
 void Spawner::findSpawnPosition(shared_ptr<Entity>& entity)
-{
+{ 
 	entity->getTransform().setPosition(Random::spawnPos());
-	while (entity->hasCollided(*Entities::getInstance()))
+
+	int entityI = EntityCollection::getInstance()->mapXtoI(entity->getTransform().getPosition().x);
+	int entityJ = EntityCollection::getInstance()->mapYtoJ(entity->getTransform().getPosition().y);
+	int entityK = EntityCollection::getInstance()->mapZtoK(entity->getTransform().getPosition().z);
+
+	while (entity->hasCollided(*EntityCollection::getInstance()->entities[entityI][entityJ][entityK]))
 	{
 		entity->getTransform().setPosition(Random::spawnPos());
 	}
