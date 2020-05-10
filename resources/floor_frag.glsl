@@ -24,23 +24,9 @@ void main() {
   	float z_line = (slope*(WPos.x - targetPos.x) + targetPos.z);
   	if (draw(z_line))
   	{
-  		// WPos.z - z_line  is between -3 and 3 (0 is the center of the line)
-  		//brightFactor = ((((WPos.z - z_line)+3)/6)+0.5)*1.5;
-  		//Outcolor = vec4(brightFactor*Outcolor.x, brightFactor*Outcolor.y, brightFactor*Outcolor.z, Outcolor.w);
-  		brightFactor = (WPos.z-z_line)+3;
-  		if (brightFactor < 1)
-  			Outcolor = vec4(1.5*Outcolor.x, 0.5*Outcolor.y, 0.5*Outcolor.z, Outcolor.w);
-  		else if (brightFactor < 2)
-  			Outcolor = vec4(1.5*Outcolor.x, Outcolor.y, 0.5*Outcolor.z, Outcolor.w);
-  		else if (brightFactor < 3)
-  			Outcolor = vec4(1.5*Outcolor.x, 1.5*Outcolor.y, 0.5*Outcolor.z, Outcolor.w);
-  		else if (brightFactor < 4)
-  			Outcolor = vec4(0.5*Outcolor.x, 1.5*Outcolor.y, 0.5*Outcolor.z, Outcolor.w);
-  		else if (brightFactor < 5)
-  			Outcolor = vec4(0.5*Outcolor.x, 0.5*Outcolor.y, 1.5*Outcolor.z, Outcolor.w);
-  		else
-  			Outcolor = vec4(1.5*Outcolor.x, 0.5*Outcolor.y, 1.5*Outcolor.z, Outcolor.w);
-  		//Outcolor = vec4(1.4*Outcolor.xyz, Outcolor.w);
+  		brightFactor = (WPos.z-z_line)/3; // between -1 and 1 w/ 0 as the center
+      // Color it brightest in the center 
+      Outcolor = vec4((1.9-abs(brightFactor))*Outcolor.xyzw, Outcolor.w);
   	}
 }
 
