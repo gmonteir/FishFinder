@@ -26,7 +26,7 @@ void main() {
   	{
   		brightFactor = (WPos.z-z_line)/3; // between -1 and 1 w/ 0 as the center
       // Color it brightest in the center 
-      Outcolor = vec4((1.9-abs(brightFactor))*Outcolor.xyzw, Outcolor.w);
+      Outcolor = vec4((1.9-abs(brightFactor))*Outcolor.xyz, Outcolor.w);
   	}
 }
 
