@@ -78,25 +78,13 @@ bool Entity::hasCollided(shared_ptr<vector<shared_ptr<Entity>>>(&entities)[MAP_I
 	int i, int j, int k)
 {
 
-	if (hasCollided(*entities[i][j][k]))
-		return true;
-
-	if (i > 1 && hasCollided(*entities[i - 1][j][k]))
-		return true;
-
-	if (i < MAP_I - 1  && hasCollided(*entities[i + 1][j][k]))
-		return true;
-
-	if (j > 1 && hasCollided(*entities[i][j - 1][k]))
-		return true;
-
-	if (j < MAP_J - 1 && hasCollided(*entities[i][j + 1][k]))
-		return true;
-
-	if (k > 1 && hasCollided(*entities[i][j][k - 1]))
-		return true;
-
-	if (k < MAP_K - 1 && hasCollided(*entities[i][j][k + 1]))
+	if (hasCollided(*entities[i][j][k]) ||
+		i > 1 && hasCollided(*entities[i - 1][j][k]) || 
+		i < MAP_I - 1 && hasCollided(*entities[i + 1][j][k]) ||
+		j > 1 && hasCollided(*entities[i][j - 1][k]) ||
+		j < MAP_J - 1 && hasCollided(*entities[i][j + 1][k]) ||
+		k > 1 && hasCollided(*entities[i][j][k - 1]) ||
+		k < MAP_K - 1 && hasCollided(*entities[i][j][k + 1]))
 		return true;
 
 	return false;
@@ -109,7 +97,7 @@ bool Entity::hasCollided(vector<shared_ptr<Entity>> &collectionEntities) {
 	for (int i = 0; i < collectionEntities.size(); i++)
 	{
 		e = collectionEntities[i];
-		if (e != NULL && &(*e) != &(*this) && hasCollided(*e)) {
+		if (&(*e) != &(*this) && hasCollided(*e)) {
 			behavior->onCollision(*e->getBehavior());
 			e->getBehavior()->onCollision(*getBehavior());
 			return true;
