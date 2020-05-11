@@ -47,7 +47,11 @@ constexpr float MAX_VIEW = 80.0 / 180 * M_PI;
 
 // Tile Constants
 constexpr int MAP_X = 256;
+constexpr int MAP_Y = 256;
 constexpr int MAP_Z = 256;
+constexpr int MAP_I = 30;
+constexpr int MAP_J = 30;
+constexpr int MAP_K = 30;
 constexpr float REPEAT_FACTOR = 4.0;
 const glm::vec3 FLOOR_SIZE = glm::vec3(2, 1, 2);
 const glm::vec3 FLOOR_POSITION = glm::vec3((-MAP_X / 2) * FLOOR_SIZE.x, -200, (-MAP_Z / 2) * FLOOR_SIZE.z);
