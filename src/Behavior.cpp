@@ -83,7 +83,7 @@ void Behavior::PlayerBehavior::onCollision(Behavior& collider)
 			return;
 		follower->setTarget(previousCharacter);
 		follower->followTarget();
-		Spawner::getInstance()->spawnFollower();
+		target = &Spawner::getInstance()->spawnFollower()->getTransform();
 		Entities::getInstance()->decrementNumActive();
 		previousCharacter = &collider.transform;
 		break;

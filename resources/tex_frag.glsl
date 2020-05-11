@@ -3,6 +3,7 @@ uniform sampler2D Texture0;
 
 in vec2 vTexCoord;
 in float dCo;
+in vec3 WPos;
 out vec4 Outcolor;
 
 void main() {

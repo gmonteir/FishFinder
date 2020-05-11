@@ -21,7 +21,7 @@ public:
 
 	void init();
 	void update(float deltaTime, float gameTime);
-	void spawnFollower();
+	std::shared_ptr<Entity> spawnFollower();
 	void spawnPowerup();
 	void spawnCoral(int type);
 	std::shared_ptr<Entity> spawnRandom(const std::string& shapeName, int behavior);

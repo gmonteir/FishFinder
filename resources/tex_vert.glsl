@@ -11,13 +11,14 @@ uniform vec3 lightDir;
 out float dCo;
 out vec2 vTexCoord;
 out vec3 fragNor;
+out vec3 WPos;
 
 void main() {
   vec4 vPosition;
 
   /* First model transforms */
   gl_Position = P * V * M * vec4(vertPos.xyz, 1.0);
-
+  WPos = (M*vec4(vertPos.xyz, 1.0)).xyz;
   fragNor = (M * vec4(vertNor, 0.0)).xyz;
 
   /* diffuse coefficient for a directional light */

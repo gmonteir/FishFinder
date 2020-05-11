@@ -55,7 +55,8 @@ public:
 
 	//example data that might be useful when trying to compute bounds on multi-shape
 	vec3 lightDir = vec3(0, 1, 0);
-	float lightPosX;
+	vec3 targetPos = vec3(0, 0, -10);
+
 
 	// texture for skymap
 	unsigned int cubeMapTexture;
@@ -191,10 +192,10 @@ public:
 
 	void initEntities()
 	{
-		player = make_shared<Entity>(DORY_SHAPE, Behavior::PLAYER);
+		player = make_shared<Entity>(DORY_SHAPE, int(Behavior::PLAYER));
 		playerBehavior = dynamic_pointer_cast<Behavior::PlayerBehavior>(player->getBehavior());
 
-		squirt = make_shared<Entity>(SQUIRT_SHAPE, Behavior::NONE);
+		squirt = make_shared<Entity>(SQUIRT_SHAPE, int(Behavior::NONE));
 		squirt->getModel().setTexture(SQUIRT_TEXTURE);
 		squirt->getModel().setProgram(TEXTUREPROG);
 		squirt->getTransform().setPosition(vec3(5, 0, -10));
@@ -203,6 +204,7 @@ public:
 		Entities::getInstance()->push_back(player);
 		Entities::getInstance()->push_back(squirt);
 		Spawner::getInstance()->init();
+		playerBehavior->setTarget(&Spawner::getInstance()->spawnFollower()->getTransform());
 	}
 
 	void update(float deltaTime, float gameTime)
@@ -243,8 +245,8 @@ public:
 		P->pushMatrix();
 		P->perspective(45.0f, aspect, 0.01f, 10000.0f);
 		mat4 V = camera.getView();
-
-		uniforms *commonUniforms = new uniforms {P->topMatrix(), V, lightDir, vec3(1), camera.getEye()};
+		targetPos = playerBehavior->getTargetPos();
+		uniforms *commonUniforms = new uniforms {P->topMatrix(), V, lightDir, vec3(1), camera.getEye(), targetPos};
 		ShaderManager::getInstance()->setData(commonUniforms);
 		// draw the floor and the nemos
 		Entities::getInstance()->draw(Model);
