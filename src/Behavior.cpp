@@ -64,11 +64,6 @@ void Behavior::PlayerBehavior::update(float deltaTime)
 	if (Keys::getInstance().keyPressed(Keys::RIGHT))
 		right += 1;
 
-	if (Keys::getInstance().keyPressed(Keys::ROTLEFT))
-		rotate(rotationSpeed, 0);
-	if (Keys::getInstance().keyPressed(Keys::ROTRIGHT))
-		rotate(-rotationSpeed, 0);
-
 	deltas.x = forward * transform.getFacing().x + right * -transform.getFacing().z;
 	deltas.y = forward * transform.getFacing().y;
 	deltas.z = forward * transform.getFacing().z + right * transform.getFacing().x;
@@ -100,17 +95,6 @@ void Behavior::PlayerBehavior::onCollision(Behavior& collider)
 			stamina = 10;
 		break;
 	}
-}
-
-void Behavior::PlayerBehavior::rotate(float dx, float dy)
-{
-	beta -= radians(dx);
-	alpha += radians(dy);
-	if (alpha > radians(70.f))
-		alpha = radians(70.f);
-	else if (alpha < radians(-70.f))
-		alpha = radians(-70.f);
-	transform.setFacing(normalize(vec3(cos(alpha) * cos(beta), sin(alpha), cos(alpha) * cos(M_PI_2 - beta))));
 }
 
 // ----------------------------- FOLLOWER ----------------------------- //

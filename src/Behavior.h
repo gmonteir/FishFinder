@@ -70,8 +70,8 @@ class Behavior::PlayerBehavior : public Behavior
 {
 public:
 	PlayerBehavior(Transform& transform, Model& model)
-		: Behavior(PLAYER, transform, model), score(0), speed(PLAYER_SPEED), stamina(INITIAL_STAMINA),
-		rotationSpeed(CAMERA_SPEED), alpha(0), beta(-M_PI_2), previousCharacter(&transform) {}
+		: Behavior(PLAYER, transform, model), score(0), speed(PLAYER_SPEED), 
+		stamina(INITIAL_STAMINA), previousCharacter(&transform) {}
 	virtual ~PlayerBehavior() {}
 
 	void start() override;
@@ -80,15 +80,12 @@ public:
 	void onOutOfBounds(float deltaTime) override {}
 	void onCollision(Behavior& collider) override;
 
-	void rotate(float dx, float dy);
-
 	int getScore() const { return score; }
 	float getStamina() const { return stamina; }
 
 private:
 	int score;
-	float speed, rotationSpeed;
-	float alpha, beta;
+	float speed;
 	float stamina;
 
 	Transform* previousCharacter;
