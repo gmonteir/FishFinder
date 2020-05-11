@@ -64,6 +64,13 @@ void Entity::draw(shared_ptr<MatrixStack> &M)
 
 bool Entity::hasCollided(Entity &entity) const
 {
+	shared_ptr<Behavior> b = entity.behavior;
+	if (b->getType() == Behavior::FOLLOWER 
+		&& static_pointer_cast<Behavior::FollowerBehavior>(b)->isFollowing())
+	{
+		return false;
+	}
+
 	vec3 myMin(getMinBoundCoordinate());
 	vec3 myMax(getMaxBoundCoordinate());
 	vec3 eMin(entity.getMinBoundCoordinate());
