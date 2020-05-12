@@ -203,7 +203,7 @@ public:
 		squirt->bringToFloor();
 
 		EntityCollection::getInstance()->addEntity(player);
-		EntityCollection::getInstance()->addEntity(squirt);
+		//EntityCollection::getInstance()->addEntity(squirt);
 
 		Spawner::getInstance()->init();
 		playerBehavior->setTarget(&Spawner::getInstance()->spawnFollower()->getTransform());

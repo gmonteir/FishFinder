@@ -108,8 +108,15 @@ void Spawner::findSpawnPosition(shared_ptr<Entity>& entity)
 	int entityJ = EntityCollection::getInstance()->mapYtoJ(entity->getTransform().getPosition().y);
 	int entityK = EntityCollection::getInstance()->mapZtoK(entity->getTransform().getPosition().z);
 
-	while (entity->hasCollided(*EntityCollection::getInstance()->entities[entityI][entityJ][entityK]))
+	while (entity->hasCollided(EntityCollection::getInstance()->entities, entityI, entityJ, entityK))
 	{
+
+		cout << "**************************" << endl;
+
 		entity->getTransform().setPosition(Random::spawnPos());
+
+		entityI = EntityCollection::getInstance()->mapXtoI(entity->getTransform().getPosition().x);
+		entityJ = EntityCollection::getInstance()->mapYtoJ(entity->getTransform().getPosition().y);
+		entityK = EntityCollection::getInstance()->mapZtoK(entity->getTransform().getPosition().z);
 	}
 }
