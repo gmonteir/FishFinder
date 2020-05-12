@@ -63,7 +63,7 @@ shared_ptr<Entity> Spawner::spawnFollower()
 		.setVelocity(Random::spawnVel())
 		.setSize(Random::spawnSize())
 		.syncFacing();
-	e->bringToFloor();
+	e->bringToFloor(FOLLOWER_OFFSET);
 	totalSpawned++;
 	EntityCollection::getInstance()->incrementNumActive();
 	i++;
@@ -89,7 +89,7 @@ void Spawner::spawnCoral(int type)
 		.setSize(Random::spawnSize())
 		.setFacing(Random::facingXZ());
 	e->getModel().setMaterial(coralMaterials()[type]);
-	e->bringToFloor();
+	//e->bringToFloor();
 }
 
 shared_ptr<Entity> Spawner::spawnRandom(const string& shapeName, int behavior)
@@ -103,6 +103,7 @@ shared_ptr<Entity> Spawner::spawnRandom(const string& shapeName, int behavior)
 void Spawner::findSpawnPosition(shared_ptr<Entity>& entity)
 { 
 	entity->getTransform().setPosition(Random::spawnPos());
+	entity->bringToFloor();
 
 	int entityI = EntityCollection::getInstance()->mapXtoI(entity->getTransform().getPosition().x);
 	int entityJ = EntityCollection::getInstance()->mapYtoJ(entity->getTransform().getPosition().y);
@@ -111,9 +112,8 @@ void Spawner::findSpawnPosition(shared_ptr<Entity>& entity)
 	while (entity->hasCollided(EntityCollection::getInstance()->entities, entityI, entityJ, entityK))
 	{
 
-		cout << "**************************" << endl;
-
 		entity->getTransform().setPosition(Random::spawnPos());
+		entity->bringToFloor();
 
 		entityI = EntityCollection::getInstance()->mapXtoI(entity->getTransform().getPosition().x);
 		entityJ = EntityCollection::getInstance()->mapYtoJ(entity->getTransform().getPosition().y);

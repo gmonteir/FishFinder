@@ -207,6 +207,11 @@ public:
 
 		Spawner::getInstance()->init();
 		playerBehavior->setTarget(&Spawner::getInstance()->spawnFollower()->getTransform());
+
+		/*for (int i = 0; i < 85; i++)
+			Spawner::getInstance()->spawnFollower();*/
+
+
 	}
 
 	void update(float deltaTime, float gameTime)

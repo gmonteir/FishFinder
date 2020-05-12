@@ -66,6 +66,7 @@ constexpr float MAX_SPAWN_SIZE = 6;
 constexpr int DEFAULT_MATERIAL = 3;
 constexpr int STOPPED_MATERIAL = 0;
 constexpr float FLOOR_OFFSET = 1.0;
+constexpr float FOLLOWER_OFFSET = 10.0;
 constexpr float POWERUP_OFFSET = 7.0;
 
 // Powerup Constants
