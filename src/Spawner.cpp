@@ -77,7 +77,7 @@ void Spawner::spawnPowerup()
 		.setSize(vec3(POWERUP_SIZE))
 		.setFacing(Random::facingXZ());
 	e->getModel().setMaterial(POWERUP_MATERIAL);
-	e->bringToFloor();
+	e->bringToFloor(POWERUP_OFFSET);
 	totalSpawned++;
 	EntityCollection::getInstance()->incrementNumActive();
 }

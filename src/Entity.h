@@ -60,7 +60,7 @@ public:
 		return !Floor::getInstance()->isAboveFloor(getMinBoundCoordinate(), getMaxBoundCoordinate());
 	}
 
-	void bringToFloor() { behavior->bringToFloor(); }
+	void bringToFloor(float offset=0) { behavior->bringToFloor(offset); }
 
 	// checks if point is inside the bounding box defined by max and min
 	static bool isInside(glm::vec3 pt, glm::vec3 max, glm::vec3 min) { 

@@ -316,7 +316,7 @@ int main(int argc, char **argv)
 	// and GL context, etc.
 
 	WindowManager *windowManager = new WindowManager();
-	windowManager->init(512, 512);
+	windowManager->init(2048, 1024);
 	windowManager->setEventCallbacks(application);
 	application->windowManager = windowManager;
 
