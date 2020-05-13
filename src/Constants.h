@@ -47,7 +47,11 @@ constexpr float MAX_VIEW = 80.0 / 180 * M_PI;
 
 // Tile Constants
 constexpr int MAP_X = 256;
+constexpr int MAP_Y = 256;
 constexpr int MAP_Z = 256;
+constexpr int MAP_I = 20;
+constexpr int MAP_J = 20;
+constexpr int MAP_K = 20;
 constexpr float REPEAT_FACTOR = 4.0;
 const glm::vec3 FLOOR_SIZE = glm::vec3(2, 1, 2);
 const glm::vec3 FLOOR_POSITION = glm::vec3((-MAP_X / 2) * FLOOR_SIZE.x, -200, (-MAP_Z / 2) * FLOOR_SIZE.z);
@@ -62,6 +66,8 @@ constexpr float MAX_SPAWN_SIZE = 6;
 constexpr int DEFAULT_MATERIAL = 3;
 constexpr int STOPPED_MATERIAL = 0;
 constexpr float FLOOR_OFFSET = 1.0;
+constexpr float FOLLOWER_OFFSET = 10.0;
+constexpr float POWERUP_OFFSET = 7.0;
 
 // Powerup Constants
 constexpr float POWERUP_SIZE = 0.7;

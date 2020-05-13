@@ -33,6 +33,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "stb_image.h"
+#include "EntityCollection.h"
 
 using namespace std;
 using namespace glm;
@@ -42,7 +43,7 @@ class Application : public EventCallbacks
 
 public:
 
-	WindowManager * windowManager = nullptr;
+	WindowManager* windowManager = nullptr;
 
 	// Shape to be used (from obj file)
 	shared_ptr<Shape> shape;
@@ -55,6 +56,8 @@ public:
 
 	//example data that might be useful when trying to compute bounds on multi-shape
 	vec3 lightPos = vec3(0, 70, 0);
+	vec3 targetPos = vec3(0, 0, -10);
+
 
 	// texture for skymap
 	unsigned int cubeMapTexture;
@@ -190,24 +193,32 @@ public:
 
 	void initEntities()
 	{
-		player = make_shared<Entity>(DORY_SHAPE, Behavior::PLAYER);
+		player = make_shared<Entity>(DORY_SHAPE, int(Behavior::PLAYER));
 		playerBehavior = dynamic_pointer_cast<Behavior::PlayerBehavior>(player->getBehavior());
 
-		squirt = make_shared<Entity>(SQUIRT_SHAPE, Behavior::NONE);
+		squirt = make_shared<Entity>(SQUIRT_SHAPE, int(Behavior::NONE));
 		squirt->getModel().setTexture(SQUIRT_TEXTURE);
 		squirt->getModel().setProgram(TEXTUREPROG);
 		squirt->getTransform().setPosition(vec3(5, 0, -10));
 		squirt->bringToFloor();
 
-		Entities::getInstance()->push_back(player);
-		Entities::getInstance()->push_back(squirt);
+		EntityCollection::getInstance()->addEntity(player);
+		//EntityCollection::getInstance()->addEntity(squirt);
+
 		Spawner::getInstance()->init();
+		playerBehavior->setTarget(&Spawner::getInstance()->spawnFollower()->getTransform());
+
+		/*for (int i = 0; i < 85; i++)
+			Spawner::getInstance()->spawnFollower();*/
+
+
 	}
 
 	void update(float deltaTime, float gameTime)
 	{
 		Spawner::getInstance()->update(deltaTime, gameTime);
-		Entities::getInstance()->update(deltaTime);
+		//Entities::getInstance()->update(deltaTime);
+		EntityCollection::getInstance()->update(deltaTime);
 		camera.update(player->getTransform());
 	}
 
@@ -242,11 +253,11 @@ public:
 		P->pushMatrix();
 		P->perspective(45.0f, aspect, 0.01f, 10000.0f);
 		mat4 V = camera.getView();
-
-		uniforms *commonUniforms = new uniforms {P->topMatrix(), V, lightPos, vec3(1), camera.getEye()};
+		targetPos = playerBehavior->getTargetPos();
+		uniforms *commonUniforms = new uniforms {P->topMatrix(), V, lightPos, vec3(1), camera.getEye(), targetPos};
 		ShaderManager::getInstance()->setData(commonUniforms);
 		// draw the floor and the nemos
-		Entities::getInstance()->draw(Model);
+		EntityCollection::getInstance()->draw(Model);
 		Floor::getInstance()->draw(Model);
 
 		// draw test heightmap plane
@@ -291,7 +302,7 @@ public:
 		prog->bind();
 		glm::mat4 proj = glm::ortho(0.0f, static_cast<GLfloat>(width), 0.0f, static_cast<GLfloat>(height));
 		glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, glm::value_ptr(proj));
-		textRenderer->drawText("Active Objects: " + to_string(Entities::getInstance()->getNumActive()), 25.0f, height - 50.0f, 0.75f, glm::vec3(0.2f, 1.0f, 0.2f));
+		textRenderer->drawText("Active Objects: " + to_string(EntityCollection::getInstance()->getNumActive()), 25.0f, height - 50.0f, 0.75f, glm::vec3(0.2f, 1.0f, 0.2f));
 		sprintf(stamina_stat, "%.1f %%", 100* playerBehavior->getStamina()/MAX_STAMINA);
 		textRenderer->drawText("Stamina: " + string(stamina_stat), 25.0f, height - 100.0f, 0.75f, glm::vec3(0.2f, 1.0f, 0.2f));
 		textRenderer->drawText("FPS: " + to_string(fps), 25.0f, 25.0f, 0.75f, glm::vec3(0.1));
@@ -310,7 +321,7 @@ int main(int argc, char **argv)
 	// and GL context, etc.
 
 	WindowManager *windowManager = new WindowManager();
-	windowManager->init(512, 512);
+	windowManager->init(2048, 1024);
 	windowManager->setEventCallbacks(application);
 	application->windowManager = windowManager;
 

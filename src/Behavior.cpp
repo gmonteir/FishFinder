@@ -35,7 +35,7 @@ void Behavior::bringToFloor(float offset) {
 void Behavior::PlayerBehavior::start()
 {
 	transform.setSize(glm::vec3(PLAYER_SIZE));
-	bringToFloor(FLOOR_OFFSET);
+	bringToFloor(FOLLOWER_OFFSET);
 	model.setTexture(DORY_TEXTURE);
 	model.setProgram(TEXTUREPROG);
 }
@@ -83,7 +83,7 @@ void Behavior::PlayerBehavior::onCollision(Behavior& collider)
 			return;
 		follower->setTarget(previousCharacter);
 		follower->followTarget();
-		Spawner::getInstance()->spawnFollower();
+		target = &Spawner::getInstance()->spawnFollower()->getTransform();
 		Entities::getInstance()->decrementNumActive();
 		previousCharacter = &collider.transform;
 		break;

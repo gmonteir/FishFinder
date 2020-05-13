@@ -123,6 +123,8 @@ shared_ptr<Program> ShaderManager::initFloorProg()
 	texProg->addUniform("M");
 	texProg->addUniform("V");
 	texProg->addUniform("lightPos");
+	texProg->addUniform("targetPos");
+	texProg->addUniform("eye");
 	texProg->addUniform("Texture0");
 	texProg->addUniform("Texture1");
 	texProg->addAttribute("vertPos");
@@ -162,8 +164,10 @@ shared_ptr<Program> ShaderManager::initFloorProg()
 
 		 glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, value_ptr(uniformData->P));
 		 glUniformMatrix4fv(prog->getUniform("V"), 1, GL_FALSE, value_ptr(uniformData->V));
-		 glUniform3f(prog->getUniform("lightPos"), uniformData->lightPos.x, uniformData->lightPos.y, uniformData->lightPos.z);
-		 texture->bind(prog->getUniform("Texture0"));
+		 glUniform3f(prog->getUniform("lightPos"), uniformData->lightDir.x, uniformData->lightDir.y, uniformData->lightDir.z);
+		 glUniform3f(prog->getUniform("targetPos"), uniformData->targetPos.x, uniformData->targetPos.y, uniformData->targetPos.z);
+		 glUniform3f(prog->getUniform("eye"), uniformData->eye.x, uniformData->eye.y, uniformData->eye.z);
+		 //texture->bind(prog->getUniform("Texture0"));
 		 //blendTexture->bind(prog->getUniform("Texture1"));
 	 }
 

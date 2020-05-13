@@ -4,6 +4,7 @@ in vec3 fragNor;
 in vec2 vTexCoord;
 in vec3 light;
 uniform sampler2D Texture0;
+uniform vec3 eye;
 
 out vec4 color;
 
@@ -17,7 +18,7 @@ void main()
 
     // specular shading
     // vec3 reflectDir = reflect(-lightDir, normal);
-    // float spec = pow(max(dot(viewer, reflectDir), 0.0), shine);
+    // float spec = pow(max(dot(eye, reflectDir), 0.0), shine);
 
     // attenuation
     float distance = length(fragPos - light);
