@@ -36,7 +36,7 @@ shared_ptr<Program> ShaderManager::initSimpleProg()
 	prog->addUniform("MatDif");
 	prog->addUniform("MatSpec");
 	prog->addUniform("shine");
-	prog->addUniform("lightDir");
+	prog->addUniform("lightPos");
 	prog->addUniform("lightCol");
 	prog->addUniform("eye");
 	prog->addAttribute("vertPos");
@@ -80,7 +80,7 @@ shared_ptr<Program> ShaderManager::initTextureProg()
 	texProg->addUniform("P");
 	texProg->addUniform("M");
 	texProg->addUniform("V");
-	texProg->addUniform("lightDir");
+	texProg->addUniform("lightPos");
 	texProg->addUniform("Texture0");
 	texProg->addAttribute("vertPos");
 	texProg->addAttribute("vertNor");
@@ -122,7 +122,7 @@ shared_ptr<Program> ShaderManager::initFloorProg()
 	texProg->addUniform("P");
 	texProg->addUniform("M");
 	texProg->addUniform("V");
-	texProg->addUniform("lightDir");
+	texProg->addUniform("lightPos");
 	texProg->addUniform("Texture0");
 	texProg->addUniform("Texture1");
 	texProg->addAttribute("vertPos");
@@ -138,7 +138,7 @@ shared_ptr<Program> ShaderManager::initFloorProg()
 	 {
 		 glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, value_ptr(uniformData->P));
 		 glUniformMatrix4fv(prog->getUniform("V"), 1, GL_FALSE, value_ptr(uniformData->V));
-		 glUniform3f(prog->getUniform("lightDir"), uniformData->lightDir.x, uniformData->lightDir.y, uniformData->lightDir.z);
+		 glUniform3f(prog->getUniform("lightPos"), uniformData->lightPos.x, uniformData->lightPos.y, uniformData->lightPos.z);
 		 glUniform3f(prog->getUniform("lightCol"), uniformData->lightCol.x, uniformData->lightCol.y, uniformData->lightCol.z);
 		 glUniform3f(prog->getUniform("eye"), uniformData->eye.x, uniformData->eye.y, uniformData->eye.z);
 	 }
@@ -146,7 +146,7 @@ shared_ptr<Program> ShaderManager::initFloorProg()
 	 {
 		 glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, value_ptr(uniformData->P));
 		 glUniformMatrix4fv(prog->getUniform("V"), 1, GL_FALSE, value_ptr(uniformData->V));
-		 glUniform3f(prog->getUniform("lightDir"), uniformData->lightDir.x, uniformData->lightDir.y, uniformData->lightDir.z);
+		 glUniform3f(prog->getUniform("lightPos"), uniformData->lightPos.x, uniformData->lightPos.y, uniformData->lightPos.z);
 		 // This probably should be updated in the future to work with different textures
 		 texture->bind(prog->getUniform("Texture0"));
 	 }
@@ -162,7 +162,7 @@ shared_ptr<Program> ShaderManager::initFloorProg()
 
 		 glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, value_ptr(uniformData->P));
 		 glUniformMatrix4fv(prog->getUniform("V"), 1, GL_FALSE, value_ptr(uniformData->V));
-		 glUniform3f(prog->getUniform("lightDir"), uniformData->lightDir.x, uniformData->lightDir.y, uniformData->lightDir.z);
+		 glUniform3f(prog->getUniform("lightPos"), uniformData->lightPos.x, uniformData->lightPos.y, uniformData->lightPos.z);
 		 texture->bind(prog->getUniform("Texture0"));
 		 //blendTexture->bind(prog->getUniform("Texture1"));
 	 }
