@@ -55,9 +55,8 @@ public:
 	GLuint VertexBufferID;
 
 	//example data that might be useful when trying to compute bounds on multi-shape
-	vec3 lightDir = vec3(0, 1, 0);
+	vec3 lightPos = vec3(0, 70, 0);
 	vec3 targetPos = vec3(0, 0, -10);
-
 
 	// texture for skymap
 	unsigned int cubeMapTexture;
@@ -109,6 +108,8 @@ public:
 		{
 			glfwGetCursorPos(window, &posX, &posY);
 			cout << "Pos X " << posX << " Pos Y " << posY << endl;
+
+			cout << "X: " << player->getTransform().getPosition().x << " Y: " << player->getTransform().getPosition().y << " Z: " << player->getTransform().getPosition().z << endl;
 		}
 	}
 
@@ -254,7 +255,7 @@ public:
 		P->perspective(45.0f, aspect, 0.01f, 10000.0f);
 		mat4 V = camera.getView();
 		targetPos = playerBehavior->getTargetPos();
-		uniforms *commonUniforms = new uniforms {P->topMatrix(), V, lightDir, vec3(1), camera.getEye(), targetPos};
+		uniforms *commonUniforms = new uniforms {P->topMatrix(), V, lightPos, vec3(1), camera.getEye(), targetPos};
 		ShaderManager::getInstance()->setData(commonUniforms);
 		// draw the floor and the nemos
 		EntityCollection::getInstance()->draw(Model);
