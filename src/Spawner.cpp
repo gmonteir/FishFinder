@@ -58,12 +58,11 @@ void Spawner::update(float deltaTime, float gameTime)
 shared_ptr<Entity> Spawner::spawnFollower()
 {
 	static int i = 0;
-	shared_ptr<Entity> e = spawnRandom(i % 2 == 0 ? NEMO_SHAPE : SQUIRT_SHAPE, Behavior::FOLLOWER);
+	shared_ptr<Entity> e = spawnRandom(i % 2 == 0 ? NEMO_SHAPE : SQUIRT_SHAPE, Behavior::FOLLOWER, FOLLOWER_OFFSET);
 	e->getTransform()
 		.setVelocity(Random::spawnVel())
 		.setSize(Random::spawnSize())
 		.syncFacing();
-	e->bringToFloor();
 	totalSpawned++;
 	EntityCollection::getInstance()->incrementNumActive();
 	i++;
@@ -72,37 +71,36 @@ shared_ptr<Entity> Spawner::spawnFollower()
 
 void Spawner::spawnPowerup()
 {
-	shared_ptr<Entity> e = spawnRandom(CUBE_SHAPE, Behavior::POWERUP);
+	shared_ptr<Entity> e = spawnRandom(CUBE_SHAPE, Behavior::POWERUP, POWERUP_OFFSET);
 	e->getTransform()
 		.setSize(vec3(POWERUP_SIZE))
 		.setFacing(Random::facingXZ());
 	e->getModel().setMaterial(POWERUP_MATERIAL);
-	e->bringToFloor(POWERUP_OFFSET);
 	totalSpawned++;
 	EntityCollection::getInstance()->incrementNumActive();
 }
 
 void Spawner::spawnCoral(int type)
 {	
-	shared_ptr<Entity> e = spawnRandom(coralTypes()[type], Behavior::NONE);
+	shared_ptr<Entity> e = spawnRandom(coralTypes()[type], Behavior::NONE, FLOOR_OFFSET);
 	e->getTransform()
 		.setSize(Random::spawnSize())
 		.setFacing(Random::facingXZ());
 	e->getModel().setMaterial(coralMaterials()[type]);
-	e->bringToFloor();
 }
 
-shared_ptr<Entity> Spawner::spawnRandom(const string& shapeName, int behavior)
+shared_ptr<Entity> Spawner::spawnRandom(const string& shapeName, int behavior, float offset)
 {
 	shared_ptr<Entity> entity = make_shared<Entity>(shapeName, behavior);
-	findSpawnPosition(entity);
+	findSpawnPosition(entity, offset);
 	EntityCollection::getInstance()->addEntity(entity);
 	return entity;
 }
 
-void Spawner::findSpawnPosition(shared_ptr<Entity>& entity)
+void Spawner::findSpawnPosition(shared_ptr<Entity>& entity, float offset)
 { 
 	entity->getTransform().setPosition(Random::spawnPos());
+	entity->bringToFloor(offset);
 
 	int entityI = EntityCollection::getInstance()->mapXtoI(entity->getTransform().getPosition().x);
 	int entityJ = EntityCollection::getInstance()->mapYtoJ(entity->getTransform().getPosition().y);
@@ -111,9 +109,8 @@ void Spawner::findSpawnPosition(shared_ptr<Entity>& entity)
 	while (entity->hasCollided(EntityCollection::getInstance()->entities, entityI, entityJ, entityK))
 	{
 
-		cout << "**************************" << endl;
-
 		entity->getTransform().setPosition(Random::spawnPos());
+		entity->bringToFloor(offset);
 
 		entityI = EntityCollection::getInstance()->mapXtoI(entity->getTransform().getPosition().x);
 		entityJ = EntityCollection::getInstance()->mapYtoJ(entity->getTransform().getPosition().y);

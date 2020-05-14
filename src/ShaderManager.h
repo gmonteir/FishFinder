@@ -19,7 +19,7 @@ using namespace glm;
 struct uniforms {
    mat4 P;
    mat4 V;
-   vec3 lightDir;
+   vec3 lightPos;
    vec3 lightCol;
    vec3 eye;
    vec3 targetPos;

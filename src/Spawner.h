@@ -15,7 +15,6 @@ public:
 	static const std::string* coralTypes();
 
 	static std::shared_ptr<Spawner> getInstance();
-	static void findSpawnPosition(std::shared_ptr<Entity>& entity);
 
 	~Spawner() {}
 
@@ -24,7 +23,9 @@ public:
 	std::shared_ptr<Entity> spawnFollower();
 	void spawnPowerup();
 	void spawnCoral(int type);
-	std::shared_ptr<Entity> spawnRandom(const std::string& shapeName, int behavior);
+	shared_ptr<Entity> spawnRandom(const string& shapeName, int behavior, float offset);
+
+	void findSpawnPosition(shared_ptr<Entity>& entity, float offset);
 
 	int getSpawned() const { return totalSpawned; }
 
