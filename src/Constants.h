@@ -78,9 +78,9 @@ constexpr int NUM_CORAL = 50;
 constexpr int TREE_CORAL_INDEX = 0;
 constexpr int SOFT_CORAL_INDEX = 1;
 constexpr int ELKHORN_CORAL_INDEX = 2;
-constexpr int TREE_CORAL_MATERIAL = 8;
+constexpr int TREE_CORAL_MATERIAL = 10;
 constexpr int SOFT_CORAL_MATERIAL = 6;
-constexpr int ELKHORN_CORAL_MATERIAL = 7;
+constexpr int ELKHORN_CORAL_MATERIAL = 9;
 
 // Nemo Constants
 constexpr float NEMO_SPEED = 20;
