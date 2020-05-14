@@ -135,6 +135,8 @@ void Behavior::FollowerBehavior::setPathVelocity()
 // ----------------------------- POWERUP ----------------------------- //
 void Behavior::PowerupBehavior::update(float deltaTime)
 {
+	transform.move(vec3(0, sin(timer) * deltaTime, 0));
+	transform.setFacing(transform.getFacing() + deltaTime * vec3(sin(timer), 0, cos(timer)));
 	timer -= deltaTime;
 
 	if (timer <= 0)
