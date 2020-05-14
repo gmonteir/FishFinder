@@ -58,7 +58,6 @@ public:
 	vec3 lightPos = vec3(0, 70, 0);
 	vec3 targetPos = vec3(0, 0, -10);
 
-
 	// texture for skymap
 	unsigned int cubeMapTexture;
 
@@ -109,6 +108,8 @@ public:
 		{
 			glfwGetCursorPos(window, &posX, &posY);
 			cout << "Pos X " << posX << " Pos Y " << posY << endl;
+
+			cout << "X: " << player->getTransform().getPosition().x << " Y: " << player->getTransform().getPosition().y << " Z: " << player->getTransform().getPosition().z << endl;
 		}
 	}
 

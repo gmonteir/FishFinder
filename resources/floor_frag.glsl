@@ -10,9 +10,20 @@ uniform vec3 eye;
 
 out vec4 color;
 
+bool draw(float z_line)
+{
+	float small_x = min(targetPos.x, eye.x);
+	float large_x = max(targetPos.x, eye.x);
+	float small_z = min(targetPos.z, eye.z);
+	float large_z = max(targetPos.z, eye.z);
+	return (fragPos.z - z_line < 3 && fragPos.z - z_line > -3 &&
+			fragPos.z <= large_z && fragPos.z >= small_z &&
+			fragPos.x <= large_x && fragPos.x >= small_x);
+}
+
 void main()
 {
-	vec3 lightDir = normalize(fragPos - light);
+	vec3 lightDir = normalize(light - fragPos);
     vec3 normal = normalize(fragNor);
 
     // diffuse shading
@@ -23,7 +34,7 @@ void main()
     // float spec = pow(max(dot(eye, reflectDir), 0.0), shine);
 
     // attenuation
-    float distance = length(fragPos - light);
+    float distance = length(light - fragPos);
     float attenuation = 1.0 / (1.0 + 0.007 * distance + 0.0002 * (distance * distance));
 
     // combine results
@@ -50,15 +61,4 @@ void main()
 		// Color it brightest in the center 
 		color = vec4((1.9-abs(brightFactor))*color.xyz, color.w);
   	}
-}
-
-bool draw(float z_line)
-{
-	float small_x = min(targetPos.x, eye.x);
-	float large_x = max(targetPos.x, eye.x);
-	float small_z = min(targetPos.z, eye.z);
-	float large_z = max(targetPos.z, eye.z);
-	return (fragPos.z - z_line < 3 && fragPos.z - z_line > -3 &&
-			fragPos.z <= large_z && fragPos.z >= small_z &&
-			fragPos.x <= large_x && fragPos.x >= small_x);
 }

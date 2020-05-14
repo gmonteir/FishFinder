@@ -4,13 +4,12 @@ in vec3 fragNor;
 in vec2 vTexCoord;
 in vec3 light;
 uniform sampler2D Texture0;
-uniform vec3 eye;
 
 out vec4 color;
 
 void main()
 {
-	vec3 lightDir = normalize(fragPos - light);
+	vec3 lightDir = normalize(light - fragPos);
     vec3 normal = normalize(fragNor);
 
     // diffuse shading
@@ -21,7 +20,7 @@ void main()
     // float spec = pow(max(dot(eye, reflectDir), 0.0), shine);
 
     // attenuation
-    float distance = length(fragPos - light);
+    float distance = length(light - fragPos);
     float attenuation = 1.0 / (1.0 + 0.007 * distance + 0.0002 * (distance * distance));
 
     // combine results

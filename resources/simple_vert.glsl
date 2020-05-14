@@ -18,7 +18,7 @@ void main()
 	vertTex.xy; // ignore texture coordinates for meshes where I use materials
 	gl_Position = P * V * M * vec4(vertPos, 1.0);
 	fragPos = (M * vec4(vertPos, 1.0)).xyz;
-	fragNor = (M * vec4(vertNor, 1.0)).xyz;
+	fragNor = (M * vec4(vertNor, 0.0)).xyz;
 	viewer = (eye - (M * vec4(vertPos, 1.0)).xyz);
 	light = lightPos;
 }
