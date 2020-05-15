@@ -117,7 +117,11 @@ public:
 	{
 		float deltaX = mouseX - xpos;
 		float deltaY = mouseY - ypos;
-		camera.rotate(deltaX * MOUSE_SENSITIVITY, deltaY * MOUSE_SENSITIVITY);
+
+		// check whether or not mouseX and mouseY have been initialized yet
+		// currently a hacky check of whether or not the deltas are unrealistic.
+		if (abs(deltaX) < 50 && abs(deltaY) < 50)
+			camera.interpolateRotation(deltaX, deltaY, MOUSE_SENSITIVITY);
 
 		mouseX = xpos;
 		mouseY = ypos;
@@ -125,7 +129,7 @@ public:
 
 	void scrollCallback(GLFWwindow* window, double deltaX, double deltaY) override
 	{
-		camera.rotate(deltaX * MOUSE_SENSITIVITY, deltaY * MOUSE_SENSITIVITY);
+		camera.interpolateRotation(deltaX, deltaY, MOUSE_SENSITIVITY);
 	}
 
 	void resizeCallback(GLFWwindow *window, int width, int height)
@@ -220,7 +224,7 @@ public:
 		Spawner::getInstance()->update(deltaTime, gameTime);
 		//Entities::getInstance()->update(deltaTime);
 		EntityCollection::getInstance()->update(deltaTime);
-		camera.update(player->getTransform());
+		camera.update(deltaTime, player->getTransform());
 	}
 
 	/* helper functions for sending matrix data to the GPU */

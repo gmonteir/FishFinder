@@ -32,6 +32,7 @@ void Behavior::bringToFloor(float offset) {
 	));
 }
 
+// ----------------------------- PLAYER ----------------------------- //
 void Behavior::PlayerBehavior::start()
 {
 	transform.setSize(glm::vec3(PLAYER_SIZE));
@@ -67,7 +68,7 @@ void Behavior::PlayerBehavior::update(float deltaTime)
 	deltas.x = forward * transform.getFacing().x + right * -transform.getFacing().z;
 	deltas.y = forward * transform.getFacing().y;
 	deltas.z = forward * transform.getFacing().z + right * transform.getFacing().x;
-	transform.setVelocity(right == 0 && forward == 0 ? ORIGIN : normalize(deltas) * (speed + boost));
+	transform.interpolateVelocity(right == 0 && forward == 0 ? ORIGIN : normalize(deltas) * (speed + boost), deltaTime);
 
 	model.getAnimator().setAnimationSpeed(boost > 0 ? 3 : 1);
 }
@@ -109,7 +110,7 @@ void Behavior::FollowerBehavior::start()
 void Behavior::FollowerBehavior::update(float deltaTime)
 {
 	if (target)
-		setPathVelocity();
+		setPathVelocity(deltaTime);
 }
 
 void Behavior::FollowerBehavior::onOutOfBounds(float deltaTime)
@@ -122,12 +123,12 @@ void Behavior::FollowerBehavior::onOutOfBounds(float deltaTime)
 		.syncFacing();
 }
 
-void Behavior::FollowerBehavior::setPathVelocity()
+void Behavior::FollowerBehavior::setPathVelocity(float deltaTime)
 {
 	vec3 direction(target->getPosition() - transform.getPosition());
 	vec3 normal(normalize(direction));
 
-	transform.setVelocity(length(direction) > offset ? normal * speed : ORIGIN)
+	transform.interpolateVelocity(length(direction) > offset ? normal * speed : ORIGIN, deltaTime)
 		.syncFacing();
 }
 
@@ -135,6 +136,8 @@ void Behavior::FollowerBehavior::setPathVelocity()
 // ----------------------------- POWERUP ----------------------------- //
 void Behavior::PowerupBehavior::update(float deltaTime)
 {
+	transform.move(vec3(0, sin(timer) * deltaTime, 0));
+	transform.setFacing(transform.getFacing() + deltaTime * vec3(sin(timer), 0, cos(timer)));
 	timer -= deltaTime;
 
 	if (timer <= 0)

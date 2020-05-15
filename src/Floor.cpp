@@ -93,7 +93,7 @@ float Floor::getHeight(float x, float z) const
 	float maxY = coordsToTerrain(ceil(x), ceil(z));
 
 	// attempt to interpolate between x and z spots
-	return minY + (maxY - minY) * (x - floor(x) + z - floor(z)) / 2;
+	return mix(minY, maxY, (x - floor(x) + z - floor(z)) / 2);
 }
 
 float Floor::coordsToTerrain(float x, float z) const
