@@ -2,35 +2,50 @@
 in vec3 fragPos;
 in vec3 fragNor;
 in vec2 vTexCoord;
-in vec3 light;
-uniform sampler2D Texture0;
 
 out vec4 color;
 
+struct PointLight {    
+    vec3 position;
+    
+    float constant;
+    float linear;
+    float quadratic;
+};
+
+#define NR_POINT_LIGHTS 3
+uniform PointLight pointLights[NR_POINT_LIGHTS];
+uniform sampler2D Texture0;
+
+vec3 CalcPointLight(PointLight light, vec3 norm, vec3 pos);
+
 void main()
 {
-	vec3 lightDir = normalize(light - fragPos);
     vec3 normal = normalize(fragNor);
+    vec3 result = vec3(0);
 
-    // diffuse shading
-    float diff = max(dot(normal, lightDir), 0.0);
-
-    // specular shading
-    // vec3 reflectDir = reflect(-lightDir, normal);
-    // float spec = pow(max(dot(eye, reflectDir), 0.0), shine);
-
-    // attenuation
-    float distance = length(light - fragPos);
-    float attenuation = 1.0 / (1.0 + 0.007 * distance + 0.0002 * (distance * distance));
-
-    // combine results
-    vec3 ambient = vec3(texture(Texture0, vTexCoord));
-    vec3 diffuse = vec3(texture(Texture0, vTexCoord));
-    // vec3 specular = spec * MatSpec;
-    ambient *= attenuation;
-    diffuse *= attenuation;
-    // specular *= attenuation;
+    for (int i = 0; i < NR_POINT_LIGHTS; i++)
+        result += CalcPointLight(pointLights[i], normal, fragPos);    
     
-    color = vec4(ambient + diffuse, 1.0);
+    color = vec4(result, 1.0);
 }
 
+vec3 CalcPointLight(PointLight light, vec3 norm, vec3 pos)
+{
+    vec3 lightDir = normalize(light.position - pos);
+
+    // diffuse shading
+    float diff = max(dot(norm, lightDir), 0.0);
+
+    // attenuation
+    float distance = length(light.position - pos);
+    float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
+    
+    // combine results
+    vec3 ambient = vec3(0.1);
+    vec3 diffuse = vec3(texture(Texture0, vTexCoord));
+    ambient *= attenuation;
+    diffuse *= attenuation;
+
+    return (ambient + diffuse);
+} 

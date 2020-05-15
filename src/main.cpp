@@ -259,7 +259,7 @@ public:
 		P->perspective(45.0f, aspect, 0.01f, 10000.0f);
 		mat4 V = camera.getView();
 		targetPos = playerBehavior->getTargetPos();
-		uniforms *commonUniforms = new uniforms {P->topMatrix(), V, lightPos, vec3(1), camera.getEye(), targetPos};
+		uniforms *commonUniforms = new uniforms {P->topMatrix(), V, camera.getEye(), targetPos};
 		ShaderManager::getInstance()->setData(commonUniforms);
 		// draw the floor and the nemos
 		EntityCollection::getInstance()->draw(Model);
