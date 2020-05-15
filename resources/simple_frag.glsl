@@ -2,33 +2,53 @@
 in vec3 fragPos;
 in vec3 fragNor;
 in vec3 viewer;
-in vec3 light;
 
+out vec4 color;
+
+struct PointLight {    
+    vec3 position;
+    
+    float constant;
+    float linear;
+    float quadratic;  
+};
+
+#define NR_POINT_LIGHTS 3
+uniform PointLight pointLights[NR_POINT_LIGHTS];
 uniform vec3 MatAmb;
 uniform vec3 MatDif;
 uniform vec3 MatSpec;
 uniform float shine;
-uniform vec3 lightCol;
 
-out vec4 color;
+vec3 CalcPointLight(PointLight light, vec3 norm, vec3 pos, vec3 view);  
 
 void main()
 {
-	vec3 lightDir = normalize(light - fragPos);
-    vec3 normal = normalize(fragNor);
+	vec3 normal = normalize(fragNor);
     vec3 viewDir = normalize(viewer);
+    vec3 result = vec3(0);
+
+    for (int i = 0; i < NR_POINT_LIGHTS; i++)
+        result += CalcPointLight(pointLights[i], normal, fragPos, viewDir);
+    
+    color = vec4(result, 1.0);
+}
+
+vec3 CalcPointLight(PointLight light, vec3 norm, vec3 pos, vec3 view)
+{
+    vec3 lightDir = normalize(light.position - pos);
 
     // diffuse shading
-    float diff = max(dot(normal, lightDir), 0.0);
+    float diff = max(dot(norm, lightDir), 0.0);
 
     // specular shading
-    vec3 reflectDir = normalize(reflect(-lightDir, normal));
-    float spec = pow(max(dot(viewDir, reflectDir), 0.0), shine);
+    vec3 reflectDir = reflect(-lightDir, norm);
+    float spec = pow(max(dot(view, reflectDir), 0.0), shine);
 
     // attenuation
-    float distance = length(light - fragPos);
-    float attenuation = 1.0 / (1.0 + 0.007 * distance + 0.0002 * (distance * distance));
-
+    float distance = length(light.position - pos);
+    float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
+    
     // combine results
     vec3 ambient = MatAmb;
     vec3 diffuse = diff * MatDif;
@@ -36,6 +56,6 @@ void main()
     ambient *= attenuation;
     diffuse *= attenuation;
     specular *= attenuation;
-    
-    color = vec4(ambient + diffuse + specular, 1.0);
-}
+
+    return (ambient + diffuse + specular);
+} 

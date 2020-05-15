@@ -1,4 +1,3 @@
-#include "Constants.h"
 #include "ShaderManager.h"
 
 shared_ptr<ShaderManager> ShaderManager::getInstance()
@@ -36,8 +35,7 @@ shared_ptr<Program> ShaderManager::initSimpleProg()
 	prog->addUniform("MatDif");
 	prog->addUniform("MatSpec");
 	prog->addUniform("shine");
-	prog->addUniform("lightPos");
-	prog->addUniform("lightCol");
+	addLightUniforms(prog);
 	prog->addUniform("eye");
 	prog->addAttribute("vertPos");
 	prog->addAttribute("vertNor");
@@ -80,7 +78,7 @@ shared_ptr<Program> ShaderManager::initTextureProg()
 	texProg->addUniform("P");
 	texProg->addUniform("M");
 	texProg->addUniform("V");
-	texProg->addUniform("lightPos");
+	addLightUniforms(texProg);
 	texProg->addUniform("Texture0");
 	texProg->addAttribute("vertPos");
 	texProg->addAttribute("vertNor");
@@ -122,7 +120,7 @@ shared_ptr<Program> ShaderManager::initFloorProg()
 	texProg->addUniform("P");
 	texProg->addUniform("M");
 	texProg->addUniform("V");
-	texProg->addUniform("lightPos");
+	addLightUniforms(texProg);
 	texProg->addUniform("targetPos");
 	texProg->addUniform("eye");
 	texProg->addUniform("Texture0");
@@ -140,15 +138,14 @@ shared_ptr<Program> ShaderManager::initFloorProg()
 	 {
 		 glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, value_ptr(uniformData->P));
 		 glUniformMatrix4fv(prog->getUniform("V"), 1, GL_FALSE, value_ptr(uniformData->V));
-		 glUniform3f(prog->getUniform("lightPos"), uniformData->lightPos.x, uniformData->lightPos.y, uniformData->lightPos.z);
-		 glUniform3f(prog->getUniform("lightCol"), uniformData->lightCol.x, uniformData->lightCol.y, uniformData->lightCol.z);
+		 sendLightUniforms(prog);
 		 glUniform3f(prog->getUniform("eye"), uniformData->eye.x, uniformData->eye.y, uniformData->eye.z);
 	 }
 	 else if (i == TEXTUREPROG)
 	 {
 		 glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, value_ptr(uniformData->P));
 		 glUniformMatrix4fv(prog->getUniform("V"), 1, GL_FALSE, value_ptr(uniformData->V));
-		 glUniform3f(prog->getUniform("lightPos"), uniformData->lightPos.x, uniformData->lightPos.y, uniformData->lightPos.z);
+		 sendLightUniforms(prog);
 		 // This probably should be updated in the future to work with different textures
 		 texture->bind(prog->getUniform("Texture0"));
 	 }
@@ -164,11 +161,37 @@ shared_ptr<Program> ShaderManager::initFloorProg()
 
 		 glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, value_ptr(uniformData->P));
 		 glUniformMatrix4fv(prog->getUniform("V"), 1, GL_FALSE, value_ptr(uniformData->V));
-		 glUniform3f(prog->getUniform("lightPos"), uniformData->lightPos.x, uniformData->lightPos.y, uniformData->lightPos.z);
+		 sendLightUniforms(prog);
 		 glUniform3f(prog->getUniform("targetPos"), uniformData->targetPos.x, uniformData->targetPos.y, uniformData->targetPos.z);
 		 glUniform3f(prog->getUniform("eye"), uniformData->eye.x, uniformData->eye.y, uniformData->eye.z);
 		 //texture->bind(prog->getUniform("Texture0"));
 		 //blendTexture->bind(prog->getUniform("Texture1"));
 	 }
 
+ }
+
+ void ShaderManager::addLightUniforms(std::shared_ptr<Program>& prog)
+ {
+	 for (size_t i = 0; i < NUM_LIGHTS; i++)
+	 {
+		 string number = to_string(i);
+
+		 prog->addUniform(("pointLights[" + number + "].position").c_str());
+		 prog->addUniform(("pointLights[" + number + "].constant").c_str());
+		 prog->addUniform(("pointLights[" + number + "].linear").c_str());
+		 prog->addUniform(("pointLights[" + number + "].quadratic").c_str());
+	 }
+ }
+
+ void ShaderManager::sendLightUniforms(std::shared_ptr<Program>& prog)
+ {
+	 for (size_t i = 0; i < NUM_LIGHTS; i++)
+	 {
+		 string number = to_string(i);
+
+		 glUniform3f(prog->getUniform(("pointLights[" + number + "].position").c_str()), POINT_LIGHTS[i].pos.x, POINT_LIGHTS[i].pos.y, POINT_LIGHTS[i].pos.z);
+		 glUniform1f(prog->getUniform(("pointLights[" + number + "].constant").c_str()), POINT_LIGHTS[i].constant);
+		 glUniform1f(prog->getUniform(("pointLights[" + number + "].linear").c_str()), POINT_LIGHTS[i].linear);
+		 glUniform1f(prog->getUniform(("pointLights[" + number + "].quadratic").c_str()), POINT_LIGHTS[i].quadratic);
+	 }
  }
