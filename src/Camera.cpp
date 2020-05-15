@@ -6,35 +6,38 @@
 using namespace std;
 using namespace glm;
 
-void Camera::update(Transform& transform)
+void Camera::update(float deltaTime, Transform& transform)
 {
 	if (Keys::getInstance().keyPressed(Keys::ROTLEFT))
-		rotate(1, 0);
+		interpolateRotation(1, 0, deltaTime);
 	if (Keys::getInstance().keyPressed(Keys::ROTRIGHT))
-		rotate(-1, 0);
+		interpolateRotation(-1, 0, deltaTime);
 
-	setPosition(transform.getPosition());
+	interpolatePosition(transform.getPosition(), deltaTime);
 	transform.setFacing(getFacing());
 }
 
-void Camera::rotate(float dx, float dy)
+void Camera::interpolateRotation(float dx, float dy, float deltaTime)
 {
 	vec3 direction;
-	beta -= radians(dx * CAMERA_SPEED);
-	alpha += radians(dy * CAMERA_SPEED);
-	if (alpha > radians(80.f))
-		alpha = radians(80.f);
-	else if (alpha < radians(-80.f))
-		alpha = radians(-80.f);
+	float finalBeta = beta - radians(dx * CAMERA_SPEED);
+	float finalAlpha = alpha + radians(dy * CAMERA_SPEED);
+	if (finalAlpha > radians(80.f))
+		finalAlpha = radians(80.f);
+	else if (finalAlpha < radians(-80.f))
+		finalAlpha = radians(-80.f);
+	beta = mix(beta, finalBeta, CAMERA_SPEED * deltaTime);
+	alpha = mix(alpha, finalAlpha, CAMERA_SPEED * deltaTime);
+
 	direction = getFacing();
 	eye = position + offset.x * direction + offset.y * upVector;
 	LA = eye + float(getReverse()) * direction;
 }
 
-void Camera::setPosition(vec3 pos)
+void Camera::interpolatePosition(vec3 pos, float deltaTime)
 {
 	vec3 direction(getFacing());
-	position = pos;
+	position = mix(position, pos, CAMERA_SPEED * deltaTime);
 	eye = position + offset.x * direction + offset.y * upVector;
 	LA = eye + float(getReverse()) * direction;
 }

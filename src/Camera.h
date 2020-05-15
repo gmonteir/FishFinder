@@ -22,11 +22,11 @@ public:
 		return normalize(glm::vec3(cos(alpha) * cos(beta), sin(alpha), cos(alpha) * cos(M_PI_2 - beta)));
 	}
 
-	void update(Transform& transform);
+	void update(float deltaTime, Transform& transform);
 
 	/* deltas should be from -1 to 1 */
-	void rotate(float dx, float dy);
-	void setPosition(glm::vec3 pos);
+	void interpolateRotation(float dx, float dy, float deltaTime);
+	void interpolatePosition(glm::vec3 pos, float deltaTime);
 	
 	void firstPerson() { reverse = false; offset = FIRST_PERSON_OFFSET; }
 	void secondPerson() { reverse = true; offset = SECOND_PERSON_OFFSET; }
