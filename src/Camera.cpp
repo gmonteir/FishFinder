@@ -9,12 +9,12 @@ using namespace glm;
 void Camera::update(float deltaTime, Transform& transform)
 {
 	if (Keys::getInstance().keyPressed(Keys::ROTLEFT))
-		interpolateRotation(1, 0, deltaTime);
+		interpolateRotation(1, 0, 1);
 	if (Keys::getInstance().keyPressed(Keys::ROTRIGHT))
-		interpolateRotation(-1, 0, deltaTime);
+		interpolateRotation(-1, 0, 1);
 
 	interpolatePosition(transform.getPosition(), deltaTime);
-	transform.setFacing(getFacing());
+	transform.setFacing(getDirection());
 }
 
 void Camera::interpolateRotation(float dx, float dy, float deltaTime)
@@ -29,17 +29,15 @@ void Camera::interpolateRotation(float dx, float dy, float deltaTime)
 	beta = mix(beta, finalBeta, CAMERA_SPEED * deltaTime);
 	alpha = mix(alpha, finalAlpha, CAMERA_SPEED * deltaTime);
 
-	direction = getFacing();
-	eye = position + offset.x * direction + offset.y * upVector;
-	LA = eye + float(getReverse()) * direction;
+	updateDirection();
 }
 
 void Camera::interpolatePosition(vec3 pos, float deltaTime)
 {
-	vec3 direction(getFacing());
 	position = mix(position, pos, CAMERA_SPEED * deltaTime);
-	eye = position + offset.x * direction + offset.y * upVector;
-	LA = eye + float(getReverse()) * direction;
+	updateEye();
+	updateLookAt();
+	
 }
 
 //void Camera::moveForward(float delta)

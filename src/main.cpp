@@ -117,7 +117,8 @@ public:
 	{
 		float deltaX = mouseX - xpos;
 		float deltaY = mouseY - ypos;
-		camera.interpolateRotation(deltaX, deltaY, MOUSE_SENSITIVITY);
+		if (abs(deltaX) < 50 && abs(deltaY) < 50) // check whether or not mouseX and mouseY have been initialized yet
+			camera.interpolateRotation(deltaX, deltaY, MOUSE_SENSITIVITY);
 
 		mouseX = xpos;
 		mouseY = ypos;
