@@ -1,5 +1,6 @@
 #include "Camera.h"
 #include "Keys.h"
+#include "Floor.h"
 
 #include <iostream>
 
@@ -8,6 +9,7 @@ using namespace glm;
 
 void Camera::update(float deltaTime, Transform& transform)
 {
+	float floorHeight;
 	if (Keys::getInstance().keyPressed(Keys::ROTLEFT))
 		interpolateRotation(1, 0, 1);
 	if (Keys::getInstance().keyPressed(Keys::ROTRIGHT))
@@ -15,6 +17,11 @@ void Camera::update(float deltaTime, Transform& transform)
 
 	interpolatePosition(transform.getPosition(), deltaTime);
 	transform.setFacing(getDirection());
+	
+	floorHeight = Floor::getInstance()->getHeight(eye.x, eye.z);
+	if (eye.y < floorHeight)
+		eye.y = floorHeight + CAMERA_FLOOR_OFFSET;
+	updateLookAt();
 }
 
 void Camera::interpolateRotation(float dx, float dy, float deltaTime)
@@ -36,8 +43,6 @@ void Camera::interpolatePosition(vec3 pos, float deltaTime)
 {
 	position = mix(position, pos, CAMERA_SPEED * deltaTime);
 	updateEye();
-	updateLookAt();
-	
 }
 
 //void Camera::moveForward(float delta)

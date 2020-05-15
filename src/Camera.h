@@ -46,7 +46,7 @@ private:
 		direction = normalize(glm::vec3(cos(alpha) * cos(beta), sin(alpha), cos(alpha) * cos(M_PI_2 - beta)));
 	}
 	void updateEye() { eye = position + offset.x * direction + offset.y * upVector; }
-	void updateLookAt() { LA = eye + float(getReverse()) * direction; }
+	void updateLookAt() { LA = position; } // eye + float(getReverse()) * direction;
 
 	//void moveForward(float delta); // speed
 	//void moveRight(float delta); // speed
