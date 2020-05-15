@@ -122,7 +122,7 @@ private:
 
 	bool following;
 
-	void setPathVelocity();
+	void setPathVelocity(float deltaTime);
 };
 
 class Behavior::PowerupBehavior : public Behavior
