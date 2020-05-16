@@ -34,20 +34,14 @@ void main()
     
     color = vec4(result, 1.0);
 
-  	float slope;
-  	float brightFactor;
-  	float z_difference;
-  	if (targetPos.x - eye.x == 0)
-  		slope = (targetPos.z - eye.z)/0.001;
-  	else
-  		slope = (targetPos.z - eye.z)/(targetPos.x - eye.x);
-  	float z_line = (slope*(fragPos.x - targetPos.x) + targetPos.z);
-  	if (draw(z_line))
-  	{
-  		brightFactor = (fragPos.z-z_line)/3; // between -1 and 1 w/ 0 as the center
-		// Color it brightest in the center 
-		color = vec4((1.9-abs(brightFactor))*color.xyz, color.w);
-  	}
+    vec3 targetDir = normalize(targetPos - eye);
+    vec2 fourth_between = eye.xz + (targetPos.xz-eye.xz)/4;
+    float d = distance(fragPos.xz, fourth_between);
+    if (d < 7) // first circle
+    {
+       float increment = 0.5*(1-d/7);
+       color += vec4(vec3(0, increment, increment/2), 1);
+    }
 }
 
 vec3 CalcPointLight(PointLight light, vec3 norm, vec3 pos)
@@ -69,14 +63,3 @@ vec3 CalcPointLight(PointLight light, vec3 norm, vec3 pos)
 
     return (ambient + diffuse);
 } 
-
-bool draw(float z_line)
-{
-	float small_x = min(targetPos.x, eye.x);
-	float large_x = max(targetPos.x, eye.x);
-	float small_z = min(targetPos.z, eye.z);
-	float large_z = max(targetPos.z, eye.z);
-	return (fragPos.z - z_line < 3 && fragPos.z - z_line > -3 &&
-			fragPos.z <= large_z && fragPos.z >= small_z &&
-			fragPos.x <= large_x && fragPos.x >= small_x);
-}
