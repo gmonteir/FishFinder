@@ -33,14 +33,15 @@ void main()
         result += CalcPointLight(pointLights[i], normal, fragPos);    
     
     color = vec4(result, 1.0);
-
-    vec3 targetDir = normalize(targetPos - eye);
-    vec2 fourth_between = eye.xz + (targetPos.xz-eye.xz)/4;
-    float d = distance(fragPos.xz, fourth_between);
-    if (d < 7) // first circle
+    
+    vec2 targetDir = normalize(targetPos.xz - eye.xz);
+    vec2 fragDir = normalize(fragPos.xz - eye.xz);
+    float d = dot(targetDir, fragDir);
+    float dist = distance(eye.xz, fragPos.xz);
+    if (d > 0.8 && dist < 40)
     {
-       float increment = 0.5*(1-d/7);
-       color += vec4(vec3(0, increment, increment/2), 1);
+       float increment = 0.2*(d-0.8)/0.2;
+       color += vec4(vec3(0, increment, increment), color.w);
     }
 }
 
