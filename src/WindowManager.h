@@ -47,6 +47,8 @@ class WindowManager
 {
 
 public:
+	// This class implements the singleton design pattern
+	static WindowManager* instance;
 
 	WindowManager();
 	~WindowManager();
@@ -63,9 +65,6 @@ public:
 	GLFWwindow *getHandle();
 
 protected:
-
-	// This class implements the singleton design pattern
-	static WindowManager * instance;
 
 	GLFWwindow *windowHandle = nullptr;
 	EventCallbacks *callbacks = nullptr;

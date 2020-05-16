@@ -29,6 +29,10 @@ const std::string ELKHORN_CORAL_SHAPE = "ELKHORN_CORAL";
 const std::string FLOOR_SHAPE = "FLOOR_SHAPE";
 const std::string RESOURCE_DIR = "../resources";
 
+// Game Constants
+constexpr int NUM_CHARACTERS = 7;
+constexpr float INITIAL_TIME_LIMIT = 10.0f; // seconds
+
 // Player
 constexpr float PLAYER_SPEED = 20;
 constexpr float PLAYER_SIZE = 3;
