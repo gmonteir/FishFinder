@@ -98,6 +98,10 @@ public:
 		{
 			camera.thirdPerson();
 		}
+		if (key == GLFW_KEY_COMMA && action == GLFW_PRESS)
+		{
+			GameManager::getInstance()->increaseStamina(STAMINA_INCREMENT);
+		}
 		Keys::getInstance().update(key, action);
 	}
 
@@ -310,7 +314,8 @@ public:
 		prog->bind();
 		glm::mat4 proj = glm::ortho(0.0f, static_cast<GLfloat>(width), 0.0f, static_cast<GLfloat>(height));
 		glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, glm::value_ptr(proj));
-		textRenderer->drawText("Active Objects: " + to_string(EntityCollection::getInstance()->getNumActive()), 25.0f, height - 50.0f, 0.75f, glm::vec3(0.2f, 1.0f, 0.2f));
+		//textRenderer->drawText("Active Objects: " + to_string(EntityCollection::getInstance()->getNumActive()), 25.0f, height - 50.0f, 0.75f, glm::vec3(0.2f, 1.0f, 0.2f));
+		textRenderer->drawText("FPS: " + to_string(fps), 25.0f, 25.0f, 0.75f, glm::vec3(0.1));
         prog->unbind();
         glDisable(GL_BLEND);
 

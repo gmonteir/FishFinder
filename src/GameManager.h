@@ -11,7 +11,7 @@
 
 class GameManager
 {
-	GameManager() : timeLimit(INITIAL_TIME_LIMIT), charRemaining(NUM_CHARACTERS), inGame(true) {
+	GameManager() : timeRemaining(INITIAL_TIME_LIMIT), charRemaining(NUM_CHARACTERS), inGame(true), stamina(INITIAL_STAMINA) {
 		FT_Library ft;
 		textRenderer = new RenderText(&ft, ShaderManager::getInstance()->getShader(GLYPHPROG));
 	}
@@ -26,11 +26,17 @@ public:
 	void lose();
 	void renderText(const std::string text, float x, float y, float scale, glm::vec3 color);
 
+	float getStamina() { return stamina; }
+	void increaseStamina(float delta);
+	void decreaseStamina(float delta);
+
+	void decrementNumChar() { charRemaining--; }
+
 private:
-	int width, height;
 	RenderText* textRenderer;
-	float timeLimit;
+	float timeRemaining;
 	int charRemaining;
 	bool inGame;
+	float stamina;
 };
 

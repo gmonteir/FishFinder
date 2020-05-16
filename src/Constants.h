@@ -37,8 +37,8 @@ constexpr float INITIAL_TIME_LIMIT = 10.0f; // seconds
 constexpr float PLAYER_SPEED = 20;
 constexpr float PLAYER_SIZE = 3;
 constexpr int PLAYER_MATERIAL = 5;
-constexpr float INITIAL_STAMINA = 3;
-constexpr float MAX_STAMINA = 10;
+constexpr float INITIAL_STAMINA = 30;
+constexpr float MAX_STAMINA = 100;
 
 // Camera
 constexpr float CAMERA_SPEED = 3;
@@ -78,6 +78,7 @@ constexpr float POWERUP_OFFSET = 7.0;
 constexpr float POWERUP_SIZE = 0.7;
 constexpr int POWERUP_MATERIAL = 5;
 constexpr float POWERUP_DESPAWN_TIME = 50;
+constexpr float STAMINA_INCREMENT = 20;
 
 // Coral Constants
 constexpr int NUM_CORAL = 50;
