@@ -2,6 +2,7 @@
 #include "Entities.h"
 #include "Spawner.h"
 #include "Keys.h"
+#include "GameManager.h"
 
 #include <iostream>
 
@@ -53,11 +54,10 @@ void Behavior::PlayerBehavior::update(float deltaTime)
 	if (Keys::getInstance().keyPressed(Keys::BACKWARD))
 		forward -= 1;
 
-	if (Keys::getInstance().keyPressed(Keys::BOOST) && stamina > 0) {
+	if (Keys::getInstance().keyPressed(Keys::BOOST) 
+		&& GameManager::getInstance()->getStamina() > 0) {
 		boost = 30;
-		stamina -= deltaTime;
-		if (stamina < 0)
-			stamina = 0;
+		GameManager::getInstance()->decreaseStamina(deltaTime);
 	}
 
 	if (Keys::getInstance().keyPressed(Keys::LEFT))
@@ -87,13 +87,12 @@ void Behavior::PlayerBehavior::onCollision(Behavior& collider)
 		target = &Spawner::getInstance()->spawnFollower()->getTransform();
 		Entities::getInstance()->decrementNumActive();
 		previousCharacter = &collider.transform;
+		GameManager::getInstance()->decrementNumChar();
 		break;
 	case POWERUP:
 		collider.remove();
 		Entities::getInstance()->decrementNumActive();
-		stamina += 1;
-		if (stamina > 10)
-			stamina = 10;
+		GameManager::getInstance()->increaseStamina(STAMINA_INCREMENT);
 		break;
 	}
 }

@@ -70,7 +70,7 @@ class Behavior::PlayerBehavior : public Behavior
 {
 public:
 	PlayerBehavior(Transform& transform, Model& model)
-		: Behavior(PLAYER, transform, model), score(0), speed(PLAYER_SPEED), stamina(INITIAL_STAMINA),
+		: Behavior(PLAYER, transform, model), score(0), speed(PLAYER_SPEED),
 		previousCharacter(&transform), target(nullptr) {}
 
 	virtual ~PlayerBehavior() {}
@@ -82,7 +82,6 @@ public:
 	void onCollision(Behavior& collider) override;
 
 	int getScore() const { return score; }
-	float getStamina() const { return stamina; }
 	vec3 getTargetPos() const { return target->getPosition(); }
 
 	void setTarget(Transform *newTarget) { target = newTarget; }
@@ -90,7 +89,6 @@ public:
 private:
 	int score;
 	float speed;
-	float stamina;
 
 	Transform* previousCharacter;
 	Transform* target;

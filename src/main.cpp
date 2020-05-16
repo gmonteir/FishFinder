@@ -20,6 +20,7 @@
 #include "Entities.h"
 #include "Spawner.h"
 #include "ShaderManager.h"
+#include "GameManager.h"
 #include "RenderText.h"
 #include "Textures.h"
 #include "Floor.h"
@@ -96,6 +97,10 @@ public:
 		if (key == GLFW_KEY_3 && action == GLFW_PRESS)
 		{
 			camera.thirdPerson();
+		}
+		if (key == GLFW_KEY_COMMA && action == GLFW_PRESS)
+		{
+			GameManager::getInstance()->increaseStamina(STAMINA_INCREMENT);
 		}
 		Keys::getInstance().update(key, action);
 	}
@@ -222,6 +227,7 @@ public:
 	void update(float deltaTime, float gameTime)
 	{
 		Spawner::getInstance()->update(deltaTime, gameTime);
+		GameManager::getInstance()->update(deltaTime, gameTime);
 		//Entities::getInstance()->update(deltaTime);
 		EntityCollection::getInstance()->update(deltaTime);
 		camera.update(deltaTime, player->getTransform());
@@ -298,6 +304,7 @@ public:
 		glDepthFunc(GL_LESS);
 		Model->popMatrix();
 		prog->unbind();
+		P->popMatrix();
 
 		/* FreeType */
 		char stamina_stat[15];
@@ -307,14 +314,12 @@ public:
 		prog->bind();
 		glm::mat4 proj = glm::ortho(0.0f, static_cast<GLfloat>(width), 0.0f, static_cast<GLfloat>(height));
 		glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, glm::value_ptr(proj));
-		textRenderer->drawText("Active Objects: " + to_string(EntityCollection::getInstance()->getNumActive()), 25.0f, height - 50.0f, 0.75f, glm::vec3(0.2f, 1.0f, 0.2f));
-		sprintf(stamina_stat, "%.1f %%", 100* playerBehavior->getStamina()/MAX_STAMINA);
-		textRenderer->drawText("Stamina: " + string(stamina_stat), 25.0f, height - 100.0f, 0.75f, glm::vec3(0.2f, 1.0f, 0.2f));
+		//textRenderer->drawText("Active Objects: " + to_string(EntityCollection::getInstance()->getNumActive()), 25.0f, height - 50.0f, 0.75f, glm::vec3(0.2f, 1.0f, 0.2f));
 		textRenderer->drawText("FPS: " + to_string(fps), 25.0f, 25.0f, 0.75f, glm::vec3(0.1));
         prog->unbind();
-        P->popMatrix();
         glDisable(GL_BLEND);
 
+		GameManager::getInstance()->draw();
 	}	
 };
 
