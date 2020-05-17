@@ -16,7 +16,7 @@ void Model::draw(shared_ptr<MatrixStack> &M, const Transform& transform) const
 	M->rotate(transform.getXZAngle() + rotationOffset, YAXIS);
 	M->scale(scale*transform.getSize());
 	M->translate(-shift);
-	if (!texture)
+	if (!texture && program != REFLECTPROG)
 	{
 		SetMaterial(prog, material);
 	}

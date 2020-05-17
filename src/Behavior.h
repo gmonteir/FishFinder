@@ -130,7 +130,7 @@ public:
 		: Behavior(POWERUP, transform, model), timer(POWERUP_DESPAWN_TIME) {}
 	virtual ~PowerupBehavior() {}
 
-	void start() override {}
+	void start() override;
 	void update(float deltaTime) override;
 
 	void onOutOfBounds(float deltaTime) override {}

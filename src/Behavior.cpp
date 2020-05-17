@@ -133,6 +133,12 @@ void Behavior::FollowerBehavior::setPathVelocity(float deltaTime)
 
 
 // ----------------------------- POWERUP ----------------------------- //
+void Behavior::PowerupBehavior::start()
+{
+	//model.setTexture(DORY_TEXTURE);
+	model.setProgram(REFLECTPROG);
+}
+
 void Behavior::PowerupBehavior::update(float deltaTime)
 {
 	transform.move(vec3(0, sin(timer) * deltaTime, 0));

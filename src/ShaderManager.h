@@ -48,6 +48,7 @@ class ShaderManager
 	    shared_ptr<Program> initTextureProg();
 	    shared_ptr<Program> initGlyphProg();
 	    shared_ptr<Program> initFloorProg();
+	    shared_ptr<Program> initReflectProg();
 
 	    shared_ptr<Program> getShader(int i) { return shaderProgs[i]; }
 	    void setData(uniforms *common) { uniformData = common; }

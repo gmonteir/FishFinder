@@ -14,6 +14,7 @@ ShaderManager::ShaderManager(const string& resourceDirectory) :
 	shaderProgs[TEXTUREPROG] = initTextureProg();
 	shaderProgs[GLYPHPROG] = initGlyphProg();
 	shaderProgs[FLOORPROG] = initFloorProg();
+	shaderProgs[REFLECTPROG] = initReflectProg();
 }
 
 shared_ptr<Program> ShaderManager::initSimpleProg()
@@ -131,6 +132,29 @@ shared_ptr<Program> ShaderManager::initFloorProg()
 	return texProg;
 }
 
+shared_ptr<Program> ShaderManager::initReflectProg()
+{
+	std::shared_ptr<Program> reflProg = make_shared<Program>();
+	reflProg->setVerbose(true);
+	reflProg->setShaderNames(
+		resourceDirectory + "/simple_vert.glsl",
+		resourceDirectory + "/refl_frag.glsl");
+	if (! reflProg->init())
+	{
+		std::cerr << "One or more shaders failed to compile... exiting!" << std::endl;
+		exit(1);
+	}
+	reflProg->addUniform("P");
+	reflProg->addUniform("M");
+	reflProg->addUniform("V");
+	reflProg->addUniform("eye");
+	//addLightUniforms(reflProg);
+	reflProg->addAttribute("vertPos");
+	reflProg->addAttribute("vertNor");
+	reflProg->addAttribute("vertTex");
+	return reflProg;
+}
+
  void ShaderManager::sendUniforms(int i, const shared_ptr<Texture> texture, const std::shared_ptr<Texture> blendTexture)
  {
 	 shared_ptr<Program> prog = getShader(i);
@@ -166,6 +190,13 @@ shared_ptr<Program> ShaderManager::initFloorProg()
 		 glUniform3f(prog->getUniform("eye"), uniformData->eye.x, uniformData->eye.y, uniformData->eye.z);
 		 //texture->bind(prog->getUniform("Texture0"));
 		 //blendTexture->bind(prog->getUniform("Texture1"));
+	 }
+	 else if (i == REFLECTPROG)
+	 {
+	     glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, value_ptr(uniformData->P));
+		 glUniformMatrix4fv(prog->getUniform("V"), 1, GL_FALSE, value_ptr(uniformData->V));
+		 //sendLightUniforms(prog);
+		 glUniform3f(prog->getUniform("eye"), uniformData->eye.x, uniformData->eye.y, uniformData->eye.z);	
 	 }
 
  }

@@ -71,7 +71,7 @@ shared_ptr<Entity> Spawner::spawnFollower()
 
 void Spawner::spawnPowerup()
 {
-	shared_ptr<Entity> e = spawnRandom(CUBE_SHAPE, Behavior::POWERUP, POWERUP_OFFSET);
+	shared_ptr<Entity> e = spawnRandom(SPHERE_SHAPE, Behavior::POWERUP, POWERUP_OFFSET);
 	e->getTransform()
 		.setSize(vec3(POWERUP_SIZE))
 		.setFacing(Random::facingXZ());
