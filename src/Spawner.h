@@ -23,6 +23,7 @@ public:
 	std::shared_ptr<Entity> spawnFollower();
 	void spawnPowerup();
 	void spawnCoral(int type);
+	void spawnEnemy();
 	shared_ptr<Entity> spawnRandom(const string& shapeName, int behavior, float offset);
 
 	void findSpawnPosition(shared_ptr<Entity>& entity, float offset);

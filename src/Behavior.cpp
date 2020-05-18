@@ -19,6 +19,8 @@ unique_ptr<Behavior> Behavior::createBehavior(int behavior, Transform& transform
 		return unique_ptr<Behavior>(new FollowerBehavior(transform, model));
 	case POWERUP:
 		return unique_ptr<Behavior>(new PowerupBehavior(transform, model));
+	case ENEMY:
+		return unique_ptr<Behavior>(new EnemyBehavior(transform, model));
 	default:
 		return unique_ptr<Behavior>(new NoBehavior(transform, model));
 	}
@@ -68,7 +70,10 @@ void Behavior::PlayerBehavior::update(float deltaTime)
 	deltas.x = forward * transform.getFacing().x + right * -transform.getFacing().z;
 	deltas.y = forward * transform.getFacing().y;
 	deltas.z = forward * transform.getFacing().z + right * transform.getFacing().x;
-	transform.interpolateVelocity(right == 0 && forward == 0 ? ORIGIN : normalize(deltas) * (speed + boost), deltaTime);
+	transform.interpolateVelocity(right == 0 && forward == 0 ? ORIGIN : normalize(deltas) * (speed - slow + boost), deltaTime);
+
+	if (slow > 0)
+		slow = mix(slow, 0.0f, HIT_RECOVERY * deltaTime);
 
 	model.getAnimator().setAnimationSpeed(boost > 0 ? 3 : 1);
 }
@@ -93,6 +98,9 @@ void Behavior::PlayerBehavior::onCollision(Behavior& collider)
 		collider.remove();
 		Entities::getInstance()->decrementNumActive();
 		GameManager::getInstance()->increaseStamina(STAMINA_INCREMENT);
+		break;
+	case ENEMY:
+		slow = (PLAYER_SPEED / 2.0);
 		break;
 	}
 }
@@ -145,3 +153,5 @@ void Behavior::PowerupBehavior::update(float deltaTime)
 		Entities::getInstance()->decrementNumActive();
 	}
 }
+
+// ----------------------------- ENEMY ----------------------------- //
