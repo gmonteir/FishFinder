@@ -206,8 +206,8 @@ public:
 		player = make_shared<Entity>(DORY_SHAPE, int(Behavior::PLAYER));
 		playerBehavior = dynamic_pointer_cast<Behavior::PlayerBehavior>(player->getBehavior());
 
-		testChar = make_shared<Entity>(BLOAT_SHAPE, int(Behavior::NONE));
-		testChar->getModel().setTexture(BLOAT_TEXTURE);
+		testChar = make_shared<Entity>(MARLIN_SHAPE, int(Behavior::NONE));
+		testChar->getModel().setTexture(MARLIN_TEXTURE);
 		testChar->getModel().setProgram(TEXTUREPROG);
 		testChar->getTransform().setSize(vec3(PARENT_SIZE));
 		testChar->getTransform().setPosition(vec3(5, 0, -10));

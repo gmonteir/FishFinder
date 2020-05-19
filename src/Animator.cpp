@@ -7,7 +7,7 @@ unique_ptr<Animator> Animator::createAnimator(const string& modelName)
 {
 	if (modelName == DORY_SHAPE)
 		return unique_ptr<Animator>(new DoryAnimator);
-	else if (modelName == NEMO_SHAPE)
+	else if (modelName == NEMO_SHAPE || modelName == MARLIN_SHAPE)
 		return unique_ptr<Animator>(new NemoAnimator);
 	else if (modelName == SQUIRT_SHAPE)
 		return unique_ptr<Animator>(new SquirtAnimator);

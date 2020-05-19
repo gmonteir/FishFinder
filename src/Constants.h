@@ -19,6 +19,7 @@ const std::string SQUIRT_TEXTURE = "SQUIRT_TXT";
 const std::string JENNY_TEXTURE = "JENNY_TXT";
 const std::string CHARLIE_TEXTURE = "CHARLIE_TXT";
 const std::string BLOAT_TEXTURE = "BLOAT_TXT";
+const std::string MARLIN_TEXTURE = "MARLIN_TXT";
 const std::string CAUSTIC_TEXTURE = "CAUSTIC_TXT";
 const std::string FLOOR_TEXTURE = "FLOOR_TXT";
 
@@ -29,6 +30,7 @@ const std::string SQUIRT_SHAPE = "SQUIRT";
 const std::string JENNY_SHAPE = "JENNY";
 const std::string CHARLIE_SHAPE = "CHARLIE";
 const std::string BLOAT_SHAPE = "BLOAT";
+const std::string MARLIN_SHAPE = "MARLIN";
 const std::string TREE_CORAL_SHAPE = "TREE_CORAL";
 const std::string SOFT_CORAL_SHAPE = "SOFT_CORAL";
 const std::string ELKHORN_CORAL_SHAPE = "ELKHORN_CORAL";
