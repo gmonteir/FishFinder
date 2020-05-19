@@ -42,7 +42,7 @@ void main()
     float dist = distance(eye.xz, fragPos.xz);
     if (d > 0.8 && dist < 40)
     {
-       float increment = (1-(dist/40))*0.6*(d-0.8)/0.2;
+       float increment = (1-(dist/40))*0.7*(d-0.8)/0.2;
        color += vec4(vec3(0, increment, increment), 0);
     }
 
