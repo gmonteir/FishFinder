@@ -50,14 +50,14 @@ class ShaderManager
 	    shared_ptr<Program> initFloorProg();
 		shared_ptr<Program> initFBOProg();
 
-	    shared_ptr<Program> getShader(int i) { return shaderProgs[i]; }
-	    void setData(uniforms *common) { uniformData = common; }
+	    shared_ptr<Program> getShader(int i) const { return shaderProgs[i]; }
+	    void setData(shared_ptr<uniforms> common) { uniformData = common; }
 		void sendUniforms(int i, const std::shared_ptr<Texture> texture, const std::shared_ptr<Texture> blendTexture=NULL);
 
 	private:
 		string resourceDirectory;
 		shared_ptr<Program> shaderProgs[NUM_SHADERS];
-		uniforms *uniformData;
+		shared_ptr<uniforms> uniformData;
 		void addLightUniforms(std::shared_ptr<Program>& prog);
 		void sendLightUniforms(std::shared_ptr<Program>& prog);
 

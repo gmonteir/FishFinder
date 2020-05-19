@@ -199,6 +199,7 @@ public:
 
 		FT_Library ft;
 		textRenderer = new RenderText(&ft, ShaderManager::getInstance()->getShader(GLYPHPROG));
+
 	 }
 
 	void initEntities()
@@ -233,23 +234,13 @@ public:
 		camera.update(deltaTime, player->getTransform());
 	}
 
-	/* helper functions for sending matrix data to the GPU */
-	mat4 SetProjectionMatrix(shared_ptr<Program> curShade) {
-	    int width, height;
-	    glfwGetFramebufferSize(windowManager->getHandle(), &width, &height);
-	    float aspect = width/(float)height;
-	    mat4 Projection = perspective(radians(50.0f), aspect, 0.1f, 100.0f);
-	    glUniformMatrix4fv(curShade->getUniform("P"), 1, GL_FALSE, value_ptr(Projection));
-	    return Projection;
-	}
-
 	void render(int fps)
 	{
 		shared_ptr<Program> prog;
 		// Get current frame buffer size.
 		int width, height;
 		glfwGetFramebufferSize(windowManager->getHandle(), &width, &height);
-		glViewport(0, 0, width, height);		
+		glViewport(0, 0, width, height);
 
 		// Clear framebuffer.
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -265,7 +256,7 @@ public:
 		P->perspective(45.0f, aspect, 0.01f, 10000.0f);
 		mat4 V = camera.getView();
 		targetPos = playerBehavior->getTargetPos();
-		uniforms *commonUniforms = new uniforms {P->topMatrix(), V, camera.getEye(), targetPos};
+		shared_ptr<uniforms> commonUniforms(new uniforms{ P->topMatrix(), V, camera.getEye(), targetPos });
 		ShaderManager::getInstance()->setData(commonUniforms);
 		// draw the floor and the nemos
 		EntityCollection::getInstance()->draw(Model);
@@ -285,7 +276,7 @@ public:
 			drawSamplePlane(prog);
 		Model->popMatrix();
 		prog->unbind();*/
-		
+
 		//draw the sky box
 		prog = ShaderManager::getInstance()->getShader(SKYBOXPROG);
 		prog->bind();
