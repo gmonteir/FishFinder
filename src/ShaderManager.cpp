@@ -2,12 +2,11 @@
 
 shared_ptr<ShaderManager> ShaderManager::getInstance()
 {
-	static shared_ptr<ShaderManager> instance(new ShaderManager(RESOURCE_DIR));
+	static shared_ptr<ShaderManager> instance(new ShaderManager);
 	return instance;
 }
 
-ShaderManager::ShaderManager(const string& resourceDirectory) :
-	resourceDirectory(resourceDirectory)
+ShaderManager::ShaderManager()
 {
 	shaderProgs[SIMPLEPROG] = initSimpleProg();
 	shaderProgs[SKYBOXPROG] = initSkyboxProg();
@@ -18,16 +17,7 @@ ShaderManager::ShaderManager(const string& resourceDirectory) :
 
 shared_ptr<Program> ShaderManager::initSimpleProg()
 {
-	std::shared_ptr<Program> prog = make_shared<Program>();
-	prog->setVerbose(true);
-	prog->setShaderNames(
-		resourceDirectory + "/simple_vert.glsl",
-		resourceDirectory + "/simple_frag.glsl");
-	if (! prog->init())
-	{
-		std::cerr << "One or more shaders failed to compile... exiting!" << std::endl;
-		exit(1);
-	}
+	shared_ptr<Program> prog = makeProgram("/simple_vert.glsl", "/simple_frag.glsl");
 	prog->addUniform("P");
 	prog->addUniform("M");
 	prog->addUniform("V");
@@ -45,17 +35,8 @@ shared_ptr<Program> ShaderManager::initSimpleProg()
 
 shared_ptr<Program> ShaderManager::initSkyboxProg()
 {
-	std::shared_ptr<Program> cubeProg = make_shared<Program>();
-	cubeProg->setVerbose(true);
-	cubeProg->setShaderNames(
-		resourceDirectory + "/cube_vert.glsl",
-		resourceDirectory + "/cube_frag.glsl");
-	if (! cubeProg->init())
-	{
-		std::cerr << "One or more shaders failed to compile... exiting!" << std::endl;
-		exit(1);
-	}
-		cubeProg->addUniform("P");
+	shared_ptr<Program> cubeProg = makeProgram("/cube_vert.glsl", "/cube_frag.glsl");
+	cubeProg->addUniform("P");
 	cubeProg->addUniform("M");
 	cubeProg->addUniform("V");
 	cubeProg->addAttribute("vertPos");
@@ -65,16 +46,7 @@ shared_ptr<Program> ShaderManager::initSkyboxProg()
 
 shared_ptr<Program> ShaderManager::initTextureProg()
 {
-	std::shared_ptr<Program> texProg = make_shared<Program>();
-	texProg->setVerbose(true);
-	texProg->setShaderNames(
-		resourceDirectory + "/tex_vert.glsl",
-		resourceDirectory + "/tex_frag.glsl");
-	if (! texProg->init())
-	{
-		std::cerr << "One or more shaders failed to compile... exiting!" << std::endl;
-		exit(1);
-	}
+	shared_ptr<Program> texProg = makeProgram("/tex_vert.glsl", "/tex_frag.glsl");
 	texProg->addUniform("P");
 	texProg->addUniform("M");
 	texProg->addUniform("V");
@@ -88,16 +60,7 @@ shared_ptr<Program> ShaderManager::initTextureProg()
 
 shared_ptr<Program> ShaderManager::initGlyphProg()
 {
-	std::shared_ptr<Program> glyphProg = make_shared<Program>();
-	glyphProg->setVerbose(true);
-	glyphProg->setShaderNames(
-		resourceDirectory + "/glyph_vert.glsl",
-		resourceDirectory + "/glyph_frag.glsl");
-	if (! glyphProg->init())
-	{
-		std::cerr << "One or more shaders failed to compile... exiting!" << std::endl;
-		exit(1);
-	}
+	shared_ptr<Program> glyphProg = makeProgram("/glyph_vert.glsl", "/glyph_frag.glsl");
 	glyphProg->addUniform("P");
 	glyphProg->addUniform("text");
 	glyphProg->addUniform("textColor");
@@ -107,16 +70,7 @@ shared_ptr<Program> ShaderManager::initGlyphProg()
 
 shared_ptr<Program> ShaderManager::initFloorProg()
 {
-	std::shared_ptr<Program> texProg = make_shared<Program>();
-	texProg->setVerbose(true);
-	texProg->setShaderNames(
-		resourceDirectory + "/tex_vert.glsl",
-		resourceDirectory + "/floor_frag.glsl");
-	if (! texProg->init())
-	{
-		std::cerr << "One or more shaders failed to compile... exiting!" << std::endl;
-		exit(1);
-	}
+	shared_ptr<Program> texProg = makeProgram("/tex_vert.glsl", "/floor_frag.glsl");
 	texProg->addUniform("P");
 	texProg->addUniform("M");
 	texProg->addUniform("V");
@@ -194,4 +148,17 @@ shared_ptr<Program> ShaderManager::initFloorProg()
 		 glUniform1f(prog->getUniform(("pointLights[" + number + "].linear").c_str()), POINT_LIGHTS[i].linear);
 		 glUniform1f(prog->getUniform(("pointLights[" + number + "].quadratic").c_str()), POINT_LIGHTS[i].quadratic);
 	 }
+ }
+
+ shared_ptr<Program> ShaderManager::makeProgram(const string& vertex, const string& fragment)
+ {
+	 shared_ptr<Program> prog = make_shared<Program>();
+	 prog->setVerbose(true);
+	 prog->setShaderNames(RESOURCE_DIR + vertex, RESOURCE_DIR + fragment);
+	 if (!prog->init())
+	 {
+		 std::cerr << "Shader failed to compile: " << vertex << ", " << fragment << std::endl;
+		 exit(1);
+	 }
+	 return prog;
  }
