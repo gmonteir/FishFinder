@@ -20,6 +20,7 @@
 #include "Entities.h"
 #include "Spawner.h"
 #include "ShaderManager.h"
+#include "GameManager.h"
 #include "RenderText.h"
 #include "Textures.h"
 #include "Floor.h"
@@ -33,6 +34,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "stb_image.h"
+#include "EntityCollection.h"
 
 using namespace std;
 using namespace glm;
@@ -42,7 +44,7 @@ class Application : public EventCallbacks
 
 public:
 
-	WindowManager * windowManager = nullptr;
+	WindowManager* windowManager = nullptr;
 
 	// Shape to be used (from obj file)
 	shared_ptr<Shape> shape;
@@ -54,13 +56,15 @@ public:
 	GLuint VertexBufferID;
 
 	//example data that might be useful when trying to compute bounds on multi-shape
-	vec3 lightDir = vec3(0, 1, 0);
-	float lightPosX;
+	vec3 lightPos = vec3(0, 70, 0);
+	vec3 targetPos = vec3(0, 0, -10);
 
 	// texture for skymap
 	unsigned int cubeMapTexture;
 
 	int drawMode = 0;
+	float mouseX = 0;
+	float mouseY = 0;
 
 	shared_ptr<Entity> player;
 	shared_ptr<Behavior::PlayerBehavior> playerBehavior;
@@ -68,7 +72,7 @@ public:
 	Camera camera;
 	RenderText *textRenderer;
 
-	void keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods)
+	void keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods) override
 	{
 		if (key == GLFW_KEY_Z && action == GLFW_PRESS) {
  			glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
@@ -94,19 +98,14 @@ public:
 		{
 			camera.thirdPerson();
 		}
+		if (key == GLFW_KEY_COMMA && action == GLFW_PRESS)
+		{
+			GameManager::getInstance()->increaseStamina(STAMINA_INCREMENT);
+		}
 		Keys::getInstance().update(key, action);
 	}
 
-	void scrollCallback(GLFWwindow* window, double deltaX, double deltaY)
-	{
-		playerBehavior->rotate(deltaX, deltaY);
-
-		//int width, height;
-		//glfwGetFramebufferSize(windowManager->getHandle(), &width, &height);
-		//player->rotate(deltaX / width, deltaY / height);
-	}
-
-	void mouseCallback(GLFWwindow *window, int button, int action, int mods)
+	void mouseCallback(GLFWwindow* window, int button, int action, int mods) override
 	{
 		double posX, posY;
 
@@ -114,7 +113,28 @@ public:
 		{
 			glfwGetCursorPos(window, &posX, &posY);
 			cout << "Pos X " << posX << " Pos Y " << posY << endl;
+
+			cout << "X: " << player->getTransform().getPosition().x << " Y: " << player->getTransform().getPosition().y << " Z: " << player->getTransform().getPosition().z << endl;
 		}
+	}
+
+	void cursorPosCallback(GLFWwindow* window, double xpos, double ypos) override
+	{
+		float deltaX = mouseX - xpos;
+		float deltaY = mouseY - ypos;
+
+		// check whether or not mouseX and mouseY have been initialized yet
+		// currently a hacky check of whether or not the deltas are unrealistic.
+		if (abs(deltaX) < 50 && abs(deltaY) < 50)
+			camera.interpolateRotation(deltaX, deltaY, MOUSE_SENSITIVITY);
+
+		mouseX = xpos;
+		mouseY = ypos;
+	}
+
+	void scrollCallback(GLFWwindow* window, double deltaX, double deltaY) override
+	{
+		camera.interpolateRotation(deltaX, deltaY, MOUSE_SENSITIVITY);
 	}
 
 	void resizeCallback(GLFWwindow *window, int width, int height)
@@ -193,16 +213,25 @@ public:
 		squirt->getTransform().setPosition(vec3(5, 0, -10));
 		squirt->bringToFloor();
 
-		Entities::getInstance()->push_back(player);
-		Entities::getInstance()->push_back(squirt);
+		EntityCollection::getInstance()->addEntity(player);
+		//EntityCollection::getInstance()->addEntity(squirt);
+
 		Spawner::getInstance()->init();
+		playerBehavior->setTarget(&Spawner::getInstance()->spawnFollower()->getTransform());
+
+		/*for (int i = 0; i < 85; i++)
+			Spawner::getInstance()->spawnFollower();*/
+
+
 	}
 
 	void update(float deltaTime, float gameTime)
 	{
 		Spawner::getInstance()->update(deltaTime, gameTime);
-		Entities::getInstance()->update(deltaTime);
-		camera.update(player->getTransform());
+		GameManager::getInstance()->update(deltaTime, gameTime);
+		//Entities::getInstance()->update(deltaTime);
+		EntityCollection::getInstance()->update(deltaTime);
+		camera.update(deltaTime, player->getTransform());
 	}
 
 	/* helper functions for sending matrix data to the GPU */
@@ -236,11 +265,11 @@ public:
 		P->pushMatrix();
 		P->perspective(45.0f, aspect, 0.01f, 10000.0f);
 		mat4 V = camera.getView();
-
-		uniforms *commonUniforms = new uniforms {P->topMatrix(), V, lightDir, vec3(1), camera.getEye()};
+		targetPos = playerBehavior->getTargetPos();
+		uniforms *commonUniforms = new uniforms {P->topMatrix(), V, camera.getEye(), targetPos};
 		ShaderManager::getInstance()->setData(commonUniforms);
 		// draw the floor and the nemos
-		Entities::getInstance()->draw(Model);
+		EntityCollection::getInstance()->draw(Model);
 		Floor::getInstance()->draw(Model);
 
 		// draw test heightmap plane
@@ -276,6 +305,7 @@ public:
 		glDepthFunc(GL_LESS);
 		Model->popMatrix();
 		prog->unbind();
+		P->popMatrix();
 
 		/* FreeType */
 		char stamina_stat[15];
@@ -285,14 +315,12 @@ public:
 		prog->bind();
 		glm::mat4 proj = glm::ortho(0.0f, static_cast<GLfloat>(width), 0.0f, static_cast<GLfloat>(height));
 		glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, glm::value_ptr(proj));
-		textRenderer->drawText("Active Objects: " + to_string(Entities::getInstance()->getNumActive()), 25.0f, height - 50.0f, 0.75f, glm::vec3(0.2f, 1.0f, 0.2f));
-		sprintf(stamina_stat, "%.1f %%", 100* playerBehavior->getStamina()/MAX_STAMINA);
-		textRenderer->drawText("Stamina: " + string(stamina_stat), 25.0f, height - 100.0f, 0.75f, glm::vec3(0.2f, 1.0f, 0.2f));
+		//textRenderer->drawText("Active Objects: " + to_string(EntityCollection::getInstance()->getNumActive()), 25.0f, height - 50.0f, 0.75f, glm::vec3(0.2f, 1.0f, 0.2f));
 		textRenderer->drawText("FPS: " + to_string(fps), 25.0f, 25.0f, 0.75f, glm::vec3(0.1));
         prog->unbind();
-        P->popMatrix();
         glDisable(GL_BLEND);
 
+		GameManager::getInstance()->draw();
 	}	
 };
 
@@ -304,7 +332,7 @@ int main(int argc, char **argv)
 	// and GL context, etc.
 
 	WindowManager *windowManager = new WindowManager();
-	windowManager->init(512, 512);
+	windowManager->init(2048, 1024);
 	windowManager->setEventCallbacks(application);
 	application->windowManager = windowManager;
 
@@ -317,6 +345,7 @@ int main(int argc, char **argv)
 	int fps = 0;
 	double accumulator = 0;
 	double currentTime = glfwGetTime();
+	glfwSetInputMode(windowManager->getHandle(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	// Loop until the user closes the window.
 	while (! glfwWindowShouldClose(windowManager->getHandle()))

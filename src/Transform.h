@@ -21,8 +21,10 @@ public:
 	Transform& syncFacing() { if (velocity != ORIGIN) setFacing(velocity); return *this; }
 	Transform& move(const glm::vec3& change) { position += change; return *this; }
 	/* Move by velocity and deltaTime */
-	Transform& move(const float deltaTime) { return move(velocity * deltaTime); }
+	Transform& move(float deltaTime) { return move(velocity * deltaTime); }
 
+	Transform& interpolateVelocity(const glm::vec3& vel, float deltaTime) 
+		{ this->velocity = mix(this->velocity, vel, deltaTime); return *this; }
 	Transform& setPosition(const glm::vec3& pos) { this->position = pos; return *this; }
 	Transform& setVelocity(const glm::vec3& vel) { this->velocity = vel; return *this; }
 	Transform& setFacing(const glm::vec3& facing) { this->facing = normalize(facing); return *this; }

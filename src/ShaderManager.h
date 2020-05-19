@@ -5,31 +5,38 @@
 
 #include "Program.h"
 #include "Texture.h"
-
+#include "Constants.h"
 
 using namespace std;
-
-#define SIMPLEPROG 0
-#define SKYBOXPROG 1
-#define TEXTUREPROG 2
-#define GLYPHPROG 3
-#define FLOORPROG 4
 using namespace glm;
 
+// Light Constants
+struct light {
+	vec3 pos;
+	float constant;
+	float linear;
+	float quadratic;
+};
+
+constexpr int NUM_LIGHTS = 3;
+static light POINT_LIGHTS[NUM_LIGHTS] = {
+	{ vec3(0, 30, 0), 1.0, 0.007, 0.0002 },
+	{ vec3(100, 70, -100), 1.0, 0.007, 0.0002 },
+	{ vec3(100, 50, 150), 1.0, 0.007, 0.0002 }
+};
+
+// Shader Constants
 struct uniforms {
-   mat4 P;
-   mat4 V;
-   vec3 lightDir;
-   vec3 lightCol;
-   vec3 eye;
- };
+	mat4 P;
+	mat4 V;
+	vec3 eye;
+	vec3 targetPos;
+};
 
 class ShaderManager
 {
 
 	public:
-		static constexpr int NUM_SHADERS = 5;
-
 		static shared_ptr<ShaderManager> getInstance();
 
 		// Shader Manager Constants
@@ -50,4 +57,6 @@ class ShaderManager
 		string resourceDirectory;
 		shared_ptr<Program> shaderProgs[NUM_SHADERS];
 		uniforms *uniformData;
+		void addLightUniforms(std::shared_ptr<Program>& prog);
+		void sendLightUniforms(std::shared_ptr<Program>& prog);
 };

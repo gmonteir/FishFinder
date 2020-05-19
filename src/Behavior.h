@@ -19,11 +19,13 @@ public:
 	static constexpr int PLAYER = 1;
 	static constexpr int FOLLOWER = 2;
 	static constexpr int POWERUP = 3;
+	static constexpr int ENEMY = 4;
 
 	class NoBehavior;
 	class PlayerBehavior;
 	class FollowerBehavior;
 	class PowerupBehavior;
+	class EnemyBehavior;
 
 	static std::unique_ptr<Behavior> createBehavior(int behavior, Transform& transform, Model& model);
 
@@ -70,8 +72,9 @@ class Behavior::PlayerBehavior : public Behavior
 {
 public:
 	PlayerBehavior(Transform& transform, Model& model)
-		: Behavior(PLAYER, transform, model), score(0), speed(PLAYER_SPEED), stamina(INITIAL_STAMINA),
-		rotationSpeed(CAMERA_SPEED), alpha(0), beta(-M_PI_2), previousCharacter(&transform) {}
+		: Behavior(PLAYER, transform, model), score(0), speed(PLAYER_SPEED), slow(0),
+		previousCharacter(&transform), target(nullptr) {}
+
 	virtual ~PlayerBehavior() {}
 
 	void start() override;
@@ -80,18 +83,18 @@ public:
 	void onOutOfBounds(float deltaTime) override {}
 	void onCollision(Behavior& collider) override;
 
-	void rotate(float dx, float dy);
-
 	int getScore() const { return score; }
-	float getStamina() const { return stamina; }
+	vec3 getTargetPos() const { return target->getPosition(); }
+
+	void setTarget(Transform *newTarget) { target = newTarget; }
 
 private:
 	int score;
-	float speed, rotationSpeed;
-	float alpha, beta;
-	float stamina;
+	float speed;
+	float slow;
 
 	Transform* previousCharacter;
+	Transform* target;
 };
 
 class Behavior::FollowerBehavior : public Behavior
@@ -120,7 +123,7 @@ private:
 
 	bool following;
 
-	void setPathVelocity();
+	void setPathVelocity(float deltaTime);
 };
 
 class Behavior::PowerupBehavior : public Behavior
@@ -138,6 +141,23 @@ public:
 
 private:
 	float timer;
+};
+
+class Behavior::EnemyBehavior : public Behavior
+{
+public:
+	EnemyBehavior(Transform& transform, Model& model)
+		: Behavior(ENEMY, transform, model) {}
+	virtual ~EnemyBehavior() {}
+
+	void start() override {}
+	void update(float deltaTime) override {}
+
+	void onOutOfBounds(float deltaTime) override {}
+	void onCollision(Behavior& collider) override {}
+
+private:
+	
 };
 
 #endif

@@ -2,6 +2,7 @@
 #include "Entities.h"
 #include "Spawner.h"
 #include "Keys.h"
+#include "GameManager.h"
 
 #include <iostream>
 
@@ -18,6 +19,8 @@ unique_ptr<Behavior> Behavior::createBehavior(int behavior, Transform& transform
 		return unique_ptr<Behavior>(new FollowerBehavior(transform, model));
 	case POWERUP:
 		return unique_ptr<Behavior>(new PowerupBehavior(transform, model));
+	case ENEMY:
+		return unique_ptr<Behavior>(new EnemyBehavior(transform, model));
 	default:
 		return unique_ptr<Behavior>(new NoBehavior(transform, model));
 	}
@@ -32,10 +35,11 @@ void Behavior::bringToFloor(float offset) {
 	));
 }
 
+// ----------------------------- PLAYER ----------------------------- //
 void Behavior::PlayerBehavior::start()
 {
 	transform.setSize(glm::vec3(PLAYER_SIZE));
-	bringToFloor(FLOOR_OFFSET);
+	bringToFloor(FOLLOWER_OFFSET);
 	model.setTexture(DORY_TEXTURE);
 	model.setProgram(TEXTUREPROG);
 }
@@ -52,11 +56,10 @@ void Behavior::PlayerBehavior::update(float deltaTime)
 	if (Keys::getInstance().keyPressed(Keys::BACKWARD))
 		forward -= 1;
 
-	if (Keys::getInstance().keyPressed(Keys::BOOST) && stamina > 0) {
+	if (Keys::getInstance().keyPressed(Keys::BOOST) 
+		&& GameManager::getInstance()->getStamina() > 0) {
 		boost = 30;
-		stamina -= deltaTime;
-		if (stamina < 0)
-			stamina = 0;
+		GameManager::getInstance()->decreaseStamina(deltaTime);
 	}
 
 	if (Keys::getInstance().keyPressed(Keys::LEFT))
@@ -64,15 +67,13 @@ void Behavior::PlayerBehavior::update(float deltaTime)
 	if (Keys::getInstance().keyPressed(Keys::RIGHT))
 		right += 1;
 
-	if (Keys::getInstance().keyPressed(Keys::ROTLEFT))
-		rotate(rotationSpeed, 0);
-	if (Keys::getInstance().keyPressed(Keys::ROTRIGHT))
-		rotate(-rotationSpeed, 0);
-
 	deltas.x = forward * transform.getFacing().x + right * -transform.getFacing().z;
 	deltas.y = forward * transform.getFacing().y;
 	deltas.z = forward * transform.getFacing().z + right * transform.getFacing().x;
-	transform.setVelocity(right == 0 && forward == 0 ? ORIGIN : normalize(deltas) * (speed + boost));
+	transform.interpolateVelocity(right == 0 && forward == 0 ? ORIGIN : normalize(deltas) * (speed - slow + boost), deltaTime);
+
+	if (slow > 0)
+		slow = mix(slow, 0.0f, HIT_RECOVERY * deltaTime);
 
 	model.getAnimator().setAnimationSpeed(boost > 0 ? 3 : 1);
 }
@@ -88,29 +89,20 @@ void Behavior::PlayerBehavior::onCollision(Behavior& collider)
 			return;
 		follower->setTarget(previousCharacter);
 		follower->followTarget();
-		Spawner::getInstance()->spawnFollower();
+		target = &Spawner::getInstance()->spawnFollower()->getTransform();
 		Entities::getInstance()->decrementNumActive();
 		previousCharacter = &collider.transform;
+		GameManager::getInstance()->decrementNumChar();
 		break;
 	case POWERUP:
 		collider.remove();
 		Entities::getInstance()->decrementNumActive();
-		stamina += 1;
-		if (stamina > 10)
-			stamina = 10;
+		GameManager::getInstance()->increaseStamina(STAMINA_INCREMENT);
+		break;
+	case ENEMY:
+		slow = (PLAYER_SPEED / 2.0);
 		break;
 	}
-}
-
-void Behavior::PlayerBehavior::rotate(float dx, float dy)
-{
-	beta -= radians(dx);
-	alpha += radians(dy);
-	if (alpha > radians(70.f))
-		alpha = radians(70.f);
-	else if (alpha < radians(-70.f))
-		alpha = radians(-70.f);
-	transform.setFacing(normalize(vec3(cos(alpha) * cos(beta), sin(alpha), cos(alpha) * cos(M_PI_2 - beta))));
 }
 
 // ----------------------------- FOLLOWER ----------------------------- //
@@ -125,7 +117,7 @@ void Behavior::FollowerBehavior::start()
 void Behavior::FollowerBehavior::update(float deltaTime)
 {
 	if (target)
-		setPathVelocity();
+		setPathVelocity(deltaTime);
 }
 
 void Behavior::FollowerBehavior::onOutOfBounds(float deltaTime)
@@ -138,12 +130,12 @@ void Behavior::FollowerBehavior::onOutOfBounds(float deltaTime)
 		.syncFacing();
 }
 
-void Behavior::FollowerBehavior::setPathVelocity()
+void Behavior::FollowerBehavior::setPathVelocity(float deltaTime)
 {
 	vec3 direction(target->getPosition() - transform.getPosition());
 	vec3 normal(normalize(direction));
 
-	transform.setVelocity(length(direction) > offset ? normal * speed : ORIGIN)
+	transform.interpolateVelocity(length(direction) > offset ? normal * speed : ORIGIN, deltaTime)
 		.syncFacing();
 }
 
@@ -151,6 +143,8 @@ void Behavior::FollowerBehavior::setPathVelocity()
 // ----------------------------- POWERUP ----------------------------- //
 void Behavior::PowerupBehavior::update(float deltaTime)
 {
+	transform.move(vec3(0, sin(timer) * deltaTime, 0));
+	transform.setFacing(transform.getFacing() + deltaTime * vec3(sin(timer), 0, cos(timer)));
 	timer -= deltaTime;
 
 	if (timer <= 0)
@@ -159,3 +153,5 @@ void Behavior::PowerupBehavior::update(float deltaTime)
 		Entities::getInstance()->decrementNumActive();
 	}
 }
+
+// ----------------------------- ENEMY ----------------------------- //

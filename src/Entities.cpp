@@ -23,7 +23,7 @@ void Entities::update(float deltaTime)
 		}
 		else
 		{
-			entity->update(deltaTime, *this);
+			//entity->update(deltaTime, *this);
 		}
 	}
 }
