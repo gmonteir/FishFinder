@@ -48,6 +48,7 @@ class ShaderManager
 	    shared_ptr<Program> initTextureProg();
 	    shared_ptr<Program> initGlyphProg();
 	    shared_ptr<Program> initFloorProg();
+		shared_ptr<Program> initFBOProg();
 
 	    shared_ptr<Program> getShader(int i) { return shaderProgs[i]; }
 	    void setData(uniforms *common) { uniformData = common; }
@@ -59,4 +60,6 @@ class ShaderManager
 		uniforms *uniformData;
 		void addLightUniforms(std::shared_ptr<Program>& prog);
 		void sendLightUniforms(std::shared_ptr<Program>& prog);
+
+		std::shared_ptr<Program> makeProgram(const std::string& vertex, const std::string& fragment);
 };
