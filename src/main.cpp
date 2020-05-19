@@ -49,12 +49,6 @@ public:
 	// Shape to be used (from obj file)
 	shared_ptr<Shape> shape;
 
-	// Contains vertex information for OpenGL
-	GLuint VertexArrayID;
-
-	// Data necessary to give our triangle to OpenGL
-	GLuint VertexBufferID;
-
 	//example data that might be useful when trying to compute bounds on multi-shape
 	vec3 lightPos = vec3(0, 70, 0);
 	vec3 targetPos = vec3(0, 0, -10);
@@ -220,16 +214,6 @@ public:
 		//Entities::getInstance()->update(deltaTime);
 		EntityCollection::getInstance()->update(deltaTime);
 		camera.update(deltaTime, player->getTransform());
-	}
-
-	/* helper functions for sending matrix data to the GPU */
-	mat4 SetProjectionMatrix(shared_ptr<Program> curShade) {
-	    int width, height;
-	    glfwGetFramebufferSize(windowManager->getHandle(), &width, &height);
-	    float aspect = width/(float)height;
-	    mat4 Projection = perspective(radians(50.0f), aspect, 0.1f, 100.0f);
-	    glUniformMatrix4fv(curShade->getUniform("P"), 1, GL_FALSE, value_ptr(Projection));
-	    return Projection;
 	}
 
 	void render(int fps)
