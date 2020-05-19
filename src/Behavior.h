@@ -19,11 +19,13 @@ public:
 	static constexpr int PLAYER = 1;
 	static constexpr int FOLLOWER = 2;
 	static constexpr int POWERUP = 3;
+	static constexpr int ENEMY = 4;
 
 	class NoBehavior;
 	class PlayerBehavior;
 	class FollowerBehavior;
 	class PowerupBehavior;
+	class EnemyBehavior;
 
 	static std::unique_ptr<Behavior> createBehavior(int behavior, Transform& transform, Model& model);
 
@@ -70,7 +72,7 @@ class Behavior::PlayerBehavior : public Behavior
 {
 public:
 	PlayerBehavior(Transform& transform, Model& model)
-		: Behavior(PLAYER, transform, model), score(0), speed(PLAYER_SPEED),
+		: Behavior(PLAYER, transform, model), score(0), speed(PLAYER_SPEED), slow(0),
 		previousCharacter(&transform), target(nullptr) {}
 
 	virtual ~PlayerBehavior() {}
@@ -89,6 +91,7 @@ public:
 private:
 	int score;
 	float speed;
+	float slow;
 
 	Transform* previousCharacter;
 	Transform* target;
@@ -138,6 +141,23 @@ public:
 
 private:
 	float timer;
+};
+
+class Behavior::EnemyBehavior : public Behavior
+{
+public:
+	EnemyBehavior(Transform& transform, Model& model)
+		: Behavior(ENEMY, transform, model) {}
+	virtual ~EnemyBehavior() {}
+
+	void start() override {}
+	void update(float deltaTime) override {}
+
+	void onOutOfBounds(float deltaTime) override {}
+	void onCollision(Behavior& collider) override {}
+
+private:
+	
 };
 
 #endif

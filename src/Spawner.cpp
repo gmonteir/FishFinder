@@ -44,6 +44,11 @@ void Spawner::init()
 
 		spawnCoral(coralType);
 	}
+
+	for (size_t i = 0; i < NUM_ENEMIES; i++)
+	{
+		spawnEnemy();
+	}
 }
 
 void Spawner::update(float deltaTime, float gameTime)
@@ -87,6 +92,15 @@ void Spawner::spawnCoral(int type)
 		.setSize(Random::spawnSize())
 		.setFacing(Random::facingXZ());
 	e->getModel().setMaterial(coralMaterials()[type]);
+}
+
+void Spawner::spawnEnemy()
+{
+	shared_ptr<Entity> e = spawnRandom(ENEMY_SHAPE, Behavior::ENEMY, FLOOR_OFFSET);
+	e->getTransform()
+		.setSize(vec3(ENEMY_SIZE))
+		.setFacing(Random::facingXZ());
+	e->getModel().setMaterial(ENEMY_MATERIAL);
 }
 
 shared_ptr<Entity> Spawner::spawnRandom(const string& shapeName, int behavior, float offset)

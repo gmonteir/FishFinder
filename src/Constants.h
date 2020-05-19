@@ -27,11 +27,13 @@ const std::string TREE_CORAL_SHAPE = "TREE_CORAL";
 const std::string SOFT_CORAL_SHAPE = "SOFT_CORAL";
 const std::string ELKHORN_CORAL_SHAPE = "ELKHORN_CORAL";
 const std::string FLOOR_SHAPE = "FLOOR_SHAPE";
+const std::string ENEMY_SHAPE = "CUBE";
 const std::string RESOURCE_DIR = "../resources";
 
 // Game Constants
 constexpr int NUM_CHARACTERS = 7;
 constexpr float INITIAL_TIME_LIMIT = 10.0f; // seconds
+constexpr float HIT_RECOVERY = 0.5f;
 
 // Player
 constexpr float PLAYER_SPEED = 20;
@@ -88,6 +90,11 @@ constexpr int ELKHORN_CORAL_INDEX = 2;
 constexpr int TREE_CORAL_MATERIAL = 10;
 constexpr int SOFT_CORAL_MATERIAL = 6;
 constexpr int ELKHORN_CORAL_MATERIAL = 9;
+
+// Enemy Constants
+constexpr int ENEMY_SIZE = 3;
+constexpr int ENEMY_MATERIAL = 3;
+constexpr int NUM_ENEMIES = 5;
 
 // Nemo Constants
 constexpr float NEMO_SPEED = 20;
