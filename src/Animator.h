@@ -16,6 +16,7 @@ public:
 	class SquirtAnimator;
 	class JennyAnimator;
 	class CharlieAnimator;
+	class BloatAnimator;
 
 	Animator() : animationSpeed(1) {}
 	virtual ~Animator() {}
@@ -117,6 +118,22 @@ public:
 	CharlieAnimator() : Animator(), leftFin(ORIGIN), rightFin(ORIGIN), tail(ORIGIN),
 		leftFinRight(false), rightFinRight(false), tailRight(false) {}
 	virtual ~CharlieAnimator() {}
+
+	void animate(float deltaTime) override;
+	void drawModel(std::shared_ptr<MatrixStack>& M, std::shared_ptr<Program> prog,
+		const std::vector<std::shared_ptr<Shape>>& shapes) const override;
+
+private:
+	glm::vec3 leftFin, rightFin, tail;
+	bool leftFinRight, rightFinRight, tailRight;
+};
+
+class Animator::BloatAnimator : public Animator
+{
+public:
+	BloatAnimator() : Animator(), leftFin(ORIGIN), rightFin(ORIGIN), tail(ORIGIN),
+		leftFinRight(false), rightFinRight(false), tailRight(false) {}
+	virtual ~BloatAnimator() {}
 
 	void animate(float deltaTime) override;
 	void drawModel(std::shared_ptr<MatrixStack>& M, std::shared_ptr<Program> prog,

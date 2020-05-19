@@ -11,6 +11,7 @@ Shapes::Shapes()
 	addShape(RESOURCE_DIR + "/squirt.obj", SQUIRT_SHAPE);
 	addShape(RESOURCE_DIR + "/jenny.obj", JENNY_SHAPE);
 	addShape(RESOURCE_DIR + "/charlie.obj", CHARLIE_SHAPE);
+	addShape(RESOURCE_DIR + "/bloat.obj", BLOAT_SHAPE);
 	addShape(RESOURCE_DIR + "/tree_coral.obj", TREE_CORAL_SHAPE);
 	addShape(RESOURCE_DIR + "/soft_coral.obj", SOFT_CORAL_SHAPE);
 	addShape(RESOURCE_DIR + "/elkhorn_coral.obj", ELKHORN_CORAL_SHAPE);
