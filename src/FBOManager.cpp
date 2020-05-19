@@ -1,6 +1,7 @@
 #include "FBOManager.h"
 #include "ShaderManager.h"
 #include "WindowManager.h"
+#include "GLTextureWriter.h"
 
 #include <iostream>
 
@@ -13,33 +14,12 @@ FBOManager& FBOManager::getInstance()
 	return instance;
 }
 
-FBOManager::FBOManager()
+FBOManager::FBOManager() : firstTime(true)
 {
-	int width, height;
-	glfwGetFramebufferSize(WindowManager::instance->getHandle(), &width, &height);
-	glViewport(0, 0, width, height);
-	//create two frame buffer objects to toggle between
-	//make two FBOs and two textures
-	glGenFramebuffers(2, frameBuf);
-	glGenTextures(2, texBuf);
-	glGenRenderbuffers(1, &depthBuf);
-
-	//create one FBO
-	createFBO(frameBuf[0], texBuf[0]);
-
-	//set up depth necessary since we are rendering a mesh that needs depth test
-	glBindRenderbuffer(GL_RENDERBUFFER, depthBuf);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthBuf);
-
-	//more FBO set up
-	GLenum DrawBuffers[1] = { GL_COLOR_ATTACHMENT0 };
-	glDrawBuffers(1, DrawBuffers);
-
-	//create another FBO so we can swap back and forth
-	createFBO(frameBuf[1], texBuf[1]);
-	//this one doesn't need depth - its just an image to process into
+	initFBOs();
+	initVAO();
 	initQuad();
+	cout << "Initialized FBOManager" << endl;
 }
 
 void FBOManager::bindBuffer()
@@ -56,10 +36,10 @@ void FBOManager::drawBuffer()
 
 	/* code to write out the FBO (texture) just once  - this is for debugging*/
 	/* Note that texBuf[0] corresponds to frameBuf[0] */
-/*	if (FirstTime) {
-		assert(GLTextureWriter::WriteImage(texBuf[0], "Texture_output.png"));
-		FirstTime = 0;
-	}*/
+	if (firstTime) {
+		assert(GLTextureWriter::WriteImage(texBuf[0], "texture_output.png"));
+		firstTime = false;
+	}
 
 	//regardless NOW set up to render to the screen = 0
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -67,36 +47,50 @@ void FBOManager::drawBuffer()
 	/* now draw the actual output  to the default framebuffer - ie display */
 	/* note the current base code is just using one FBO and texture - will need
 	  to change that  - we pass in texBuf[0] right now */
-	processDrawTex(texBuf[0]);
+	processDrawTex();
 }
 
-void FBOManager::processDrawTex(GLuint inTex)
+void FBOManager::initFBOs()
 {
-	shared_ptr<Program> fboProg = ShaderManager::getInstance()->getShader(FBOPROG);
-	//set up inTex as my input texture
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, inTex);
-	//example applying of 'drawing' the FBO texture
-	//this shader just draws right now
-	cout << "Process Texture " << endl;
-	fboProg->bind();
-	glUniform1i(fboProg->getUniform("texBuf"), 0);
-	glUniform1f(fboProg->getUniform("fTime"), glfwGetTime());
-	glEnableVertexAttribArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, quad_vertexbuffer);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-	glDrawArrays(GL_TRIANGLES, 0, 6);
-	glDisableVertexAttribArray(0);
-	cout << "Unbinding...." << endl;
-	fboProg->unbind();
-	cout << "Texture Processed" << endl;
+	int width, height;
+	glfwGetFramebufferSize(WindowManager::instance->getHandle(), &width, &height);
+
+	//create two frame buffer objects to toggle between
+	//make two FBOs and two textures
+	CHECKED_GL_CALL(glGenFramebuffers(2, frameBuf));
+	CHECKED_GL_CALL(glGenTextures(2, texBuf));
+	CHECKED_GL_CALL(glGenRenderbuffers(1, &depthBuf));
+
+	//create one FBO
+	createFBO(frameBuf[0], texBuf[0]);
+
+	//set up depth necessary since we are rendering a mesh that needs depth test
+	glBindRenderbuffer(GL_RENDERBUFFER, depthBuf);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthBuf);
+
+	//more FBO set up
+	GLenum drawBuffers[1] = { GL_COLOR_ATTACHMENT0 };
+	glDrawBuffers(1, drawBuffers);
+
+	//create another FBO so we can swap back and forth
+	createFBO(frameBuf[1], texBuf[1]);
+}
+
+void FBOManager::initVAO()
+{
+	GLuint vao;
+	//generate the VAO
+	CHECKED_GL_CALL(glGenVertexArrays(1, &vao));
+	CHECKED_GL_CALL(glBindVertexArray(vao));
 }
 
 void FBOManager::initQuad()
 {
+	//this one doesn't need depth - its just an image to process into
 	//now set up a simple quad for rendering FBO
-	glGenVertexArrays(1, &quad_VertexArrayID);
-	glBindVertexArray(quad_VertexArrayID);
+	CHECKED_GL_CALL(glGenVertexArrays(1, &quad_VertexArrayID));
+	CHECKED_GL_CALL(glBindVertexArray(quad_VertexArrayID));
 
 	static const GLfloat g_quad_vertex_buffer_data[] = {
 	 -1.0f, -1.0f, 0.0f,
@@ -107,9 +101,9 @@ void FBOManager::initQuad()
 	 1.0f,  1.0f, 0.0f,
 	};
 
-	glGenBuffers(1, &quad_vertexbuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, quad_vertexbuffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(g_quad_vertex_buffer_data), g_quad_vertex_buffer_data, GL_STATIC_DRAW);
+	CHECKED_GL_CALL(glGenBuffers(1, &quad_vertexbuffer));
+	CHECKED_GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, quad_vertexbuffer));
+	CHECKED_GL_CALL(glBufferData(GL_ARRAY_BUFFER, sizeof(g_quad_vertex_buffer_data), g_quad_vertex_buffer_data, GL_STATIC_DRAW));
 
 }
 
@@ -136,4 +130,29 @@ void FBOManager::createFBO(GLuint& fb, GLuint& tex)
 		cout << "Error setting up frame buffer - exiting" << endl;
 		exit(0);
 	}
+}
+
+void FBOManager::processDrawTex()
+{
+	shared_ptr<Program> fboProg = ShaderManager::getInstance()->getShader(FBOPROG);
+	//set up inTex as my input texture
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, texBuf[0]);
+	//example applying of 'drawing' the FBO texture
+	//this shader just draws right now
+	cout << "Process Texture " << endl;
+	fboProg->bind();
+	CHECKED_GL_CALL(glUniform1i(fboProg->getUniform("texBuf"), 0));
+	CHECKED_GL_CALL(glUniform1f(fboProg->getUniform("fTime"), glfwGetTime()));
+	CHECKED_GL_CALL(glEnableVertexAttribArray(0));
+	CHECKED_GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, quad_vertexbuffer));
+	CHECKED_GL_CALL(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0));
+	CHECKED_GL_CALL(glDrawArrays(GL_TRIANGLES, 0, 6));
+	CHECKED_GL_CALL(glDisableVertexAttribArray(0));
+	fboProg->unbind();
+	/*if (glGetShaderiv(GL_COMPILE_STATUS) == 0)
+	{
+		glGetShaderInfoLog()
+	}*/
+	cout << "Texture Processed" << endl;
 }

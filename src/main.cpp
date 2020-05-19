@@ -21,6 +21,7 @@
 #include "Spawner.h"
 #include "ShaderManager.h"
 #include "GameManager.h"
+#include "FBOManager.h"
 #include "RenderText.h"
 #include "Textures.h"
 #include "Floor.h"
@@ -48,12 +49,6 @@ public:
 
 	// Shape to be used (from obj file)
 	shared_ptr<Shape> shape;
-
-	// Contains vertex information for OpenGL
-	GLuint VertexArrayID;
-
-	// Data necessary to give our triangle to OpenGL
-	GLuint VertexBufferID;
 
 	//example data that might be useful when trying to compute bounds on multi-shape
 	vec3 lightPos = vec3(0, 70, 0);
@@ -244,6 +239,8 @@ public:
 
 		// Clear framebuffer.
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		//FBOManager::getInstance().bindBuffer();
+		
 
 		/* Leave this code to just draw the meshes alone */
 		float aspect = width/(float)height;
@@ -311,6 +308,7 @@ public:
         glDisable(GL_BLEND);
 
 		GameManager::getInstance()->draw();
+		//FBOManager::getInstance().drawBuffer();
 	}	
 };
 
