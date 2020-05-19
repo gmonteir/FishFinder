@@ -63,8 +63,6 @@ public:
 	unsigned int cubeMapTexture;
 
 	int drawMode = 0;
-	float mouseX = 0;
-	float mouseY = 0;
 
 	shared_ptr<Entity> player;
 	shared_ptr<Behavior::PlayerBehavior> playerBehavior;
@@ -120,16 +118,7 @@ public:
 
 	void cursorPosCallback(GLFWwindow* window, double xpos, double ypos) override
 	{
-		float deltaX = mouseX - xpos;
-		float deltaY = mouseY - ypos;
-
-		// check whether or not mouseX and mouseY have been initialized yet
-		// currently a hacky check of whether or not the deltas are unrealistic.
-		if (abs(deltaX) < 50 && abs(deltaY) < 50)
-			camera.interpolateRotation(deltaX, deltaY, MOUSE_SENSITIVITY);
-
-		mouseX = xpos;
-		mouseY = ypos;
+		camera.cursorCallback(xpos, ypos);
 	}
 
 	void scrollCallback(GLFWwindow* window, double deltaX, double deltaY) override
@@ -265,7 +254,7 @@ public:
 		P->perspective(45.0f, aspect, 0.01f, 10000.0f);
 		mat4 V = camera.getView();
 		targetPos = playerBehavior->getTargetPos();
-		uniforms *commonUniforms = new uniforms {P->topMatrix(), V, camera.getEye(), targetPos};
+		uniforms commonUniforms{P->topMatrix(), V, camera.getEye(), targetPos};
 		ShaderManager::getInstance()->setData(commonUniforms);
 		// draw the floor and the nemos
 		EntityCollection::getInstance()->draw(Model);
