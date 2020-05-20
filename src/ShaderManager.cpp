@@ -1,6 +1,9 @@
 #include "ShaderManager.h"
 #include <iostream>
 
+using namespace std;
+using namespace glm;
+
 shared_ptr<ShaderManager> ShaderManager::getInstance()
 {
 	static shared_ptr<ShaderManager> instance(new ShaderManager);

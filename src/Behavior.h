@@ -84,7 +84,7 @@ public:
 	void onCollision(Behavior& collider) override;
 
 	int getScore() const { return score; }
-	vec3 getTargetPos() const { return target->getPosition(); }
+	glm::vec3 getTargetPos() const { return target->getPosition(); }
 
 	void setTarget(Transform *newTarget) { target = newTarget; }
 

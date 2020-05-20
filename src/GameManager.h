@@ -36,8 +36,8 @@ public:
 	void lose() { gameStats.inGame = false; }
 
 	float getStamina() { return gameStats.stamina; }
-	void increaseStamina(float delta) { gameStats.stamina = min(gameStats.stamina + delta, MAX_STAMINA); }
-	void decreaseStamina(float delta) { gameStats.stamina = max(gameStats.stamina - delta, 0.0f); }
+	void increaseStamina(float delta) { gameStats.stamina = glm::min(gameStats.stamina + delta, MAX_STAMINA); }
+	void decreaseStamina(float delta) { gameStats.stamina = glm::max(gameStats.stamina - delta, 0.0f); }
 
 	void decrementNumChar() { gameStats.charRemaining--; }
 
