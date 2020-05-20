@@ -83,6 +83,10 @@ public:
 		{
 			GameManager::getInstance()->increaseStamina(STAMINA_INCREMENT);
 		}
+		if (key == GLFW_KEY_B && action == GLFW_PRESS)
+		{
+			FBOManager::getInstance().toggle();
+		}
 		Keys::getInstance().update(key, action);
 	}
 
@@ -164,11 +168,8 @@ public:
 		glfwGetFramebufferSize(windowManager->getHandle(), &width, &height);
 		glViewport(0, 0, width, height);
 
-		// Clear framebuffer.
 		FBOManager::getInstance().bindBuffer();
-		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		
-
 		/* Leave this code to just draw the meshes alone */
 		float aspect = width/(float)height;
 

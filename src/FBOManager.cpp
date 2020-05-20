@@ -8,32 +8,34 @@
 using namespace std;
 using namespace glm;
 
+FBOManager::FBOManager() : firstTime(true), shouldProcess(false)
+{
+	initFBOs();
+	initQuad();
+	cout << "FBOManager: Initialized" << endl;
+}
+
 FBOManager& FBOManager::getInstance()
 {
 	static FBOManager instance;
 	return instance;
 }
 
-FBOManager::FBOManager() : firstTime(true)
-{
-	initFBOs();
-	initVAO();
-	initQuad();
-	cout << "FBOManager: Initialized" << endl;
-}
-
 void FBOManager::bindBuffer()
 {
+	if (shouldProcess)
+		//set up to render to first FBO stored in array position 0
+		glBindFramebuffer(GL_FRAMEBUFFER, frameBuf[0]);
+	else
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-	//set up to render to first FBO stored in array position 0
-	glBindFramebuffer(GL_FRAMEBUFFER, frameBuf[0]);
 	// Clear framebuffer.
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 void FBOManager::drawBuffer()
 {
-
+	if (!shouldProcess) return;
 	/* code to write out the FBO (texture) just once  - this is for debugging*/
 	/* Note that texBuf[0] corresponds to frameBuf[0] */
 	if (firstTime) {
@@ -56,11 +58,13 @@ void FBOManager::initFBOs()
 	int width, height;
 	glfwGetFramebufferSize(WindowManager::instance->getHandle(), &width, &height);
 
+	GLuint depthBuf;
+
 	//create two frame buffer objects to toggle between
 	//make two FBOs and two textures
-	CHECKED_GL_CALL(glGenFramebuffers(2, frameBuf));
-	CHECKED_GL_CALL(glGenTextures(2, texBuf));
-	CHECKED_GL_CALL(glGenRenderbuffers(1, &depthBuf));
+	glGenFramebuffers(2, frameBuf);
+	glGenTextures(2, texBuf);
+	glGenRenderbuffers(1, &depthBuf);
 
 	//create one FBO
 	createFBO(frameBuf[0], texBuf[0]);
@@ -78,22 +82,14 @@ void FBOManager::initFBOs()
 	createFBO(frameBuf[1], texBuf[1]);
 }
 
-void FBOManager::initVAO()
-{
-	GLuint vao;
-	//generate the VAO
-	CHECKED_GL_CALL(glGenVertexArrays(1, &vao));
-	CHECKED_GL_CALL(glBindVertexArray(vao));
-}
-
 void FBOManager::initQuad()
 {
 	//this one doesn't need depth - its just an image to process into
 	//now set up a simple quad for rendering FBO
-	CHECKED_GL_CALL(glGenVertexArrays(1, &quad_VertexArrayID));
-	CHECKED_GL_CALL(glBindVertexArray(quad_VertexArrayID));
+	glGenVertexArrays(1, &quadVertexArrayID);
+	glBindVertexArray(quadVertexArrayID);
 
-	static const GLfloat g_quad_vertex_buffer_data[] = {
+	static const GLfloat quadVertexData[] = {
 	 -1.0f, -1.0f, 0.0f,
 	 1.0f, -1.0f, 0.0f,
 	 -1.0f,  1.0f, 0.0f,
@@ -102,13 +98,13 @@ void FBOManager::initQuad()
 	 1.0f,  1.0f, 0.0f,
 	};
 
-	CHECKED_GL_CALL(glGenBuffers(1, &quad_vertexbuffer));
-	CHECKED_GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, quad_vertexbuffer));
-	CHECKED_GL_CALL(glBufferData(GL_ARRAY_BUFFER, sizeof(g_quad_vertex_buffer_data), g_quad_vertex_buffer_data, GL_STATIC_DRAW));
+	glGenBuffers(1, &quadVertexBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, quadVertexBuffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertexData), quadVertexData, GL_STATIC_DRAW);
 
 }
 
-void FBOManager::createFBO(GLuint& fb, GLuint& tex)
+void FBOManager::createFBO(GLuint fb, GLuint tex)
 {
 	//initialize FBO (global memory)
 	int width, height;
@@ -142,13 +138,13 @@ void FBOManager::processDrawTex()
 	//example applying of 'drawing' the FBO texture
 	//this shader just draws right now
 	fboProg->bind();
-	CHECKED_GL_CALL(glUniform1i(fboProg->getUniform("texBuf"), 0));
-	CHECKED_GL_CALL(glUniform1f(fboProg->getUniform("fTime"), glfwGetTime()));
-	CHECKED_GL_CALL(glBindVertexArray(quad_VertexArrayID));
-	CHECKED_GL_CALL(glEnableVertexAttribArray(0));
-	CHECKED_GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, quad_vertexbuffer));
-	CHECKED_GL_CALL(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0));
-	CHECKED_GL_CALL(glDrawArrays(GL_TRIANGLES, 0, 6));
-	CHECKED_GL_CALL(glDisableVertexAttribArray(0));
+	glUniform1i(fboProg->getUniform("texBuf"), 0);
+	glUniform1f(fboProg->getUniform("fTime"), glfwGetTime());
+	glBindVertexArray(quadVertexArrayID);
+	glEnableVertexAttribArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, quadVertexBuffer);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+	glDisableVertexAttribArray(0);
 	fboProg->unbind();
 }
