@@ -33,7 +33,6 @@ const std::string RESOURCE_DIR = "../resources";
 // Game Constants
 constexpr int NUM_CHARACTERS = 7;
 constexpr float INITIAL_TIME_LIMIT = 10.0f; // seconds
-constexpr float HIT_RECOVERY = 0.5f;
 
 // Player
 constexpr float PLAYER_SPEED = 20;
@@ -41,6 +40,7 @@ constexpr float PLAYER_SIZE = 3;
 constexpr int PLAYER_MATERIAL = 5;
 constexpr float INITIAL_STAMINA = 30;
 constexpr float MAX_STAMINA = 100;
+constexpr float RECOVERY_SPEED = 0.5f;
 
 // Camera
 constexpr float CAMERA_SPEED = 3;

@@ -85,7 +85,7 @@ public:
 		}
 		if (key == GLFW_KEY_B && action == GLFW_PRESS)
 		{
-			FBOManager::getInstance().toggle();
+			FBOManager::getInstance().increaseBlurAmount(1);
 		}
 		Keys::getInstance().update(key, action);
 	}
@@ -155,9 +155,10 @@ public:
 	{
 		Spawner::getInstance()->update(deltaTime, gameTime);
 		GameManager::getInstance()->update(deltaTime, gameTime);
-		//Entities::getInstance()->update(deltaTime);
 		EntityCollection::getInstance()->update(deltaTime);
 		camera.update(deltaTime, player->getTransform());
+
+		FBOManager::getInstance().update(deltaTime, gameTime);
 	}
 
 	void render()

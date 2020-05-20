@@ -73,7 +73,7 @@ void Behavior::PlayerBehavior::update(float deltaTime)
 	transform.interpolateVelocity(right == 0 && forward == 0 ? ORIGIN : normalize(deltas) * (speed - slow + boost), deltaTime);
 
 	if (slow > 0)
-		slow = mix(slow, 0.0f, HIT_RECOVERY * deltaTime);
+		slow = mix(slow, 0.0f, RECOVERY_SPEED * deltaTime);
 
 	model.getAnimator().setAnimationSpeed(boost > 0 ? 3 : 1);
 }

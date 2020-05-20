@@ -8,7 +8,7 @@
 using namespace std;
 using namespace glm;
 
-FBOManager::FBOManager() : firstTime(true), shouldProcess(false)
+FBOManager::FBOManager() : blurAmount(0)
 {
 	initFBOs();
 	initQuad();
@@ -23,43 +23,45 @@ FBOManager& FBOManager::getInstance()
 
 void FBOManager::bindBuffer()
 {
-	if (shouldProcess)
-		//set up to render to first FBO stored in array position 0
-		glBindFramebuffer(GL_FRAMEBUFFER, frameBuf[0]);
-	else
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
+	//set up to render to first FBO stored in array position 0
+	glBindFramebuffer(GL_FRAMEBUFFER, frameBuf[0]);
 	// Clear framebuffer.
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 void FBOManager::drawBuffer()
 {
-	if (!shouldProcess) return;
 	/* code to write out the FBO (texture) just once  - this is for debugging*/
-	/* Note that texBuf[0] corresponds to frameBuf[0] */
-	if (firstTime) {
-		assert(GLTextureWriter::WriteImage(texBuf[0], "texture_output.png"));
-		cout << "FBOManager: Attempted to write out texture to texture_output.png" << endl;
-		firstTime = false;
-	}
+	//if (firstTime) {
+	//	writeTexture("texture_output.png");
+	//	firstTime = false;
+	//}
 
-	for (size_t i = 0; i < 16; i++)
+	for (size_t i = 0; i < round(blurAmount); i++)
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, frameBuf[(i + 1) % 2]);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		processDrawTex(texBuf[i % 2], BLURPROG);
 	}
 
-	//regardless NOW set up to render to the screen = 0
+	// render to the screen
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	/* now draw the actual output  to the default framebuffer - ie display */
-	/* note the current base code is just using one FBO and texture - will need
-	  to change that  - we pass in texBuf[0] right now */
+
 	glDisable(GL_DEPTH_TEST);
 	processDrawTex(texBuf[0], FBOPROG);
 	glEnable(GL_DEPTH_TEST);
+}
+
+void FBOManager::update(float deltaTime, float gameTime)
+{
+	blurAmount = mix(blurAmount, 0.0f, deltaTime * RECOVERY_SPEED);
+}
+
+void FBOManager::writeTexture(const std::string filename)
+{
+	assert(GLTextureWriter::WriteImage(texBuf[0], filename));
+	cout << "FBOManager: Wrote out texture to " << filename << endl;
 }
 
 void FBOManager::initFBOs()

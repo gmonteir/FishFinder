@@ -17,7 +17,12 @@ class FBOManager
 		void bindBuffer();
 		void drawBuffer();
 
-		void toggle() { shouldProcess = !shouldProcess; }
+		void update(float deltaTime, float gameTime);
+
+		void increaseBlurAmount(float delta) { blurAmount += delta; }
+
+		/* code to write out the FBO (texture) - helpful for debugging*/
+		void writeTexture(const std::string filename);
 
 	private:
 		GLuint frameBuf[2];
@@ -26,8 +31,7 @@ class FBOManager
 		GLuint quadVertexArrayID;
 		GLuint quadVertexBuffer;
 
-		bool firstTime;
-		bool shouldProcess;
+		float blurAmount;
 		
 		void initFBOs();
 		/**** geometry set up for a quad *****/
