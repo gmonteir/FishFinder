@@ -144,6 +144,7 @@ void FBOManager::processDrawTex()
 	fboProg->bind();
 	CHECKED_GL_CALL(glUniform1i(fboProg->getUniform("texBuf"), 0));
 	CHECKED_GL_CALL(glUniform1f(fboProg->getUniform("fTime"), glfwGetTime()));
+	CHECKED_GL_CALL(glBindVertexArray(quad_VertexArrayID));
 	CHECKED_GL_CALL(glEnableVertexAttribArray(0));
 	CHECKED_GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, quad_vertexbuffer));
 	CHECKED_GL_CALL(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0));

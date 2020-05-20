@@ -238,8 +238,8 @@ public:
 		glViewport(0, 0, width, height);
 
 		// Clear framebuffer.
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		//FBOManager::getInstance().bindBuffer();
+		FBOManager::getInstance().bindBuffer();
+		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		
 
 		/* Leave this code to just draw the meshes alone */
@@ -308,7 +308,7 @@ public:
         glDisable(GL_BLEND);
 
 		GameManager::getInstance()->draw();
-		//FBOManager::getInstance().drawBuffer();
+		FBOManager::getInstance().drawBuffer();
 	}	
 };
 
