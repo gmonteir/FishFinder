@@ -50,7 +50,9 @@ void FBOManager::drawBuffer()
 	/* now draw the actual output  to the default framebuffer - ie display */
 	/* note the current base code is just using one FBO and texture - will need
 	  to change that  - we pass in texBuf[0] right now */
+	glDisable(GL_DEPTH_TEST);
 	processDrawTex();
+	glEnable(GL_DEPTH_TEST);
 }
 
 void FBOManager::initFBOs()
@@ -131,7 +133,7 @@ void FBOManager::createFBO(GLuint fb, GLuint tex)
 
 void FBOManager::processDrawTex()
 {
-	shared_ptr<Program> fboProg = ShaderManager::getInstance()->getShader(FBOPROG);
+	shared_ptr<Program> fboProg = ShaderManager::getInstance()->getShader(BLURPROG);
 	//set up inTex as my input texture
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, texBuf[0]);

@@ -109,10 +109,11 @@ constexpr float SQUIRT_SIZE = 3;
 constexpr int NUM_CAUSTICS = 32;
 
 // Shader Constants
-constexpr int NUM_SHADERS = 6;
+constexpr int NUM_SHADERS = 7;
 constexpr int SIMPLEPROG = 0;
 constexpr int SKYBOXPROG = 1;
 constexpr int TEXTUREPROG = 2;
 constexpr int GLYPHPROG = 3;
 constexpr int FLOORPROG = 4;
 constexpr int FBOPROG = 5;
+constexpr int BLURPROG = 6;

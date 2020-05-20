@@ -45,7 +45,7 @@ class ShaderManager
 	    std::shared_ptr<Program> initGlyphProg();
 	    std::shared_ptr<Program> initFloorProg();
 		std::shared_ptr<Program> initFBOProg();
-		//std::shared_ptr<Program> initBlurProg();
+		std::shared_ptr<Program> initBlurProg();
 
 		std::shared_ptr<Program> getShader(int i) const { return shaderProgs[i]; }
 	    void setData(const uniforms& common) { uniformData = common; }

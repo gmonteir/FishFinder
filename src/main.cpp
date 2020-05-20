@@ -205,8 +205,9 @@ public:
 		Model->popMatrix();
 		prog->unbind();*/
 
-		GameManager::getInstance()->draw();
 		FBOManager::getInstance().drawBuffer();
+
+		GameManager::getInstance()->draw();
 	}	
 };
 

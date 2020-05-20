@@ -18,6 +18,7 @@ ShaderManager::ShaderManager()
 	shaderProgs[GLYPHPROG] = initGlyphProg();
 	shaderProgs[FLOORPROG] = initFloorProg();
 	shaderProgs[FBOPROG] = initFBOProg();
+	shaderProgs[BLURPROG] = initBlurProg();
 
 	cout << "ShaderManager: Initialized" << endl;
 }
@@ -95,6 +96,15 @@ shared_ptr<Program> ShaderManager::initFloorProg()
 shared_ptr<Program> ShaderManager::initFBOProg()
 {
 	std::shared_ptr<Program> texProg = makeProgram("/pass_vert.glsl", "/tex_fbo_frag.glsl");
+	texProg->addUniform("texBuf");
+	texProg->addUniform("fTime");
+	texProg->addAttribute("vertPos");
+	return texProg;
+}
+
+shared_ptr<Program> ShaderManager::initBlurProg()
+{
+	std::shared_ptr<Program> texProg = makeProgram("/pass_vert.glsl", "/blur_frag.glsl");
 	texProg->addUniform("texBuf");
 	texProg->addUniform("fTime");
 	texProg->addAttribute("vertPos");
