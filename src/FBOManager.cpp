@@ -44,6 +44,13 @@ void FBOManager::drawBuffer()
 		firstTime = false;
 	}
 
+	for (size_t i = 0; i < 16; i++)
+	{
+		glBindFramebuffer(GL_FRAMEBUFFER, frameBuf[(i + 1) % 2]);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		processDrawTex(texBuf[i % 2], BLURPROG);
+	}
+
 	//regardless NOW set up to render to the screen = 0
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -51,7 +58,7 @@ void FBOManager::drawBuffer()
 	/* note the current base code is just using one FBO and texture - will need
 	  to change that  - we pass in texBuf[0] right now */
 	glDisable(GL_DEPTH_TEST);
-	processDrawTex();
+	processDrawTex(texBuf[0], FBOPROG);
 	glEnable(GL_DEPTH_TEST);
 }
 
@@ -131,12 +138,12 @@ void FBOManager::createFBO(GLuint fb, GLuint tex)
 	}
 }
 
-void FBOManager::processDrawTex()
+void FBOManager::processDrawTex(GLuint tex, int program)
 {
-	shared_ptr<Program> fboProg = ShaderManager::getInstance()->getShader(BLURPROG);
+	shared_ptr<Program> fboProg = ShaderManager::getInstance()->getShader(program);
 	//set up inTex as my input texture
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, texBuf[0]);
+	glBindTexture(GL_TEXTURE_2D, tex);
 	//example applying of 'drawing' the FBO texture
 	//this shader just draws right now
 	fboProg->bind();

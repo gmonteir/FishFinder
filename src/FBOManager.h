@@ -38,5 +38,5 @@ class FBOManager
 
 		/* Process Texture on the specificed texture  - could vary what it does based on
 			shader  - works on inTex - runs shaders and output to textured quad */
-		void processDrawTex();
+		void processDrawTex(GLuint tex, int program);
 };
