@@ -208,6 +208,7 @@ public:
 
 		FBOManager::getInstance().drawBuffer();
 
+		player->draw(Model);
 		GameManager::getInstance()->draw();
 	}	
 };
