@@ -24,10 +24,7 @@ class GameManager
 		float stamina;
 	};
 
-	GameManager() : fpsCounter{}, gameStats{ INITIAL_TIME_LIMIT, NUM_CHARACTERS, true, INITIAL_STAMINA } {
-		FT_Library ft;
-		textRenderer = new RenderText(&ft, ShaderManager::getInstance()->getShader(GLYPHPROG));
-	}
+	GameManager();
 
 public:
 	static std::shared_ptr<GameManager> getInstance();

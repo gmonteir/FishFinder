@@ -1,11 +1,7 @@
 /*
- * Program 3 base code - includes modifications to shape and initGeom in preparation to load
- * multi shape objects 
- * CPE 471 Cal Poly Z. Wood + S. Sueda + I. Dunn
+ * Finding Dory
+ * CPE 476 Cal Poly Zoe Wood, Steven Pineda, Nathan Lui, Garrett Monteiro, Nick Ryan
  */
-
-#include <iostream>
-#include <glad/glad.h>
 
 #include "GLSL.h"
 #include "Program.h"
@@ -13,22 +9,21 @@
 #include "Shape.h"
 #include "Shapes.h"
 #include "WindowManager.h"
-#include "GLTextureWriter.h"
-#include "Draw.h"
 #include "Skybox.h"
 #include "Keys.h"
 #include "Camera.h"
-#include "Entities.h"
 #include "Spawner.h"
 #include "ShaderManager.h"
 #include "GameManager.h"
 #include "FBOManager.h"
-#include "RenderText.h"
 #include "Textures.h"
 #include "Floor.h"
 
 #define _USE_MATH_DEFINES
 #include <math.h>
+
+#include <iostream>
+#include <glad/glad.h>
 
 #include <functional>
 // value_ptr for glm
@@ -45,11 +40,7 @@ class Application : public EventCallbacks
 {
 
 public:
-
 	WindowManager* windowManager = nullptr;
-
-	// Shape to be used (from obj file)
-	shared_ptr<Shape> shape;
 
 	//example data that might be useful when trying to compute bounds on multi-shape
 	vec3 lightPos = vec3(0, 70, 0);
@@ -61,7 +52,6 @@ public:
 	shared_ptr<Behavior::PlayerBehavior> playerBehavior;
 	shared_ptr<Entity> squirt;
 	Camera camera;
-	RenderText *textRenderer;
 
 	void keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods) override
 	{
@@ -126,20 +116,12 @@ public:
 
 	void init()
 	{
-		int width, height;
-		glfwGetFramebufferSize(windowManager->getHandle(), &width, &height);
 		GLSL::checkVersion();
 
 		// Set background color.
 		glClearColor(.12f, .34f, .56f, 1.0f);
 		// Enable z-buffer test.
 		glEnable(GL_DEPTH_TEST);
-
-		Skybox::getInstance(); // initialize skybox
-
-		FT_Library ft;
-		textRenderer = new RenderText(&ft, ShaderManager::getInstance()->getShader(GLYPHPROG));
-
 	 }
 
 	void initEntities()
@@ -162,7 +144,7 @@ public:
 		/*for (int i = 0; i < 85; i++)
 			Spawner::getInstance()->spawnFollower();*/
 
-
+		Skybox::getInstance(); // initialize skybox
 	}
 
 	void update(float deltaTime, float gameTime)

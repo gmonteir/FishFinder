@@ -1,9 +1,17 @@
 #include "GameManager.h"
 #include "WindowManager.h"
+
 #include <iostream>
 
 using namespace std;
 using namespace glm;
+
+GameManager::GameManager() : fpsCounter{}, gameStats{ INITIAL_TIME_LIMIT, NUM_CHARACTERS, true, INITIAL_STAMINA } {
+	FT_Library ft;
+	textRenderer = new RenderText(&ft, ShaderManager::getInstance()->getShader(GLYPHPROG));
+
+	cout << "GameManager: Initialized" << endl;
+}
 
 
 shared_ptr<GameManager> GameManager::getInstance() 

@@ -19,7 +19,7 @@ FBOManager::FBOManager() : firstTime(true)
 	initFBOs();
 	initVAO();
 	initQuad();
-	cout << "Initialized FBOManager" << endl;
+	cout << "FBOManager: Initialized" << endl;
 }
 
 void FBOManager::bindBuffer()
@@ -38,6 +38,7 @@ void FBOManager::drawBuffer()
 	/* Note that texBuf[0] corresponds to frameBuf[0] */
 	if (firstTime) {
 		assert(GLTextureWriter::WriteImage(texBuf[0], "texture_output.png"));
+		cout << "FBOManager: Attempted to write out texture to texture_output.png" << endl;
 		firstTime = false;
 	}
 
@@ -140,7 +141,6 @@ void FBOManager::processDrawTex()
 	glBindTexture(GL_TEXTURE_2D, texBuf[0]);
 	//example applying of 'drawing' the FBO texture
 	//this shader just draws right now
-	cout << "Process Texture " << endl;
 	fboProg->bind();
 	CHECKED_GL_CALL(glUniform1i(fboProg->getUniform("texBuf"), 0));
 	CHECKED_GL_CALL(glUniform1f(fboProg->getUniform("fTime"), glfwGetTime()));
@@ -151,9 +151,4 @@ void FBOManager::processDrawTex()
 	CHECKED_GL_CALL(glDrawArrays(GL_TRIANGLES, 0, 6));
 	CHECKED_GL_CALL(glDisableVertexAttribArray(0));
 	fboProg->unbind();
-	/*if (glGetShaderiv(GL_COMPILE_STATUS) == 0)
-	{
-		glGetShaderInfoLog()
-	}*/
-	cout << "Texture Processed" << endl;
 }

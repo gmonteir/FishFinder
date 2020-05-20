@@ -16,7 +16,7 @@ ShaderManager::ShaderManager()
 	shaderProgs[FLOORPROG] = initFloorProg();
 	shaderProgs[FBOPROG] = initFBOProg();
 
-	cout << "Shaders loaded" << endl;
+	cout << "ShaderManager: Initialized" << endl;
 }
 
 shared_ptr<Program> ShaderManager::initSimpleProg()
