@@ -11,7 +11,7 @@
 
 class Skybox
 {
-	static std::vector<std::string> faces; 
+	static const std::vector<std::string> faces; 
 
 	Skybox();
 
@@ -25,6 +25,6 @@ private:
 	// texture for skymap
 	unsigned int cubeMapTexture;
 
-	unsigned int createSky(std::string dir, std::vector<std::string> faces);
+	unsigned int createSky(const std::string& dir, const std::vector<std::string> faces);
 
 };

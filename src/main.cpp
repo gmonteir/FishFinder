@@ -15,6 +15,7 @@
 #include "WindowManager.h"
 #include "GLTextureWriter.h"
 #include "Draw.h"
+#include "Skybox.h"
 #include "Keys.h"
 #include "Camera.h"
 #include "Entities.h"
@@ -52,9 +53,6 @@ public:
 	//example data that might be useful when trying to compute bounds on multi-shape
 	vec3 lightPos = vec3(0, 70, 0);
 	vec3 targetPos = vec3(0, 0, -10);
-
-	// texture for skymap
-	unsigned int cubeMapTexture;
 
 	int drawMode = 0;
 
@@ -125,48 +123,6 @@ public:
 		glViewport(0, 0, width, height);
 	}
 
-	unsigned int createSky(string dir, vector<string> faces)
-	{
-		unsigned int textureID;
-		glGenTextures(1, &textureID);
-		glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
-
-		int width, height, nrChannels;
-		stbi_set_flip_vertically_on_load(false);
-		for(GLuint i = 0; i < faces.size(); i++) {
-    		unsigned char *data = 
-			stbi_load((dir+faces[i]).c_str(), &width, &height, &nrChannels, 0);
-			if (data) {
-    			glTexImage2D(
-        			GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 
-        			0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-			} else {
-				std::cout << "failed to load: " << (dir+faces[i]).c_str() << std::endl;
-			}
-		}
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);  
-
-		cout << " creating cube map any errors : " << glGetError() << endl;
-		return textureID;
-	}
-	// Code to load in the textures
-	void initTex()
-	{
-		vector<std::string> faces {
-    	"uw_rt.jpg",
-    	"uw_lf.jpg",
-    	"uw_up.jpg",
-    	"uw_dn.jpg",
-    	"uw_ft.jpg",
-    	"uw_bk.jpg"
-		}; 
-		cubeMapTexture = createSky(RESOURCE_DIR + "/underwater/",  faces);
-	}
-
 	void init()
 	{
 		int width, height;
@@ -178,7 +134,7 @@ public:
 		// Enable z-buffer test.
 		glEnable(GL_DEPTH_TEST);
 
-		initTex();
+		Skybox::getInstance(); // initialize skybox
 
 		FT_Library ft;
 		textRenderer = new RenderText(&ft, ShaderManager::getInstance()->getShader(GLYPHPROG));
@@ -240,9 +196,12 @@ public:
 		targetPos = playerBehavior->getTargetPos();
 		uniforms commonUniforms{P->topMatrix(), V, camera.getEye(), targetPos};
 		ShaderManager::getInstance()->setData(commonUniforms);
-		// draw the floor and the nemos
+		P->popMatrix();
+
+		// ---------------------- drawing ----------------- //
 		EntityCollection::getInstance()->draw(Model);
 		Floor::getInstance()->draw(Model);
+		Skybox::getInstance().draw(Model, camera.getEye());
 
 		// draw test heightmap plane
 		/*prog = ShaderManager::getInstance()->getShader(TEXTUREPROG);
@@ -258,26 +217,6 @@ public:
 			drawSamplePlane(prog);
 		Model->popMatrix();
 		prog->unbind();*/
-		
-		//draw the sky box
-		prog = ShaderManager::getInstance()->getShader(SKYBOXPROG);
-		prog->bind();
-		glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, value_ptr(P->topMatrix()));
-		glUniformMatrix4fv(prog->getUniform("V"), 1, GL_FALSE, value_ptr(V));
-		glDepthFunc(GL_LEQUAL);
-		Model->pushMatrix();
-			Model->loadIdentity();
-			Model->translate(vec3(0, 5, 0));
-			Model->translate(camera.getEye());
-			Model->rotate(radians(-180.f), vec3(0, 1, 0));
-			Model->scale(vec3(1000));
-			glUniformMatrix4fv(prog->getUniform("M"), 1, GL_FALSE,value_ptr(Model->topMatrix()) );
-			glBindTexture(GL_TEXTURE_CUBE_MAP, cubeMapTexture);
-			Shapes::getInstance()->getShape(CUBE_SHAPE)->at(0)->draw(prog);
-		glDepthFunc(GL_LESS);
-		Model->popMatrix();
-		prog->unbind();
-		P->popMatrix();
 
 		/* FreeType */
 		char stamina_stat[15];

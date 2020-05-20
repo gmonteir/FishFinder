@@ -1,11 +1,10 @@
 #pragma  once
 
-#include <iostream>
-#include <memory>
-
 #include "Program.h"
 #include "Texture.h"
 #include "Constants.h"
+
+#include <memory>
 
 using namespace std;
 using namespace glm;
@@ -51,7 +50,7 @@ class ShaderManager
 
 	    shared_ptr<Program> getShader(int i) { return shaderProgs[i]; }
 	    void setData(const uniforms& common) { uniformData = common; }
-		void sendUniforms(int i, const std::shared_ptr<Texture> texture, const std::shared_ptr<Texture> blendTexture=NULL);
+		void sendUniforms(int i, const std::shared_ptr<Texture> texture=nullptr, const std::shared_ptr<Texture> blendTexture=nullptr);
 
 	private:
 		shared_ptr<Program> shaderProgs[NUM_SHADERS];

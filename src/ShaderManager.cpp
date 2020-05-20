@@ -1,4 +1,5 @@
 #include "ShaderManager.h"
+#include <iostream>
 
 shared_ptr<ShaderManager> ShaderManager::getInstance()
 {
@@ -13,6 +14,8 @@ ShaderManager::ShaderManager()
 	shaderProgs[TEXTUREPROG] = initTextureProg();
 	shaderProgs[GLYPHPROG] = initGlyphProg();
 	shaderProgs[FLOORPROG] = initFloorProg();
+
+	cout << "Shaders loaded" << endl;
 }
 
 shared_ptr<Program> ShaderManager::initSimpleProg()
@@ -102,6 +105,11 @@ shared_ptr<Program> ShaderManager::initFloorProg()
 		 sendLightUniforms(prog);
 		 // This probably should be updated in the future to work with different textures
 		 texture->bind(prog->getUniform("Texture0"));
+	 }
+	 else if (i == SKYBOXPROG)
+	 {
+		 glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, value_ptr(uniformData.P));
+		 glUniformMatrix4fv(prog->getUniform("V"), 1, GL_FALSE, value_ptr(uniformData.V));
 	 }
 	 else if (i == FLOORPROG)
 	 {

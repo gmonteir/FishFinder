@@ -10,7 +10,7 @@ using namespace std;
 using namespace glm;
 
 
-vector<std::string> Skybox::faces{
+const vector<std::string> Skybox::faces{
 	"uw_rt.jpg",
 	"uw_lf.jpg",
 	"uw_up.jpg",
@@ -22,6 +22,7 @@ vector<std::string> Skybox::faces{
 Skybox::Skybox()
 {
 	cubeMapTexture = createSky(RESOURCE_DIR + "/underwater/", faces);
+	cout << "Skybox loaded" << endl;
 }
 
 Skybox& Skybox::getInstance()
@@ -35,13 +36,14 @@ void Skybox::draw(shared_ptr<MatrixStack>& M, vec3 position)
 	//draw the sky box
 	shared_ptr<Program> prog = ShaderManager::getInstance()->getShader(SKYBOXPROG);
 	prog->bind();
+	ShaderManager::getInstance()->sendUniforms(SKYBOXPROG);
 	glDepthFunc(GL_LEQUAL);
 	M->pushMatrix();
 	M->loadIdentity();
 	M->translate(vec3(0, 5, 0));
 	M->translate(position);
 	M->rotate(radians(-180.f), YAXIS);
-	M->scale(vec3(1000));
+	M->scale(vec3(500));
 	glUniformMatrix4fv(prog->getUniform("M"), 1, GL_FALSE, value_ptr(M->topMatrix()));
 	glBindTexture(GL_TEXTURE_CUBE_MAP, cubeMapTexture);
 	Shapes::getInstance()->getShape(CUBE_SHAPE)->at(0)->draw(prog);
@@ -50,7 +52,7 @@ void Skybox::draw(shared_ptr<MatrixStack>& M, vec3 position)
 	prog->unbind();
 }
 
-unsigned int Skybox::createSky(string dir, vector<string> faces)
+unsigned int Skybox::createSky(const string& dir, const vector<string> faces)
 {
 	unsigned int textureID;
 	glGenTextures(1, &textureID);
