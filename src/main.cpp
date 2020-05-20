@@ -172,7 +172,7 @@ public:
 		camera.update(deltaTime, player->getTransform());
 	}
 
-	void render(int fps)
+	void render()
 	{
 		shared_ptr<Program> prog;
 		// Get current frame buffer size.
@@ -218,19 +218,6 @@ public:
 		Model->popMatrix();
 		prog->unbind();*/
 
-		/* FreeType */
-		char stamina_stat[15];
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		prog = ShaderManager::getInstance()->getShader(GLYPHPROG);
-		prog->bind();
-		glm::mat4 proj = glm::ortho(0.0f, static_cast<GLfloat>(width), 0.0f, static_cast<GLfloat>(height));
-		glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, glm::value_ptr(proj));
-		//textRenderer->drawText("Active Objects: " + to_string(EntityCollection::getInstance()->getNumActive()), 25.0f, height - 50.0f, 0.75f, glm::vec3(0.2f, 1.0f, 0.2f));
-		textRenderer->drawText("FPS: " + to_string(fps), 25.0f, 25.0f, 0.75f, glm::vec3(0.1));
-        prog->unbind();
-        glDisable(GL_BLEND);
-
 		GameManager::getInstance()->draw();
 	}	
 };
@@ -251,10 +238,8 @@ int main(int argc, char **argv)
 	// may need to initialize or set up different data and state
 	application->init();
 	application->initEntities();
+
 	double gameTime = 0; // keep track of how long we have been in the game.
-	int frameCount = 0;
-	int fps = 0;
-	double accumulator = 0;
 	double currentTime = glfwGetTime();
 	glfwSetInputMode(windowManager->getHandle(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
@@ -263,20 +248,13 @@ int main(int argc, char **argv)
 	{
 		double newTime = glfwGetTime();
 		double deltaTime = newTime - currentTime;
-		accumulator += deltaTime;
 		currentTime = newTime;
+		gameTime += deltaTime;
 
 		application->update(deltaTime, gameTime);
 		// Render scene.
-		application->render(fps);
-		frameCount += 1;
-		if (accumulator > 1) // 1 second
-		{
-			fps = (int)((float)frameCount/accumulator);
-			accumulator = 0;
-			frameCount = 0;
-		}
-		gameTime += deltaTime;
+		application->render();
+
 
 		// Swap front and back buffers.
 		glfwSwapBuffers(windowManager->getHandle());
