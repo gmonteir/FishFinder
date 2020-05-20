@@ -1,13 +1,13 @@
 #include "ShaderManager.h"
+#include <iostream>
 
 shared_ptr<ShaderManager> ShaderManager::getInstance()
 {
-	static shared_ptr<ShaderManager> instance(new ShaderManager(RESOURCE_DIR));
+	static shared_ptr<ShaderManager> instance(new ShaderManager);
 	return instance;
 }
 
-ShaderManager::ShaderManager(const string& resourceDirectory) :
-	resourceDirectory(resourceDirectory)
+ShaderManager::ShaderManager()
 {
 	shaderProgs[SIMPLEPROG] = initSimpleProg();
 	shaderProgs[SKYBOXPROG] = initSkyboxProg();
@@ -15,11 +15,13 @@ ShaderManager::ShaderManager(const string& resourceDirectory) :
 	shaderProgs[GLYPHPROG] = initGlyphProg();
 	shaderProgs[FLOORPROG] = initFloorProg();
 	shaderProgs[FBOPROG] = initFBOProg();
+
+	cout << "Shaders loaded" << endl;
 }
 
 shared_ptr<Program> ShaderManager::initSimpleProg()
 {
-	std::shared_ptr<Program> prog = makeProgram("/simple_vert.glsl", "/simple_frag.glsl");
+	shared_ptr<Program> prog = makeProgram("/simple_vert.glsl", "/simple_frag.glsl");
 	prog->addUniform("P");
 	prog->addUniform("M");
 	prog->addUniform("V");
@@ -37,7 +39,7 @@ shared_ptr<Program> ShaderManager::initSimpleProg()
 
 shared_ptr<Program> ShaderManager::initSkyboxProg()
 {
-	std::shared_ptr<Program> cubeProg = makeProgram("/cube_vert.glsl", "/cube_frag.glsl");
+	shared_ptr<Program> cubeProg = makeProgram("/cube_vert.glsl", "/cube_frag.glsl");
 	cubeProg->addUniform("P");
 	cubeProg->addUniform("M");
 	cubeProg->addUniform("V");
@@ -48,7 +50,7 @@ shared_ptr<Program> ShaderManager::initSkyboxProg()
 
 shared_ptr<Program> ShaderManager::initTextureProg()
 {
-	std::shared_ptr<Program> texProg = makeProgram("/tex_vert.glsl", "/tex_frag.glsl");
+	shared_ptr<Program> texProg = makeProgram("/tex_vert.glsl", "/tex_frag.glsl");
 	texProg->addUniform("P");
 	texProg->addUniform("M");
 	texProg->addUniform("V");
@@ -62,7 +64,7 @@ shared_ptr<Program> ShaderManager::initTextureProg()
 
 shared_ptr<Program> ShaderManager::initGlyphProg()
 {
-	std::shared_ptr<Program> glyphProg = makeProgram("/glyph_vert.glsl", "/glyph_frag.glsl");
+	shared_ptr<Program> glyphProg = makeProgram("/glyph_vert.glsl", "/glyph_frag.glsl");
 	glyphProg->addUniform("P");
 	glyphProg->addUniform("text");
 	glyphProg->addUniform("textColor");
@@ -72,7 +74,7 @@ shared_ptr<Program> ShaderManager::initGlyphProg()
 
 shared_ptr<Program> ShaderManager::initFloorProg()
 {
-	std::shared_ptr<Program> texProg = makeProgram("/tex_vert.glsl", "/floor_frag.glsl");
+	shared_ptr<Program> texProg = makeProgram("/tex_vert.glsl", "/floor_frag.glsl");
 	texProg->addUniform("P");
 	texProg->addUniform("M");
 	texProg->addUniform("V");
@@ -101,18 +103,23 @@ shared_ptr<Program> ShaderManager::initFBOProg()
 	 shared_ptr<Program> prog = getShader(i);
 	 if (i == SIMPLEPROG)
 	 {
-		 glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, value_ptr(uniformData->P));
-		 glUniformMatrix4fv(prog->getUniform("V"), 1, GL_FALSE, value_ptr(uniformData->V));
+		 glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, value_ptr(uniformData.P));
+		 glUniformMatrix4fv(prog->getUniform("V"), 1, GL_FALSE, value_ptr(uniformData.V));
 		 sendLightUniforms(prog);
-		 glUniform3f(prog->getUniform("eye"), uniformData->eye.x, uniformData->eye.y, uniformData->eye.z);
+		 glUniform3f(prog->getUniform("eye"), uniformData.eye.x, uniformData.eye.y, uniformData.eye.z);
 	 }
 	 else if (i == TEXTUREPROG)
 	 {
-		 glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, value_ptr(uniformData->P));
-		 glUniformMatrix4fv(prog->getUniform("V"), 1, GL_FALSE, value_ptr(uniformData->V));
+		 glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, value_ptr(uniformData.P));
+		 glUniformMatrix4fv(prog->getUniform("V"), 1, GL_FALSE, value_ptr(uniformData.V));
 		 sendLightUniforms(prog);
 		 // This probably should be updated in the future to work with different textures
 		 texture->bind(prog->getUniform("Texture0"));
+	 }
+	 else if (i == SKYBOXPROG)
+	 {
+		 glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, value_ptr(uniformData.P));
+		 glUniformMatrix4fv(prog->getUniform("V"), 1, GL_FALSE, value_ptr(uniformData.V));
 	 }
 	 else if (i == FLOORPROG)
 	 {
@@ -124,11 +131,11 @@ shared_ptr<Program> ShaderManager::initFBOProg()
 	 	 glBindTexture(GL_TEXTURE_2D, blendTexture->getID());
 	 	 glUniform1i(prog->getUniform("Texture1"), 1);
 
-		 glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, value_ptr(uniformData->P));
-		 glUniformMatrix4fv(prog->getUniform("V"), 1, GL_FALSE, value_ptr(uniformData->V));
+		 glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, value_ptr(uniformData.P));
+		 glUniformMatrix4fv(prog->getUniform("V"), 1, GL_FALSE, value_ptr(uniformData.V));
 		 sendLightUniforms(prog);
-		 glUniform3f(prog->getUniform("targetPos"), uniformData->targetPos.x, uniformData->targetPos.y, uniformData->targetPos.z);
-		 glUniform3f(prog->getUniform("eye"), uniformData->eye.x, uniformData->eye.y, uniformData->eye.z);
+		 glUniform3f(prog->getUniform("targetPos"), uniformData.targetPos.x, uniformData.targetPos.y, uniformData.targetPos.z);
+		 glUniform3f(prog->getUniform("eye"), uniformData.eye.x, uniformData.eye.y, uniformData.eye.z);
 		 //texture->bind(prog->getUniform("Texture0"));
 		 //blendTexture->bind(prog->getUniform("Texture1"));
 	 }
@@ -161,10 +168,9 @@ shared_ptr<Program> ShaderManager::initFBOProg()
 	 }
  }
 
-
- std::shared_ptr<Program> ShaderManager::makeProgram(const std::string& vertex, const std::string& fragment)
+ shared_ptr<Program> ShaderManager::makeProgram(const string& vertex, const string& fragment)
  {
-	 std::shared_ptr<Program> prog = make_shared<Program>();
+	 shared_ptr<Program> prog = make_shared<Program>();
 	 prog->setVerbose(true);
 	 prog->setShaderNames(RESOURCE_DIR + vertex, RESOURCE_DIR + fragment);
 	 if (!prog->init())

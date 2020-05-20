@@ -11,7 +11,20 @@
 
 class GameManager
 {
-	GameManager() : timeRemaining(INITIAL_TIME_LIMIT), charRemaining(NUM_CHARACTERS), inGame(true), stamina(INITIAL_STAMINA) {
+	struct FPSCounter {
+		int fps;
+		int frameCount;
+		float accumulator;
+	};
+
+	struct GameStats {
+		float timeRemaining;
+		int charRemaining;
+		bool inGame;
+		float stamina;
+	};
+
+	GameManager() : fpsCounter{}, gameStats{ INITIAL_TIME_LIMIT, NUM_CHARACTERS, true, INITIAL_STAMINA } {
 		FT_Library ft;
 		textRenderer = new RenderText(&ft, ShaderManager::getInstance()->getShader(GLYPHPROG));
 	}
@@ -23,20 +36,17 @@ public:
 
 	void update(float deltaTime, float gameTime);
 	void draw();
-	void lose();
-	void renderText(const std::string text, float x, float y, float scale, glm::vec3 color);
+	void lose() { gameStats.inGame = false; }
 
-	float getStamina() { return stamina; }
-	void increaseStamina(float delta);
-	void decreaseStamina(float delta);
+	float getStamina() { return gameStats.stamina; }
+	void increaseStamina(float delta) { gameStats.stamina = min(gameStats.stamina + delta, MAX_STAMINA); }
+	void decreaseStamina(float delta) { gameStats.stamina = max(gameStats.stamina - delta, 0.0f); }
 
-	void decrementNumChar() { charRemaining--; }
+	void decrementNumChar() { gameStats.charRemaining--; }
 
 private:
 	RenderText* textRenderer;
-	float timeRemaining;
-	int charRemaining;
-	bool inGame;
-	float stamina;
+	FPSCounter fpsCounter;
+	GameStats gameStats;
 };
 
