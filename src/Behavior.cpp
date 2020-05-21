@@ -2,6 +2,7 @@
 #include "Spawner.h"
 #include "Keys.h"
 #include "GameManager.h"
+#include "FBOManager.h"
 
 #include <iostream>
 
@@ -59,6 +60,7 @@ void Behavior::PlayerBehavior::update(float deltaTime)
 		&& GameManager::getInstance()->getStamina() > 0) {
 		boost = 30;
 		GameManager::getInstance()->decreaseStamina(deltaTime);
+		FBOManager::getInstance().increaseBlurAmount(deltaTime);
 	}
 
 	if (Keys::getInstance().keyPressed(Keys::LEFT))
@@ -73,6 +75,9 @@ void Behavior::PlayerBehavior::update(float deltaTime)
 
 	if (slow > 0)
 		slow = mix(slow, 0.0f, RECOVERY_SPEED * deltaTime);
+
+	if (immuneTime > 0)
+		immuneTime = max(0.0f, immuneTime - deltaTime);
 
 	model.getAnimator().setAnimationSpeed(boost > 0 ? 3 : 1);
 }
@@ -97,7 +102,11 @@ void Behavior::PlayerBehavior::onCollision(Behavior& collider)
 		GameManager::getInstance()->increaseStamina(STAMINA_INCREMENT);
 		break;
 	case ENEMY:
-		slow = (PLAYER_SPEED / 2.0);
+		if (immuneTime > 0) break;
+		slow = PLAYER_SPEED;
+		immuneTime = IMMUNITY_TIME;
+		transform.setVelocity(ORIGIN);
+		FBOManager::getInstance().increaseBlurAmount(BLUR_INCREMENT);
 		break;
 	}
 }

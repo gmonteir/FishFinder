@@ -35,12 +35,14 @@ constexpr int NUM_CHARACTERS = 7;
 constexpr float INITIAL_TIME_LIMIT = 10.0f; // seconds
 
 // Player
-constexpr float PLAYER_SPEED = 20;
+constexpr float PLAYER_SPEED = 25;
 constexpr float PLAYER_SIZE = 3;
 constexpr int PLAYER_MATERIAL = 5;
 constexpr float INITIAL_STAMINA = 30;
 constexpr float MAX_STAMINA = 100;
 constexpr float RECOVERY_SPEED = 0.5f;
+constexpr float BLUR_INCREMENT = 16.0f;
+constexpr float IMMUNITY_TIME = 6.0f; // seconds
 
 // Camera
 constexpr float CAMERA_SPEED = 3;

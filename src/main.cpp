@@ -85,7 +85,7 @@ public:
 		}
 		if (key == GLFW_KEY_B && action == GLFW_PRESS)
 		{
-			FBOManager::getInstance().increaseBlurAmount(1);
+			FBOManager::getInstance().increaseBlurAmount(BLUR_INCREMENT);
 		}
 		Keys::getInstance().update(key, action);
 	}
