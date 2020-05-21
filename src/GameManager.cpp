@@ -43,12 +43,10 @@ void GameManager::update(float deltaTime, float gameTime)
 /* FreeType */
 void GameManager::draw()
 {
-	int width, height;
 	glfwGetFramebufferSize(WindowManager::instance->getHandle(), &width, &height);
 
 	shared_ptr<Program> prog;
 
-	char buffer[15];
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	prog = ShaderManager::getInstance()->getShader(GLYPHPROG);
@@ -58,16 +56,28 @@ void GameManager::draw()
 
 	// ------------------- Drawing -------------------- //
 	if (!gameStats.inGame)
-		textRenderer->drawText("Game Over", width / 2, height / 2, TITLE_FONT_SIZE, UI_COLOR);
+		drawText("Game Over", width / 2, height / 2, TITLE_FONT_SIZE);
 
-	textRenderer->drawText("Characters Remaining: " + to_string(gameStats.charRemaining), UI_LEFT_MARGIN, height - UI_LINE_OFFSET, UI_FONT_SIZE, UI_COLOR);
-	sprintf(buffer, "%.1f %%", 100 * gameStats.stamina / MAX_STAMINA);
-	textRenderer->drawText("Stamina: " + string(buffer), UI_LEFT_MARGIN, height - 2 * UI_LINE_OFFSET, UI_FONT_SIZE, UI_COLOR);
-	sprintf(buffer, "%.1f s", gameStats.timeRemaining);
-	textRenderer->drawText("Time Remaining: " + string(buffer), UI_LEFT_MARGIN, height - 3 * UI_LINE_OFFSET, UI_FONT_SIZE, UI_COLOR);
-	textRenderer->drawText("FPS: " + to_string(fpsCounter.fps), UI_LEFT_MARGIN, UI_BOTTOM_MARGIN, UI_FONT_SIZE, UI_COLOR);
+	drawText("Characters Remaining: " + to_string(gameStats.charRemaining), UI_LEFT_MARGIN, height - UI_LINE_OFFSET);
+	drawTextWithFloat("Stamina: %.1f %%", 100 * gameStats.stamina / MAX_STAMINA, UI_LEFT_MARGIN, height - 2 * UI_LINE_OFFSET);
+	drawTextWithFloat("Time Remaining: %.1f s", gameStats.timeRemaining, UI_LEFT_MARGIN, height - 3 * UI_LINE_OFFSET);
+	drawText("FPS: " + to_string(fpsCounter.fps), UI_LEFT_MARGIN, UI_BOTTOM_MARGIN);
 	 
 	// ------------------- End Drawing -------------------- //
 	prog->unbind();
 	glDisable(GL_BLEND);
+}
+
+void GameManager::drawText(const std::string& text, float x, float y, float scale, glm::vec3 color)
+{
+	// TODO: make work with aspect ratios and window size
+	textRenderer->drawText(text, x, y, scale, color);
+}
+
+void GameManager::drawTextWithFloat(const char* format, float num,
+	float x, float y, float scale, glm::vec3 color)
+{
+	char buffer[40];
+	sprintf(buffer, format, num);
+	drawText(buffer, x, y, scale, color);
 }

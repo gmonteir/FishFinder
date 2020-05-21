@@ -41,9 +41,15 @@ public:
 
 	void decrementNumChar() { gameStats.charRemaining--; }
 
+	void drawText(const std::string& text, float x, float y, float scale = UI_FONT_SIZE, glm::vec3 color = UI_COLOR);
+	void drawTextWithFloat(const char* format, float num,
+		float x, float y, float scale = UI_FONT_SIZE, glm::vec3 color = UI_COLOR);
+
 private:
 	RenderText* textRenderer;
 	FPSCounter fpsCounter;
 	GameStats gameStats;
+
+	int width, height;
 };
 
