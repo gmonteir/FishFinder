@@ -98,6 +98,7 @@ shared_ptr<Program> ShaderManager::initFBOProg()
 	std::shared_ptr<Program> texProg = makeProgram("/pass_vert.glsl", "/tex_fbo_frag.glsl");
 	texProg->addUniform("texBuf");
 	texProg->addUniform("fTime");
+	texProg->addUniform("targetPos");
 	texProg->addAttribute("vertPos");
 	return texProg;
 }
@@ -151,6 +152,10 @@ shared_ptr<Program> ShaderManager::initBlurProg()
 		 glUniform3f(prog->getUniform("eye"), uniformData.eye.x, uniformData.eye.y, uniformData.eye.z);
 		 //texture->bind(prog->getUniform("Texture0"));
 		 //blendTexture->bind(prog->getUniform("Texture1"));
+	 }
+	 else if (i == FBOPROG)
+	 {
+		 glUniform3f(prog->getUniform("targetPos"), uniformData.targetPos.x, uniformData.targetPos.y, uniformData.targetPos.z);
 	 }
 
  }

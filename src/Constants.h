@@ -34,6 +34,19 @@ const std::string RESOURCE_DIR = "../resources";
 constexpr int NUM_CHARACTERS = 7;
 constexpr float INITIAL_TIME_LIMIT = 10.0f; // seconds
 
+// UI Constants
+constexpr float WINDOW_WIDTH = 2048;
+constexpr float WINDOW_HEIGHT = 1024;
+constexpr float WINDOW_ASPECT = WINDOW_WIDTH / WINDOW_HEIGHT;
+
+const glm::vec3 UI_COLOR = glm::vec3(0.2f, 1.0f, 0.2f);
+constexpr float UI_LINE_OFFSET = 50.0f;
+constexpr float UI_BOTTOM_MARGIN = 25.0f;
+constexpr float UI_LEFT_MARGIN = 25.0f;
+constexpr float UI_FONT_SIZE = 0.75f;
+
+constexpr float TITLE_FONT_SIZE = 2.5f;
+
 // Player
 constexpr float PLAYER_SPEED = 25;
 constexpr float PLAYER_SIZE = 3;

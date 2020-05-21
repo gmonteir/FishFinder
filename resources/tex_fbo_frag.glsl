@@ -5,9 +5,16 @@ out vec4 color;
 uniform sampler2D texBuf;
 
 uniform float fTime;
+uniform vec3 targetPos;
 
 void main(){
-	/*
+	vec3 blue = vec3(0.1, 0.1, 0.2);
+	vec3 yellow = vec3(0.2, 0.2, 0.0);
+
+	vec3 texColor = texture( texBuf, texCoord ).rgb;
+	texColor += blue; // + yellow * sin(fTime + sin(pow((gl_FragCoord.x * sin(fTime)) / 400, 2) - 2 * pow(gl_FragCoord.y * sin(fTime) / 400, 2)));
+
+	/* modifying color based on side of the screen
 	vec3 blue = vec3(0, 0, 0.5);
 	vec3 orange = vec3(0.3, 0, 0.3);
 
@@ -19,13 +26,14 @@ void main(){
 		texColor -= orange;
 	*/
 
+	/* orbitting light
 	vec3 yellow = vec3(0.8, 0.8, 0.0);
 	vec2 orbitPoint = vec2(640, 480);
 	float dist = distance(gl_FragCoord.xy, vec2(orbitPoint.x + 200 * sin(fTime), orbitPoint.y + 200 * cos(fTime)));
 
 	vec3 texColor = texture( texBuf, texCoord ).rgb;
 	texColor += (1.0 - dist / 400) * yellow;
-
+	*/
 	color = vec4(texColor, 1.0);
 
 }

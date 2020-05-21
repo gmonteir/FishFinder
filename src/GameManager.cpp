@@ -58,16 +58,15 @@ void GameManager::draw()
 
 	// ------------------- Drawing -------------------- //
 	if (!gameStats.inGame)
-		textRenderer->drawText("Game Over", width / 2, height / 2, 2.00f, glm::vec3(0.2f, 1.0f, 0.2f));
+		textRenderer->drawText("Game Over", width / 2, height / 2, TITLE_FONT_SIZE, UI_COLOR);
 
-	//textRenderer->drawText("Active Objects: " + to_string(EntityCollection::getInstance()->getNumActive()), 25.0f, height - 50.0f, 0.75f, glm::vec3(0.2f, 1.0f, 0.2f));
-	textRenderer->drawText("Characters Remaining: " + to_string(gameStats.charRemaining), 25.0f, height - 50.0f, 0.75f, glm::vec3(0.2f, 1.0f, 0.2f));
+	textRenderer->drawText("Characters Remaining: " + to_string(gameStats.charRemaining), UI_LEFT_MARGIN, height - UI_LINE_OFFSET, UI_FONT_SIZE, UI_COLOR);
 	sprintf(buffer, "%.1f %%", 100 * gameStats.stamina / MAX_STAMINA);
-	textRenderer->drawText("Stamina: " + string(buffer), 25.0f, height - 100.0f, 0.75f, glm::vec3(0.2f, 1.0f, 0.2f));
+	textRenderer->drawText("Stamina: " + string(buffer), UI_LEFT_MARGIN, height - 2 * UI_LINE_OFFSET, UI_FONT_SIZE, UI_COLOR);
 	sprintf(buffer, "%.1f s", gameStats.timeRemaining);
-	textRenderer->drawText("Time Remaining: " + string(buffer), 25.0f, height - 150.0f, 0.75f, glm::vec3(0.2f, 1.0f, 0.2f));
-	textRenderer->drawText("FPS: " + to_string(fpsCounter.fps), 25.0f, 25.0f, 0.75f, glm::vec3(0.1));
-
+	textRenderer->drawText("Time Remaining: " + string(buffer), UI_LEFT_MARGIN, height - 3 * UI_LINE_OFFSET, UI_FONT_SIZE, UI_COLOR);
+	textRenderer->drawText("FPS: " + to_string(fpsCounter.fps), UI_LEFT_MARGIN, UI_BOTTOM_MARGIN, UI_FONT_SIZE, UI_COLOR);
+	 
 	// ------------------- End Drawing -------------------- //
 	prog->unbind();
 	glDisable(GL_BLEND);

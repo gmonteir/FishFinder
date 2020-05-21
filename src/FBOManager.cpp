@@ -163,6 +163,7 @@ void FBOManager::processDrawTex(GLuint tex, int program)
 	fboProg->bind();
 	glUniform1i(fboProg->getUniform("texBuf"), 0);
 	glUniform1f(fboProg->getUniform("fTime"), glfwGetTime());
+	ShaderManager::getInstance()->sendUniforms(FBOPROG);
 	glBindVertexArray(quadVertexArrayID);
 	glEnableVertexAttribArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, quadVertexBuffer);
