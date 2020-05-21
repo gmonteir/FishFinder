@@ -1,5 +1,4 @@
 #include "Behavior.h"
-#include "Entities.h"
 #include "Spawner.h"
 #include "Keys.h"
 #include "GameManager.h"
@@ -90,13 +89,11 @@ void Behavior::PlayerBehavior::onCollision(Behavior& collider)
 		follower->setTarget(previousCharacter);
 		follower->followTarget();
 		target = &Spawner::getInstance()->spawnFollower()->getTransform();
-		Entities::getInstance()->decrementNumActive();
 		previousCharacter = &collider.transform;
 		GameManager::getInstance()->decrementNumChar();
 		break;
 	case POWERUP:
 		collider.remove();
-		Entities::getInstance()->decrementNumActive();
 		GameManager::getInstance()->increaseStamina(STAMINA_INCREMENT);
 		break;
 	case ENEMY:
@@ -150,7 +147,6 @@ void Behavior::PowerupBehavior::update(float deltaTime)
 	if (timer <= 0)
 	{
 		remove();
-		Entities::getInstance()->decrementNumActive();
 	}
 }
 
