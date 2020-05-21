@@ -87,6 +87,10 @@ public:
 		{
 			FBOManager::getInstance().increaseBlurAmount(BLUR_INCREMENT);
 		}
+		if (key == GLFW_KEY_F && action == GLFW_PRESS)
+		{
+			FBOManager::getInstance().toggleEnabled();
+		}
 		Keys::getInstance().update(key, action);
 	}
 
@@ -206,9 +210,10 @@ public:
 		Model->popMatrix();
 		prog->unbind();*/
 
+		FBOManager::getInstance().blur();
+		player->draw(Model);
 		FBOManager::getInstance().drawBuffer();
 
-		player->draw(Model);
 		GameManager::getInstance()->draw();
 	}	
 };

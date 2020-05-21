@@ -8,7 +8,7 @@
 using namespace std;
 using namespace glm;
 
-FBOManager::FBOManager() : blurAmount(0)
+FBOManager::FBOManager() : blurAmount(0), enabled(true)
 {
 	initFBOs();
 	initQuad();
@@ -23,26 +23,38 @@ FBOManager& FBOManager::getInstance()
 
 void FBOManager::bindBuffer()
 {
-	//set up to render to first FBO stored in array position 0
-	glBindFramebuffer(GL_FRAMEBUFFER, frameBuf[0]);
+	if (enabled)
+		//set up to render to first FBO stored in array position 0
+		glBindFramebuffer(GL_FRAMEBUFFER, frameBuf[0]);
+	else
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	// Clear framebuffer.
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void FBOManager::drawBuffer()
+void FBOManager::blur()
 {
-	/* code to write out the FBO (texture) just once  - this is for debugging*/
-	//if (firstTime) {
-	//	writeTexture("texture_output.png");
-	//	firstTime = false;
-	//}
+	if (!enabled) return;
 
+	glDisable(GL_DEPTH_TEST);
 	for (size_t i = 0; i < round(blurAmount); i++)
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, frameBuf[(i + 1) % 2]);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		processDrawTex(texBuf[i % 2], BLURPROG);
 	}
+	glEnable(GL_DEPTH_TEST);
+}
+
+void FBOManager::drawBuffer()
+{
+	if (!enabled) return;
+
+	/* code to write out the FBO (texture) just once  - this is for debugging*/
+	//if (firstTime) {
+	//	writeTexture("texture_output.png");
+	//	firstTime = false;
+	//}
 
 	// render to the screen
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);

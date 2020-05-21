@@ -15,11 +15,13 @@ class FBOManager
 		~FBOManager() {}
 
 		void bindBuffer();
+		void blur();
 		void drawBuffer();
 
 		void update(float deltaTime, float gameTime);
 
 		void increaseBlurAmount(float delta) { blurAmount += delta; }
+		void toggleEnabled() { enabled = !enabled; }
 
 		/* code to write out the FBO (texture) - helpful for debugging*/
 		void writeTexture(const std::string filename);
@@ -31,6 +33,7 @@ class FBOManager
 		GLuint quadVertexArrayID;
 		GLuint quadVertexBuffer;
 
+		bool enabled;
 		float blurAmount;
 		
 		void initFBOs();
