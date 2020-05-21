@@ -13,7 +13,7 @@ unique_ptr<Animator> Animator::createAnimator(const string& modelName)
 		return unique_ptr<Animator>(new SquirtAnimator);
 	else if (modelName == JENNY_SHAPE)
 		return unique_ptr<Animator>(new JennyAnimator);
-	else if (modelName == CHARLIE_SHAPE)
+	else if (modelName == CHARLIE_SHAPE || modelName == GURGLE_SHAPE)
 		return unique_ptr<Animator>(new CharlieAnimator);
 	else if (modelName == BLOAT_SHAPE)
 		return unique_ptr<Animator>(new BloatAnimator);
