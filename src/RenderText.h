@@ -28,7 +28,7 @@ class RenderText
 		RenderText(FT_Library *ft, const shared_ptr<Program> prog);
 		~RenderText() {}
 		void init();
-		void drawText(std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color);
+		void drawText(int alignment, std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color);
 	private:
 		GLuint VAO, VBO;
 		std::map<GLchar, Character> Characters;

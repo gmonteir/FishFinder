@@ -145,3 +145,7 @@ constexpr int GLYPHPROG = 3;
 constexpr int FLOORPROG = 4;
 constexpr int FBOPROG = 5;
 constexpr int BLURPROG = 6;
+
+// Freetype Constants
+constexpr int LEFT = 0;
+constexpr int CENTER = 1;
