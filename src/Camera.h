@@ -12,7 +12,7 @@ class Camera
 
 public:
 	Camera() : position(), upVector(YAXIS), alpha(0), beta(-M_PI_2), 
-		offset(THIRD_PERSON_OFFSET), reverse(false) {
+		offset(THIRD_PERSON_OFFSET), reverse(false), initializedMouse(false) {
 		updateDirection();
 		updateEye();
 		updateLookAt();
@@ -25,6 +25,7 @@ public:
 	glm::vec3 getDirection() { return direction; }
 
 	void update(float deltaTime, Transform& transform);
+	void cursorCallback(float xpos, float ypos);
 
 	/* deltas should be from -1 to 1 */
 	void interpolateRotation(float dx, float dy, float deltaTime);
@@ -39,8 +40,11 @@ private:
 	glm::vec3 position, direction;
 	glm::vec3 eye, LA, upVector;
 	glm::vec2 offset;
-	float alpha, beta;
 	bool reverse; // flip the direction of the camera
+	float alpha, beta;
+
+	glm::vec2 mouse;
+	bool initializedMouse;
 	
 	void updateDirection() {
 		direction = normalize(glm::vec3(cos(alpha) * cos(beta), sin(alpha), cos(alpha) * cos(M_PI_2 - beta)));

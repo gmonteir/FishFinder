@@ -8,6 +8,8 @@ Textures::Textures()
 	addTexture(RESOURCE_DIR + "/squirt.jpg", SQUIRT_TEXTURE, GL_CLAMP_TO_EDGE);
 	addTexture(RESOURCE_DIR + "/ground.bmp", FLOOR_TEXTURE, GL_CLAMP_TO_EDGE);
 	initCausticsText();
+
+	cout << "Textures: Initialized" << endl;
 }
 
 void Textures::initCausticsText()

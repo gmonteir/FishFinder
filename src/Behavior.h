@@ -73,7 +73,7 @@ class Behavior::PlayerBehavior : public Behavior
 public:
 	PlayerBehavior(Transform& transform, Model& model)
 		: Behavior(PLAYER, transform, model), score(0), speed(PLAYER_SPEED), slow(0),
-		previousCharacter(&transform), target(nullptr) {}
+		previousCharacter(&transform), target(nullptr), immuneTime(0) {}
 
 	virtual ~PlayerBehavior() {}
 
@@ -84,14 +84,14 @@ public:
 	void onCollision(Behavior& collider) override;
 
 	int getScore() const { return score; }
-	vec3 getTargetPos() const { return target->getPosition(); }
+	glm::vec3 getTargetPos() const { return target->getPosition(); }
 
 	void setTarget(Transform *newTarget) { target = newTarget; }
 
 private:
 	int score;
-	float speed;
-	float slow;
+	float speed, slow;
+	float immuneTime;
 
 	Transform* previousCharacter;
 	Transform* target;
