@@ -31,6 +31,7 @@ struct uniforms {
 	mat4 V;
 	vec3 eye;
 	vec3 targetPos;
+	float time;
 };
 
 class ShaderManager
