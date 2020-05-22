@@ -1,8 +1,8 @@
 #include "Behavior.h"
-#include "Entities.h"
 #include "Spawner.h"
 #include "Keys.h"
 #include "GameManager.h"
+#include "FBOManager.h"
 
 #include <iostream>
 
@@ -60,6 +60,7 @@ void Behavior::PlayerBehavior::update(float deltaTime)
 		&& GameManager::getInstance()->getStamina() > 0) {
 		boost = 30;
 		GameManager::getInstance()->decreaseStamina(deltaTime);
+		FBOManager::getInstance().increaseBlurAmount(deltaTime);
 	}
 
 	if (Keys::getInstance().keyPressed(Keys::LEFT))
@@ -73,7 +74,10 @@ void Behavior::PlayerBehavior::update(float deltaTime)
 	transform.interpolateVelocity(right == 0 && forward == 0 ? ORIGIN : normalize(deltas) * (speed - slow + boost), deltaTime);
 
 	if (slow > 0)
-		slow = mix(slow, 0.0f, HIT_RECOVERY * deltaTime);
+		slow = mix(slow, 0.0f, RECOVERY_SPEED * deltaTime);
+
+	if (immuneTime > 0)
+		immuneTime = glm::max(0.0f, immuneTime - deltaTime);
 
 	model.getAnimator().setAnimationSpeed(boost > 0 ? 3 : 1);
 }
@@ -90,17 +94,19 @@ void Behavior::PlayerBehavior::onCollision(Behavior& collider)
 		follower->setTarget(previousCharacter);
 		follower->followTarget();
 		target = &Spawner::getInstance()->spawnFollower()->getTransform();
-		Entities::getInstance()->decrementNumActive();
 		previousCharacter = &collider.transform;
 		GameManager::getInstance()->decrementNumChar();
 		break;
 	case POWERUP:
 		collider.remove();
-		Entities::getInstance()->decrementNumActive();
 		GameManager::getInstance()->increaseStamina(STAMINA_INCREMENT);
 		break;
 	case ENEMY:
-		slow = (PLAYER_SPEED / 2.0);
+		if (immuneTime > 0) break;
+		slow = PLAYER_SPEED;
+		immuneTime = IMMUNITY_TIME;
+		transform.setVelocity(ORIGIN);
+		FBOManager::getInstance().increaseBlurAmount(BLUR_INCREMENT);
 		break;
 	}
 }
@@ -150,7 +156,6 @@ void Behavior::PowerupBehavior::update(float deltaTime)
 	if (timer <= 0)
 	{
 		remove();
-		Entities::getInstance()->decrementNumActive();
 	}
 }
 
