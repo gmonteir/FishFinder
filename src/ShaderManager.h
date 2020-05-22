@@ -40,12 +40,12 @@ class ShaderManager
 		ShaderManager();
 		~ShaderManager() {}
 
-		shared_ptr<Program> initSimpleProg();
-	    shared_ptr<Program> initSkyboxProg();
-	    shared_ptr<Program> initTextureProg();
-	    shared_ptr<Program> initGlyphProg();
-	    shared_ptr<Program> initFloorProg();
-	    shared_ptr<Program> initReflectProg();
+		std::shared_ptr<Program> initSimpleProg();
+	    std::shared_ptr<Program> initSkyboxProg();
+	    std::shared_ptr<Program> initTextureProg();
+	    std::shared_ptr<Program> initGlyphProg();
+	    std::shared_ptr<Program> initFloorProg();
+	    std::shared_ptr<Program> initReflectProg();
 		std::shared_ptr<Program> initFBOProg();
 		std::shared_ptr<Program> initBlurProg();
 

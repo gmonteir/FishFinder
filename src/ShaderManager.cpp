@@ -95,14 +95,13 @@ shared_ptr<Program> ShaderManager::initFloorProg()
 	return texProg;
 }
 
-<<<<<<< HEAD
 shared_ptr<Program> ShaderManager::initReflectProg()
 {
 	std::shared_ptr<Program> reflProg = make_shared<Program>();
 	reflProg->setVerbose(true);
 	reflProg->setShaderNames(
-		resourceDirectory + "/simple_vert.glsl",
-		resourceDirectory + "/refl_frag.glsl");
+		RESOURCE_DIR + "/simple_vert.glsl",
+		RESOURCE_DIR + "/refl_frag.glsl");
 	if (! reflProg->init())
 	{
 		std::cerr << "One or more shaders failed to compile... exiting!" << std::endl;
@@ -117,7 +116,8 @@ shared_ptr<Program> ShaderManager::initReflectProg()
 	reflProg->addAttribute("vertNor");
 	reflProg->addAttribute("vertTex");
 	return reflProg;
-=======
+}
+
 shared_ptr<Program> ShaderManager::initFBOProg()
 {
 	std::shared_ptr<Program> texProg = makeProgram("/pass_vert.glsl", "/tex_fbo_frag.glsl");
@@ -135,7 +135,6 @@ shared_ptr<Program> ShaderManager::initBlurProg()
 	texProg->addUniform("fTime");
 	texProg->addAttribute("vertPos");
 	return texProg;
->>>>>>> origin
 }
 
  void ShaderManager::sendUniforms(int i, const shared_ptr<Texture> texture, const std::shared_ptr<Texture> blendTexture)
@@ -182,10 +181,11 @@ shared_ptr<Program> ShaderManager::initBlurProg()
 	 }
 	 else if (i == REFLECTPROG)
 	 {
-	     glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, value_ptr(uniformData->P));
-		 glUniformMatrix4fv(prog->getUniform("V"), 1, GL_FALSE, value_ptr(uniformData->V));
+	     glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, value_ptr(uniformData.P));
+		 glUniformMatrix4fv(prog->getUniform("V"), 1, GL_FALSE, value_ptr(uniformData.V));
 		 //sendLightUniforms(prog);
-		 glUniform3f(prog->getUniform("eye"), uniformData->eye.x, uniformData->eye.y, uniformData->eye.z);	
+		 glUniform3f(prog->getUniform("eye"), uniformData.eye.x, uniformData.eye.y, uniformData.eye.z);
+	 }
 	 else if (i == FBOPROG)
 	 {
 		 glUniform3f(prog->getUniform("targetPos"), uniformData.targetPos.x, uniformData.targetPos.y, uniformData.targetPos.z);
