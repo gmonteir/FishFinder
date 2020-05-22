@@ -28,22 +28,39 @@ const std::string TREE_CORAL_SHAPE = "TREE_CORAL";
 const std::string SOFT_CORAL_SHAPE = "SOFT_CORAL";
 const std::string ELKHORN_CORAL_SHAPE = "ELKHORN_CORAL";
 const std::string FLOOR_SHAPE = "FLOOR_SHAPE";
+const std::string ENEMY_SHAPE = "CUBE";
 const std::string RESOURCE_DIR = "../resources";
 
 // Game Constants
 constexpr int NUM_CHARACTERS = 7;
 constexpr float INITIAL_TIME_LIMIT = 10.0f; // seconds
 
+// UI Constants
+constexpr float WINDOW_WIDTH = 2048;
+constexpr float WINDOW_HEIGHT = 1024;
+constexpr float WINDOW_ASPECT = WINDOW_WIDTH / WINDOW_HEIGHT;
+
+const glm::vec3 UI_COLOR = glm::vec3(0.2f, 1.0f, 0.2f);
+constexpr float UI_LINE_OFFSET = 50.0f;
+constexpr float UI_BOTTOM_MARGIN = 25.0f;
+constexpr float UI_LEFT_MARGIN = 25.0f;
+constexpr float UI_FONT_SIZE = 0.75f;
+
+constexpr float TITLE_FONT_SIZE = 2.5f;
+
 // Player
-constexpr float PLAYER_SPEED = 20;
+constexpr float PLAYER_SPEED = 25;
 constexpr float PLAYER_SIZE = 3;
 constexpr int PLAYER_MATERIAL = 5;
 constexpr float INITIAL_STAMINA = 30;
 constexpr float MAX_STAMINA = 100;
+constexpr float RECOVERY_SPEED = 0.5f;
+constexpr float BLUR_INCREMENT = 16.0f;
+constexpr float IMMUNITY_TIME = 6.0f; // seconds
 
 // Camera
 constexpr float CAMERA_SPEED = 3;
-constexpr float MOUSE_SENSITIVITY = 0.1;
+constexpr float MOUSE_SENSITIVITY = 0.03;
 const glm::vec2 FIRST_PERSON_OFFSET = glm::vec2(PLAYER_SIZE * 1.5, 0);
 const glm::vec2 SECOND_PERSON_OFFSET = glm::vec2(PLAYER_SIZE + 10, PLAYER_SIZE + 0.3);
 const glm::vec2 THIRD_PERSON_OFFSET = glm::vec2(-SECOND_PERSON_OFFSET.x, SECOND_PERSON_OFFSET.y);
@@ -90,6 +107,11 @@ constexpr int TREE_CORAL_MATERIAL = 10;
 constexpr int SOFT_CORAL_MATERIAL = 6;
 constexpr int ELKHORN_CORAL_MATERIAL = 9;
 
+// Enemy Constants
+constexpr int ENEMY_SIZE = 3;
+constexpr int ENEMY_MATERIAL = 3;
+constexpr int NUM_ENEMIES = 5;
+
 // Nemo Constants
 constexpr float NEMO_SPEED = 20;
 constexpr float NEMO_SIZE = 2;
@@ -103,10 +125,12 @@ constexpr float SQUIRT_SIZE = 3;
 constexpr int NUM_CAUSTICS = 32;
 
 // Shader Constants
-constexpr int NUM_SHADERS = 6;
+constexpr int NUM_SHADERS = 8;
 constexpr int SIMPLEPROG = 0;
 constexpr int SKYBOXPROG = 1;
 constexpr int TEXTUREPROG = 2;
 constexpr int GLYPHPROG = 3;
 constexpr int FLOORPROG = 4;
-constexpr int REFLECTPROG = 5;
+constexpr int FBOPROG = 5;
+constexpr int BLURPROG = 6;
+constexpr int REFLECTPROG = 7;

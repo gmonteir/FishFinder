@@ -86,11 +86,11 @@ bool Entity::hasCollided(shared_ptr<vector<shared_ptr<Entity>>>(&entities)[MAP_I
 {
 
 	if (hasCollided(*entities[i][j][k]) ||
-		i > 1 && hasCollided(*entities[i - 1][j][k]) || 
+		i > 0 && hasCollided(*entities[i - 1][j][k]) || 
 		i < MAP_I - 1 && hasCollided(*entities[i + 1][j][k]) ||
-		j > 1 && hasCollided(*entities[i][j - 1][k]) ||
+		j > 0 && hasCollided(*entities[i][j - 1][k]) ||
 		j < MAP_J - 1 && hasCollided(*entities[i][j + 1][k]) ||
-		k > 1 && hasCollided(*entities[i][j][k - 1]) ||
+		k > 0 && hasCollided(*entities[i][j][k - 1]) ||
 		k < MAP_K - 1 && hasCollided(*entities[i][j][k + 1]))
 		return true;
 
