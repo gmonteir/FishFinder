@@ -24,6 +24,21 @@ void Camera::update(float deltaTime, Transform& transform)
 	updateLookAt();
 }
 
+void Camera::cursorCallback(float xpos, float ypos)
+{
+	float deltaX = mouse.x - xpos;
+	float deltaY = mouse.y - ypos;
+
+	// check whether or not mouseX and mouseY have been initialized yet
+	// currently a hacky check of whether or not the deltas are unrealistic.
+	if (initializedMouse)
+		interpolateRotation(deltaX, deltaY, MOUSE_SENSITIVITY);
+
+	mouse.x = xpos;
+	mouse.y = ypos;
+	initializedMouse = true;
+}
+
 void Camera::interpolateRotation(float dx, float dy, float deltaTime)
 {
 	vec3 direction;

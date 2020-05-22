@@ -1,11 +1,7 @@
 /*
- * Program 3 base code - includes modifications to shape and initGeom in preparation to load
- * multi shape objects 
- * CPE 471 Cal Poly Z. Wood + S. Sueda + I. Dunn
+ * Finding Dory
+ * CPE 476 Cal Poly Zoe Wood, Steven Pineda, Nathan Lui, Garrett Monteiro, Nick Ryan
  */
-
-#include <iostream>
-#include <glad/glad.h>
 
 #include "GLSL.h"
 #include "Program.h"
@@ -13,20 +9,21 @@
 #include "Shape.h"
 #include "Shapes.h"
 #include "WindowManager.h"
-#include "GLTextureWriter.h"
-#include "Draw.h"
+#include "Skybox.h"
 #include "Keys.h"
 #include "Camera.h"
-#include "Entities.h"
 #include "Spawner.h"
 #include "ShaderManager.h"
 #include "GameManager.h"
-#include "RenderText.h"
+#include "FBOManager.h"
 #include "Textures.h"
 #include "Floor.h"
 
 #define _USE_MATH_DEFINES
 #include <math.h>
+
+#include <iostream>
+#include <glad/glad.h>
 
 #include <functional>
 // value_ptr for glm
@@ -43,34 +40,18 @@ class Application : public EventCallbacks
 {
 
 public:
-
 	WindowManager* windowManager = nullptr;
-
-	// Shape to be used (from obj file)
-	shared_ptr<Shape> shape;
-
-	// Contains vertex information for OpenGL
-	GLuint VertexArrayID;
-
-	// Data necessary to give our triangle to OpenGL
-	GLuint VertexBufferID;
 
 	//example data that might be useful when trying to compute bounds on multi-shape
 	vec3 lightPos = vec3(0, 70, 0);
 	vec3 targetPos = vec3(0, 0, -10);
 
-	// texture for skymap
-	unsigned int cubeMapTexture;
-
 	int drawMode = 0;
-	float mouseX = 0;
-	float mouseY = 0;
 
 	shared_ptr<Entity> player;
 	shared_ptr<Behavior::PlayerBehavior> playerBehavior;
 	shared_ptr<Entity> testChar;
 	Camera camera;
-	RenderText *textRenderer;
 
 	void keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods) override
 	{
@@ -102,6 +83,14 @@ public:
 		{
 			GameManager::getInstance()->increaseStamina(STAMINA_INCREMENT);
 		}
+		if (key == GLFW_KEY_B && action == GLFW_PRESS)
+		{
+			FBOManager::getInstance().increaseBlurAmount(BLUR_INCREMENT);
+		}
+		if (key == GLFW_KEY_F && action == GLFW_PRESS)
+		{
+			FBOManager::getInstance().toggleEnabled();
+		}
 		Keys::getInstance().update(key, action);
 	}
 
@@ -120,16 +109,7 @@ public:
 
 	void cursorPosCallback(GLFWwindow* window, double xpos, double ypos) override
 	{
-		float deltaX = mouseX - xpos;
-		float deltaY = mouseY - ypos;
-
-		// check whether or not mouseX and mouseY have been initialized yet
-		// currently a hacky check of whether or not the deltas are unrealistic.
-		if (abs(deltaX) < 50 && abs(deltaY) < 50)
-			camera.interpolateRotation(deltaX, deltaY, MOUSE_SENSITIVITY);
-
-		mouseX = xpos;
-		mouseY = ypos;
+		camera.cursorCallback(xpos, ypos);
 	}
 
 	void scrollCallback(GLFWwindow* window, double deltaX, double deltaY) override
@@ -142,63 +122,14 @@ public:
 		glViewport(0, 0, width, height);
 	}
 
-	unsigned int createSky(string dir, vector<string> faces)
-	{
-		unsigned int textureID;
-		glGenTextures(1, &textureID);
-		glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
-
-		int width, height, nrChannels;
-		stbi_set_flip_vertically_on_load(false);
-		for(GLuint i = 0; i < faces.size(); i++) {
-    		unsigned char *data = 
-			stbi_load((dir+faces[i]).c_str(), &width, &height, &nrChannels, 0);
-			if (data) {
-    			glTexImage2D(
-        			GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 
-        			0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-			} else {
-				std::cout << "failed to load: " << (dir+faces[i]).c_str() << std::endl;
-			}
-		}
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);  
-
-		cout << " creating cube map any errors : " << glGetError() << endl;
-		return textureID;
-	}
-	// Code to load in the textures
-	void initTex()
-	{
-		vector<std::string> faces {
-    	"uw_rt.jpg",
-    	"uw_lf.jpg",
-    	"uw_up.jpg",
-    	"uw_dn.jpg",
-    	"uw_ft.jpg",
-    	"uw_bk.jpg"
-		}; 
-		cubeMapTexture = createSky(RESOURCE_DIR + "/underwater/",  faces);
-	}
-
 	void init()
 	{
-		int width, height;
-		glfwGetFramebufferSize(windowManager->getHandle(), &width, &height);
 		GLSL::checkVersion();
 
 		// Set background color.
 		glClearColor(.12f, .34f, .56f, 1.0f);
 		// Enable z-buffer test.
 		glEnable(GL_DEPTH_TEST);
-
-		initTex();
-
-		FT_Library ft;
-		textRenderer = new RenderText(&ft, ShaderManager::getInstance()->getShader(GLYPHPROG));
 	 }
 
 	void initEntities()
@@ -222,39 +153,29 @@ public:
 		/*for (int i = 0; i < 85; i++)
 			Spawner::getInstance()->spawnFollower();*/
 
-
+		Skybox::getInstance(); // initialize skybox
 	}
 
 	void update(float deltaTime, float gameTime)
 	{
 		Spawner::getInstance()->update(deltaTime, gameTime);
 		GameManager::getInstance()->update(deltaTime, gameTime);
-		//Entities::getInstance()->update(deltaTime);
 		EntityCollection::getInstance()->update(deltaTime);
 		camera.update(deltaTime, player->getTransform());
+
+		FBOManager::getInstance().update(deltaTime, gameTime);
 	}
 
-	/* helper functions for sending matrix data to the GPU */
-	mat4 SetProjectionMatrix(shared_ptr<Program> curShade) {
-	    int width, height;
-	    glfwGetFramebufferSize(windowManager->getHandle(), &width, &height);
-	    float aspect = width/(float)height;
-	    mat4 Projection = perspective(radians(50.0f), aspect, 0.1f, 100.0f);
-	    glUniformMatrix4fv(curShade->getUniform("P"), 1, GL_FALSE, value_ptr(Projection));
-	    return Projection;
-	}
-
-	void render(int fps)
+	void render()
 	{
 		shared_ptr<Program> prog;
 		// Get current frame buffer size.
 		int width, height;
 		glfwGetFramebufferSize(windowManager->getHandle(), &width, &height);
-		glViewport(0, 0, width, height);		
+		glViewport(0, 0, width, height);
 
-		// Clear framebuffer.
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+		FBOManager::getInstance().bindBuffer();
+		
 		/* Leave this code to just draw the meshes alone */
 		float aspect = width/(float)height;
 
@@ -266,59 +187,19 @@ public:
 		P->perspective(45.0f, aspect, 0.01f, 10000.0f);
 		mat4 V = camera.getView();
 		targetPos = playerBehavior->getTargetPos();
-		uniforms *commonUniforms = new uniforms {P->topMatrix(), V, camera.getEye(), targetPos};
+		float time = glfwGetTime();
+		uniforms commonUniforms{P->topMatrix(), V, camera.getEye(), targetPos, time};
 		ShaderManager::getInstance()->setData(commonUniforms);
-		// draw the floor and the nemos
-		EntityCollection::getInstance()->draw(Model);
-		Floor::getInstance()->draw(Model);
-
-		// draw test heightmap plane
-		/*prog = ShaderManager::getInstance()->getShader(TEXTUREPROG);
-		prog->bind();
-		glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, value_ptr(P->topMatrix()));
-		glUniformMatrix4fv(prog->getUniform("V"), 1, GL_FALSE, value_ptr(V));
-		Model->pushMatrix();
-			Model->loadIdentity();
-			Model->translate(vec3(100, -200, -120));
-			Model->scale(vec3(2, 1, 2));
-			glUniformMatrix4fv(prog->getUniform("M"), 1, GL_FALSE, value_ptr(Model->topMatrix()));
-			Textures::getInstance()->getTexture(GROUND_TEXTURE)->bind(prog->getUniform("Texture0"));
-			drawSamplePlane(prog);
-		Model->popMatrix();
-		prog->unbind();*/
-		
-		//draw the sky box
-		prog = ShaderManager::getInstance()->getShader(SKYBOXPROG);
-		prog->bind();
-		glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, value_ptr(P->topMatrix()));
-		glUniformMatrix4fv(prog->getUniform("V"), 1, GL_FALSE, value_ptr(V));
-		glDepthFunc(GL_LEQUAL);
-		Model->pushMatrix();
-			Model->loadIdentity();
-			Model->translate(vec3(0, 5, 0));
-			Model->translate(camera.getEye());
-			Model->rotate(radians(-180.f), vec3(0, 1, 0));
-			Model->scale(vec3(1000));
-			glUniformMatrix4fv(prog->getUniform("M"), 1, GL_FALSE,value_ptr(Model->topMatrix()) );
-			glBindTexture(GL_TEXTURE_CUBE_MAP, cubeMapTexture);
-			Shapes::getInstance()->getShape(CUBE_SHAPE)->at(0)->draw(prog);
-		glDepthFunc(GL_LESS);
-		Model->popMatrix();
-		prog->unbind();
 		P->popMatrix();
 
-		/* FreeType */
-		char stamina_stat[15];
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		prog = ShaderManager::getInstance()->getShader(GLYPHPROG);
-		prog->bind();
-		glm::mat4 proj = glm::ortho(0.0f, static_cast<GLfloat>(width), 0.0f, static_cast<GLfloat>(height));
-		glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, glm::value_ptr(proj));
-		//textRenderer->drawText("Active Objects: " + to_string(EntityCollection::getInstance()->getNumActive()), 25.0f, height - 50.0f, 0.75f, glm::vec3(0.2f, 1.0f, 0.2f));
-		textRenderer->drawText("FPS: " + to_string(fps), 25.0f, 25.0f, 0.75f, glm::vec3(0.1));
-        prog->unbind();
-        glDisable(GL_BLEND);
+		// ---------------------- drawing ----------------- //
+		EntityCollection::getInstance()->draw(Model);
+		Floor::getInstance()->draw(Model);
+		Skybox::getInstance().draw(Model, camera.getEye());
+
+		FBOManager::getInstance().blur();
+		player->draw(Model);
+		FBOManager::getInstance().drawBuffer();
 
 		GameManager::getInstance()->draw();
 	}	
@@ -332,7 +213,7 @@ int main(int argc, char **argv)
 	// and GL context, etc.
 
 	WindowManager *windowManager = new WindowManager();
-	windowManager->init(2048, 1024);
+	windowManager->init(int(WINDOW_WIDTH), int(WINDOW_HEIGHT));
 	windowManager->setEventCallbacks(application);
 	application->windowManager = windowManager;
 
@@ -340,10 +221,8 @@ int main(int argc, char **argv)
 	// may need to initialize or set up different data and state
 	application->init();
 	application->initEntities();
+
 	double gameTime = 0; // keep track of how long we have been in the game.
-	int frameCount = 0;
-	int fps = 0;
-	double accumulator = 0;
 	double currentTime = glfwGetTime();
 	glfwSetInputMode(windowManager->getHandle(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
@@ -352,20 +231,13 @@ int main(int argc, char **argv)
 	{
 		double newTime = glfwGetTime();
 		double deltaTime = newTime - currentTime;
-		accumulator += deltaTime;
 		currentTime = newTime;
+		gameTime += deltaTime;
 
 		application->update(deltaTime, gameTime);
 		// Render scene.
-		application->render(fps);
-		frameCount += 1;
-		if (accumulator > 1) // 1 second
-		{
-			fps = (int)((float)frameCount/accumulator);
-			accumulator = 0;
-			frameCount = 0;
-		}
-		gameTime += deltaTime;
+		application->render();
+
 
 		// Swap front and back buffers.
 		glfwSwapBuffers(windowManager->getHandle());

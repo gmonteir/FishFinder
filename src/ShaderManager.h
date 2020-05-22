@@ -1,18 +1,14 @@
 #pragma  once
 
-#include <iostream>
-#include <memory>
-
 #include "Program.h"
 #include "Texture.h"
 #include "Constants.h"
 
-using namespace std;
-using namespace glm;
+#include <memory>
 
 // Light Constants
 struct light {
-	vec3 pos;
+	glm::vec3 pos;
 	float constant;
 	float linear;
 	float quadratic;
@@ -20,43 +16,49 @@ struct light {
 
 constexpr int NUM_LIGHTS = 3;
 static light POINT_LIGHTS[NUM_LIGHTS] = {
-	{ vec3(0, 30, 0), 1.0, 0.007, 0.0002 },
-	{ vec3(100, 70, -100), 1.0, 0.007, 0.0002 },
-	{ vec3(100, 50, 150), 1.0, 0.007, 0.0002 }
+	{ glm::vec3(0, 30, 0), 1.0, 0.007, 0.0002 },
+	{ glm::vec3(100, 70, -100), 1.0, 0.007, 0.0002 },
+	{ glm::vec3(100, 50, 150), 1.0, 0.007, 0.0002 }
 };
 
-// Shader Constants
+// Shader variables
 struct uniforms {
-	mat4 P;
-	mat4 V;
-	vec3 eye;
-	vec3 targetPos;
+	glm::mat4 P;
+	glm::mat4 V;
+	glm::vec3 eye;
+	glm::vec3 targetPos;
+	float time;
 };
 
 class ShaderManager
 {
 
 	public:
-		static shared_ptr<ShaderManager> getInstance();
+		static std::shared_ptr<ShaderManager> getInstance();
 
-		// Shader Manager Constants
-		ShaderManager(const string& resourceDirectory);
+		// Shader Manager
+		ShaderManager();
 		~ShaderManager() {}
 
-		shared_ptr<Program> initSimpleProg();
-	    shared_ptr<Program> initSkyboxProg();
-	    shared_ptr<Program> initTextureProg();
-	    shared_ptr<Program> initGlyphProg();
-	    shared_ptr<Program> initFloorProg();
+		std::shared_ptr<Program> initSimpleProg();
+	    std::shared_ptr<Program> initSkyboxProg();
+	    std::shared_ptr<Program> initTextureProg();
+	    std::shared_ptr<Program> initGlyphProg();
+	    std::shared_ptr<Program> initFloorProg();
+		std::shared_ptr<Program> initFBOProg();
+		std::shared_ptr<Program> initBlurProg();
 
-	    shared_ptr<Program> getShader(int i) { return shaderProgs[i]; }
-	    void setData(uniforms *common) { uniformData = common; }
-		void sendUniforms(int i, const std::shared_ptr<Texture> texture, const std::shared_ptr<Texture> blendTexture=NULL);
+		std::shared_ptr<Program> getShader(int i) const { return shaderProgs[i]; }
+	    void setData(const uniforms& common) { uniformData = common; }
+		void sendUniforms(int i, const std::shared_ptr<Texture> texture=nullptr, 
+			const std::shared_ptr<Texture> blendTexture=nullptr);
 
 	private:
-		string resourceDirectory;
-		shared_ptr<Program> shaderProgs[NUM_SHADERS];
-		uniforms *uniformData;
+		std::shared_ptr<Program> shaderProgs[NUM_SHADERS];
+		uniforms uniformData;
+
 		void addLightUniforms(std::shared_ptr<Program>& prog);
 		void sendLightUniforms(std::shared_ptr<Program>& prog);
+
+		std::shared_ptr<Program> makeProgram(const std::string& vertex, const std::string& fragment);
 };

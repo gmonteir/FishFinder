@@ -20,6 +20,7 @@ uniform sampler2D Texture0;
 uniform sampler2D Texture1;
 uniform vec3 targetPos;
 uniform vec3 eye;
+uniform float time;
 
 vec3 CalcPointLight(PointLight light, vec3 norm, vec3 pos);
 bool draw(float z_line);
@@ -33,21 +34,26 @@ void main()
         result += CalcPointLight(pointLights[i], normal, fragPos);    
     
     color = vec4(result, 1.0);
+    
+    /* Light line */
+    vec2 targetDir = normalize(targetPos.xz - eye.xz);
+    vec2 fragDir = normalize(fragPos.xz - eye.xz);
+    float d = dot(targetDir, fragDir);
+    float dist = distance(eye.xz, fragPos.xz);
+    if (d > 0.8 && dist < 40)
+    {
+       float increment = (1-(dist/40))*0.7*(d-0.8)/0.2;
+       color += vec4(vec3(0, increment, increment), 0);
+    }
 
-  	float slope;
-  	float brightFactor;
-  	float z_difference;
-  	if (targetPos.x - eye.x == 0)
-  		slope = (targetPos.z - eye.z)/0.001;
-  	else
-  		slope = (targetPos.z - eye.z)/(targetPos.x - eye.x);
-  	float z_line = (slope*(fragPos.x - targetPos.x) + targetPos.z);
-  	if (draw(z_line))
-  	{
-  		brightFactor = (fragPos.z-z_line)/3; // between -1 and 1 w/ 0 as the center
-		// Color it brightest in the center 
-		color = vec4((1.9-abs(brightFactor))*color.xyz, color.w);
-  	}
+    /* Circles in light line */
+    float factor = mod(floor(time*30), 40);
+    vec2 point = eye.xz + factor*targetDir;
+    float dist2 = distance(fragPos.xz, point);
+    if (dist2 < 0.9)
+    {
+       color = vec4(vec3(0, 0.3, 0.7), color.w);
+    }
 }
 
 vec3 CalcPointLight(PointLight light, vec3 norm, vec3 pos)
@@ -69,14 +75,3 @@ vec3 CalcPointLight(PointLight light, vec3 norm, vec3 pos)
 
     return (ambient + diffuse);
 } 
-
-bool draw(float z_line)
-{
-	float small_x = min(targetPos.x, eye.x);
-	float large_x = max(targetPos.x, eye.x);
-	float small_z = min(targetPos.z, eye.z);
-	float large_z = max(targetPos.z, eye.z);
-	return (fragPos.z - z_line < 3 && fragPos.z - z_line > -3 &&
-			fragPos.z <= large_z && fragPos.z >= small_z &&
-			fragPos.x <= large_x && fragPos.x >= small_x);
-}
