@@ -149,3 +149,6 @@ constexpr int BLURPROG = 6;
 // Freetype Constants
 constexpr int LEFT = 0;
 constexpr int CENTER = 1;
+
+// Particle Constants
+constexpr int NUM_PARTICLES = 30;

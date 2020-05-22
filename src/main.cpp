@@ -16,6 +16,7 @@
 #include "ShaderManager.h"
 #include "GameManager.h"
 #include "FBOManager.h"
+#include "ParticleManager.h"
 #include "Textures.h"
 #include "Floor.h"
 
@@ -204,6 +205,7 @@ public:
 		FBOManager::getInstance().drawBuffer();
 
 		GameManager::getInstance()->draw();
+		ParticleManager::getInstance();
 	}	
 };
 
