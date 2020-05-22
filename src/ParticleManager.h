@@ -15,6 +15,9 @@ class ParticleManager
 
 		~ParticleManager() {}
 
+		/******* draws the particles ******/
+		void processParticles();
+		
 		/*
 		void bindBuffer();
 		void blur();
@@ -34,7 +37,11 @@ class ParticleManager
 		std::vector<float> buf;
 
 		void init();
+
+		/******* initializes the positions of the particles to render ********/
 		void initParticleBuff(std::vector<float> *points);
+
+
 		/*
 		GLuint frameBuf[2];
 		GLuint texBuf[2];

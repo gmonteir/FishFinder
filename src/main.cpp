@@ -197,6 +197,7 @@ public:
 
 		// ---------------------- drawing ----------------- //
 		EntityCollection::getInstance()->draw(Model);
+		ParticleManager::getInstance().processParticles();
 		Floor::getInstance()->draw(Model);
 		Skybox::getInstance().draw(Model, camera.getEye());
 
@@ -205,7 +206,6 @@ public:
 		FBOManager::getInstance().drawBuffer();
 
 		GameManager::getInstance()->draw();
-		ParticleManager::getInstance();
 	}	
 };
 
