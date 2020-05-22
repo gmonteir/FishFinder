@@ -77,7 +77,7 @@ void Behavior::PlayerBehavior::update(float deltaTime)
 		slow = mix(slow, 0.0f, RECOVERY_SPEED * deltaTime);
 
 	if (immuneTime > 0)
-		immuneTime = max(0.0f, immuneTime - deltaTime);
+		immuneTime = glm::max(0.0f, immuneTime - deltaTime);
 
 	model.getAnimator().setAnimationSpeed(boost > 0 ? 3 : 1);
 }
