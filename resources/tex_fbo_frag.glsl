@@ -12,7 +12,11 @@ void main(){
 	vec3 yellow = vec3(0.2, 0.2, 0.0);
 
 	vec3 texColor = texture( texBuf, texCoord ).rgb;
-	texColor += blue; // + yellow * sin(fTime + sin(pow((gl_FragCoord.x * sin(fTime)) / 400, 2) - 2 * pow(gl_FragCoord.y * sin(fTime) / 400, 2)));
+	texColor += blue;
+
+	float x = pow((gl_FragCoord.x * sin(fTime)) / 600, 2);
+	float y = pow((gl_FragCoord.y * cos(fTime / 2)) / 400, 2);
+	texColor += yellow * sin(fTime + sin(fTime / 200 + x - y));
 
 	/* modifying color based on side of the screen
 	vec3 blue = vec3(0, 0, 0.5);
