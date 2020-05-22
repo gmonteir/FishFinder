@@ -186,7 +186,8 @@ public:
 		P->perspective(45.0f, aspect, 0.01f, 10000.0f);
 		mat4 V = camera.getView();
 		targetPos = playerBehavior->getTargetPos();
-		uniforms commonUniforms{P->topMatrix(), V, camera.getEye(), targetPos};
+		float time = glfwGetTime();
+		uniforms commonUniforms{P->topMatrix(), V, camera.getEye(), targetPos, time};
 		ShaderManager::getInstance()->setData(commonUniforms);
 		P->popMatrix();
 
@@ -194,21 +195,6 @@ public:
 		EntityCollection::getInstance()->draw(Model);
 		Floor::getInstance()->draw(Model);
 		Skybox::getInstance().draw(Model, camera.getEye());
-
-		// draw test heightmap plane
-		/*prog = ShaderManager::getInstance()->getShader(TEXTUREPROG);
-		prog->bind();
-		glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, value_ptr(P->topMatrix()));
-		glUniformMatrix4fv(prog->getUniform("V"), 1, GL_FALSE, value_ptr(V));
-		Model->pushMatrix();
-			Model->loadIdentity();
-			Model->translate(vec3(100, -200, -120));
-			Model->scale(vec3(2, 1, 2));
-			glUniformMatrix4fv(prog->getUniform("M"), 1, GL_FALSE, value_ptr(Model->topMatrix()));
-			Textures::getInstance()->getTexture(GROUND_TEXTURE)->bind(prog->getUniform("Texture0"));
-			drawSamplePlane(prog);
-		Model->popMatrix();
-		prog->unbind();*/
 
 		FBOManager::getInstance().blur();
 		player->draw(Model);

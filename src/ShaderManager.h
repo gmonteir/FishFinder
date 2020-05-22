@@ -27,6 +27,7 @@ struct uniforms {
 	glm::mat4 V;
 	glm::vec3 eye;
 	glm::vec3 targetPos;
+	float time;
 };
 
 class ShaderManager
