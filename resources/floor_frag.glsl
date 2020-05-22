@@ -44,15 +44,12 @@ void main()
     {
        float increment = (1-(dist/40))*0.7*(d-0.8)/0.2;
        color += vec4(vec3(0, increment, increment), 0);
-    }
 
-    /* Circles in light line */
-    float factor = mod(floor(time*30), 40);
-    vec2 point = eye.xz + factor*targetDir;
-    float dist2 = distance(fragPos.xz, point);
-    if (dist2 < 0.9)
-    {
-       color = vec4(vec3(0, 0.3, 0.7), color.w);
+       /* animating */
+       float radius = mod(floor(time*30), 40);
+       float dist2 = distance(fragPos.xz, eye.xz); // distance from eye
+       if (dist2 < radius+1 && dist2 > radius-1)
+          color -= vec4(vec3(increment, increment/2, increment/2), color.w);
     }
 }
 
