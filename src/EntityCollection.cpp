@@ -11,34 +11,32 @@ void EntityCollection::update(float deltaTime)
 	for (int i = 0; i < MAP_I; i++) {
 		for (int j = 0; j < MAP_J; j++) {
 			for (int k = 0; k < MAP_K; k++) {
-				if (!entities[i][j][k]->empty()) {
-					for (int l = 0; l < entities[i][j][k]->size(); l++) {
-						shared_ptr<Entity> entity = entities[i][j][k]->at(l);
+				for (int l = 0; l < entities[i][j][k]->size(); l++) {
+					shared_ptr<Entity> entity = entities[i][j][k]->at(l);
 
-						if (entity->shouldRemove())
-						{
+					if (entity->shouldRemove())
+					{
+						entities[i][j][k]->erase(remove(entities[i][j][k]->begin(),
+							entities[i][j][k]->end(),
+							entities[i][j][k]->at(l)), entities[i][j][k]->end());
+					}
+					else
+					{
+						entity->update(deltaTime, entities, i, j, k);
+						vec3 entityPos = entity->getTransform().getPosition();
+
+						int entityI = mapXtoI(entityPos.x);
+						int entityJ = mapYtoJ(entityPos.y);
+						int entityK = mapZtoK(entityPos.z);
+
+						if (entityI != i || entityJ != j || entityK != k) {
+							entities[entityI][entityJ][entityK]->push_back(entity);
 							entities[i][j][k]->erase(remove(entities[i][j][k]->begin(),
 								entities[i][j][k]->end(),
 								entities[i][j][k]->at(l)), entities[i][j][k]->end());
 						}
-						else
-						{
-							entity->update(deltaTime, entities, i, j, k);
-							vec3 entityPos = entity->getTransform().getPosition();
-
-							int entityI = mapXtoI(entityPos.x);
-							int entityJ = mapYtoJ(entityPos.y);
-							int entityK = mapZtoK(entityPos.z);
-
-							if (entityI != i || entityJ != j || entityK != k) {
-								entities[entityI][entityJ][entityK]->push_back(entity);
-								entities[i][j][k]->erase(remove(entities[i][j][k]->begin(),
-									entities[i][j][k]->end(),
-									entities[i][j][k]->at(l)), entities[i][j][k]->end());
-							}
-						}
 					}
-				}
+				}	
 			}
 		}
 	}
@@ -49,10 +47,8 @@ void EntityCollection::draw(std::shared_ptr<MatrixStack>& M)
 	for (int i = 0; i < MAP_I; i++) {
 		for (int j = 0; j < MAP_J; j++) {
 			for (int k = 0; k < MAP_K; k++) {
-				if (!entities[i][j][k]->empty()) {
-					for (int l = 0; l < entities[i][j][k]->size(); l++) {
-						entities[i][j][k]->at(l)->draw(M);							
-					}
+				for (int l = 0; l < entities[i][j][k]->size(); l++) {
+					entities[i][j][k]->at(l)->draw(M);							
 				}
 			}
 		}
