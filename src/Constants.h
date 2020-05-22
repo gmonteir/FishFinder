@@ -153,4 +153,4 @@ constexpr int LEFT = 0;
 constexpr int CENTER = 1;
 
 // Particle Constants
-constexpr int NUM_PARTICLES = 30;
+constexpr int NUM_PARTICLES = 100;
