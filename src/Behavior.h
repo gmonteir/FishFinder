@@ -46,6 +46,7 @@ public:
 	void remove() { toRemove = true; }
 
 	void bringToFloor(float offset = 0);
+	string pickCharacterTexture(int i);
 
 protected:
 	Transform& transform;
