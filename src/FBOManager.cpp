@@ -32,7 +32,7 @@ void FBOManager::bindBuffer()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void FBOManager::blur()
+void FBOManager::processBlur()
 {
 	if (!enabled) return;
 
@@ -41,7 +41,7 @@ void FBOManager::blur()
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, frameBuf[(i + 1) % 2]);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		processDrawTex(texBuf[i % 2], BLURPROG);
+		processDrawTex(texBuf[i % 2], BLURFBOPROG);
 	}
 	glEnable(GL_DEPTH_TEST);
 }
@@ -61,7 +61,7 @@ void FBOManager::drawBuffer()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glDisable(GL_DEPTH_TEST);
-	processDrawTex(texBuf[0], FBOPROG);
+	processDrawTex(texBuf[0], WATERFBOPROG);
 	glEnable(GL_DEPTH_TEST);
 }
 
@@ -161,9 +161,7 @@ void FBOManager::processDrawTex(GLuint tex, int program)
 	//example applying of 'drawing' the FBO texture
 	//this shader just draws right now
 	fboProg->bind();
-	glUniform1i(fboProg->getUniform("texBuf"), 0);
-	glUniform1f(fboProg->getUniform("fTime"), glfwGetTime());
-	ShaderManager::getInstance()->sendUniforms(FBOPROG);
+	ShaderManager::getInstance()->sendUniforms(program);
 	glBindVertexArray(quadVertexArrayID);
 	glEnableVertexAttribArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, quadVertexBuffer);

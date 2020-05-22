@@ -4,7 +4,7 @@ in vec2 texCoord;
 out vec4 color;
 uniform sampler2D texBuf;
 
-uniform float fTime;
+uniform float time;
 uniform vec3 targetPos;
 
 void main(){
@@ -14,11 +14,9 @@ void main(){
 	vec3 texColor = texture( texBuf, texCoord ).rgb;
 	texColor += blue;
 
-	float x = cos(gl_FragCoord.x / 800  + fTime / 2);
-	float y = sin(gl_FragCoord.y / 700 + fTime);
+	float x = cos(gl_FragCoord.x / 800  + time / 2);
+	float y = sin(gl_FragCoord.y / 700 + time);
 	texColor += yellow * pow(sin(x - y), 2);
-
-
 
 
 	// --------------- 3 waves ----------------- //
@@ -29,8 +27,8 @@ void main(){
 	vec3 texColor = texture( texBuf, texCoord ).rgb;
 	texColor += blue;
 
-	float x = gl_FragCoord.x / 800 * cos(fTime / 2);
-	float y = gl_FragCoord.y / 700 * sin(fTime) + 3;
+	float x = gl_FragCoord.x / 800 * cos(time / 2);
+	float y = gl_FragCoord.y / 700 * sin(time) + 3;
 	texColor += yellow * sin(x - y);
 	*/
 	
@@ -42,8 +40,8 @@ void main(){
 	vec3 texColor = texture( texBuf, texCoord ).rgb;
 	texColor += blue;
 
-	float x = gl_FragCoord.x / 800 * cos(fTime / 2);
-	float y = gl_FragCoord.y / 700 * sin(fTime) + 3;
+	float x = gl_FragCoord.x / 800 * cos(time / 2);
+	float y = gl_FragCoord.y / 700 * sin(time) + 3;
 	texColor += yellow * sin(pow(x, 2) - y);
 	*/
 	
@@ -55,9 +53,9 @@ void main(){
 	vec3 texColor = texture( texBuf, texCoord ).rgb;
 	texColor += blue;
 
-	float x = (gl_FragCoord.x * cos(fTime / 2)) / 600;
-	float y = (gl_FragCoord.y * sin(fTime)) / 400;
-	texColor += yellow * sin(fTime + sin(fTime / 200 + pow(x, 2) - pow(y, 2)));
+	float x = (gl_FragCoord.x * cos(time / 2)) / 600;
+	float y = (gl_FragCoord.y * sin(time)) / 400;
+	texColor += yellow * sin(time + sin(time / 200 + pow(x, 2) - pow(y, 2)));
 	*/
 	
 	// --------------- modifying color based on side of the screen ----------------- //
@@ -65,7 +63,7 @@ void main(){
 	vec3 blue = vec3(0, 0, 0.5);
 	vec3 orange = vec3(0.3, 0, 0.3);
 
-	vec3 texColor = texture( texBuf, vec2(texCoord.x + fTime, texCoord.y + 0.2f * sin(gl_FragCoord.x / 100)) ).rgb;
+	vec3 texColor = texture( texBuf, vec2(texCoord.x + time, texCoord.y + 0.2f * sin(gl_FragCoord.x / 100)) ).rgb;
 	if (gl_FragCoord.x > 400)
 		texColor -= blue;
 	if (gl_FragCoord.x < 800)
@@ -76,7 +74,7 @@ void main(){
 	/* 
 	vec3 yellow = vec3(0.8, 0.8, 0.0);
 	vec2 orbitPoint = vec2(640, 480);
-	float dist = distance(gl_FragCoord.xy, vec2(orbitPoint.x + 200 * sin(fTime), orbitPoint.y + 200 * cos(fTime)));
+	float dist = distance(gl_FragCoord.xy, vec2(orbitPoint.x + 200 * sin(time), orbitPoint.y + 200 * cos(time)));
 
 	vec3 texColor = texture( texBuf, texCoord ).rgb;
 	texColor += (1.0 - dist / 400) * yellow;

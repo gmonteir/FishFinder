@@ -17,8 +17,9 @@ ShaderManager::ShaderManager()
 	shaderProgs[TEXTUREPROG] = initTextureProg();
 	shaderProgs[GLYPHPROG] = initGlyphProg();
 	shaderProgs[FLOORPROG] = initFloorProg();
-	shaderProgs[FBOPROG] = initFBOProg();
-	shaderProgs[BLURPROG] = initBlurProg();
+	shaderProgs[FOGFBOPROG] = initFogFBOProg();
+	shaderProgs[BLURFBOPROG] = initBlurProg();
+	shaderProgs[WATERFBOPROG] = initWaterFBOProg();
 
 	cout << "ShaderManager: Initialized" << endl;
 }
@@ -94,9 +95,9 @@ shared_ptr<Program> ShaderManager::initFloorProg()
 	return texProg;
 }
 
-shared_ptr<Program> ShaderManager::initFBOProg()
+shared_ptr<Program> ShaderManager::initFogFBOProg()
 {
-	std::shared_ptr<Program> texProg = makeProgram("/pass_vert.glsl", "/tex_fbo_frag.glsl");
+	std::shared_ptr<Program> texProg = makeProgram("/pass_vert.glsl", "/fog_fbo_frag.glsl");
 	texProg->addUniform("texBuf");
 	texProg->addUniform("fTime");
 	texProg->addUniform("targetPos");
@@ -108,7 +109,17 @@ shared_ptr<Program> ShaderManager::initBlurProg()
 {
 	std::shared_ptr<Program> texProg = makeProgram("/pass_vert.glsl", "/blur_frag.glsl");
 	texProg->addUniform("texBuf");
-	texProg->addUniform("fTime");
+	texProg->addUniform("time");
+	texProg->addAttribute("vertPos");
+	return texProg;
+}
+
+shared_ptr<Program> ShaderManager::initWaterFBOProg()
+{
+	std::shared_ptr<Program> texProg = makeProgram("/pass_vert.glsl", "/water_fbo_frag.glsl");
+	texProg->addUniform("texBuf");
+	texProg->addUniform("time");
+	texProg->addUniform("targetPos");
 	texProg->addAttribute("vertPos");
 	return texProg;
 }
@@ -155,8 +166,18 @@ shared_ptr<Program> ShaderManager::initBlurProg()
 		 //texture->bind(prog->getUniform("Texture0"));
 		 //blendTexture->bind(prog->getUniform("Texture1"));
 	 }
-	 else if (i == FBOPROG)
+	 else if (i == FOGFBOPROG)
 	 {
+		 glUniform1i(prog->getUniform("texBuf"), 0);
+	 }
+	 else if (i == BLURFBOPROG)
+	 {
+		 glUniform1i(prog->getUniform("texBuf"), 0);
+	 }
+	 else if (i == WATERFBOPROG)
+	 {
+		 glUniform1i(prog->getUniform("texBuf"), 0);
+		 glUniform1f(prog->getUniform("time"), uniformData.time);
 		 glUniform3f(prog->getUniform("targetPos"), uniformData.targetPos.x, uniformData.targetPos.y, uniformData.targetPos.z);
 	 }
 

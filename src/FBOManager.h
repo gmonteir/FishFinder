@@ -15,7 +15,7 @@ class FBOManager
 		~FBOManager() {}
 
 		void bindBuffer();
-		void blur();
+		void processBlur();
 		void drawBuffer();
 
 		void update(float deltaTime, float gameTime);
