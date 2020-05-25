@@ -60,10 +60,31 @@ void Spawner::update(float deltaTime, float gameTime)
 	}
 }
 
+string Spawner::pickCharacter(int i)
+{
+	switch(i)
+	{
+		case 0:
+			return MARLIN_SHAPE;
+		case 1:
+			return NEMO_SHAPE;
+		case 2:
+			return SQUIRT_SHAPE;
+		case 3:
+			return BLOAT_SHAPE;
+		case 4:
+			return GURGLE_SHAPE;
+		case 5:
+			return JENNY_SHAPE;
+		case 6:
+			return CHARLIE_SHAPE;
+	}
+}
+
 shared_ptr<Entity> Spawner::spawnFollower()
 {
 	static int i = 0;
-	shared_ptr<Entity> e = spawnRandom(i % 2 == 0 ? NEMO_SHAPE : SQUIRT_SHAPE, Behavior::FOLLOWER, FOLLOWER_OFFSET);
+	shared_ptr<Entity> e = spawnRandom(pickCharacter(i%NUM_CHARACTERS), Behavior::FOLLOWER, FOLLOWER_OFFSET);
 	e->getTransform()
 		.setVelocity(Random::spawnVel())
 		.setSize(Random::spawnSize())

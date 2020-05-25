@@ -50,7 +50,7 @@ public:
 
 	shared_ptr<Entity> player;
 	shared_ptr<Behavior::PlayerBehavior> playerBehavior;
-	shared_ptr<Entity> squirt;
+	shared_ptr<Entity> testChar;
 	Camera camera;
 
 	void keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods) override
@@ -137,14 +137,17 @@ public:
 		player = make_shared<Entity>(DORY_SHAPE, int(Behavior::PLAYER));
 		playerBehavior = dynamic_pointer_cast<Behavior::PlayerBehavior>(player->getBehavior());
 
-		squirt = make_shared<Entity>(SQUIRT_SHAPE, int(Behavior::NONE));
-		squirt->getModel().setTexture(SQUIRT_TEXTURE);
-		squirt->getModel().setProgram(TEXTUREPROG);
-		squirt->getTransform().setPosition(vec3(5, 0, -10));
-		squirt->bringToFloor();
+		/*
+		testChar = make_shared<Entity>(MARLIN_SHAPE, int(Behavior::NONE));
+		testChar->getModel().setTexture(MARLIN_TEXTURE);
+		testChar->getModel().setProgram(TEXTUREPROG);
+		testChar->getTransform().setSize(vec3(PARENT_SIZE));
+		testChar->getTransform().setPosition(vec3(5, 0, -10));
+		testChar->bringToFloor();
+		*/
 
 		EntityCollection::getInstance()->addEntity(player);
-		//EntityCollection::getInstance()->addEntity(squirt);
+		//EntityCollection::getInstance()->addEntity(testChar);
 
 		Spawner::getInstance()->init();
 		playerBehavior->setTarget(&Spawner::getInstance()->spawnFollower()->getTransform());
