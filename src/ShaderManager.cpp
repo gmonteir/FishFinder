@@ -17,6 +17,7 @@ ShaderManager::ShaderManager()
 	shaderProgs[TEXTUREPROG] = initTextureProg();
 	shaderProgs[GLYPHPROG] = initGlyphProg();
 	shaderProgs[FLOORPROG] = initFloorProg();
+	shaderProgs[DEPTHPROG] = initDepthProg();
 	shaderProgs[FOGFBOPROG] = initFogFBOProg();
 	shaderProgs[BLURFBOPROG] = initBlurProg();
 	shaderProgs[WATERFBOPROG] = initWaterFBOProg();
@@ -95,6 +96,16 @@ shared_ptr<Program> ShaderManager::initFloorProg()
 	return texProg;
 }
 
+shared_ptr<Program> ShaderManager::initDepthProg()
+{
+	std::shared_ptr<Program> texProg = makeProgram("/simple_vert.glsl", "/depth_frag.glsl");
+	texProg->addUniform("P");
+	texProg->addUniform("M");
+	texProg->addUniform("V");
+	texProg->addAttribute("vertPos");
+	return texProg;
+}
+
 shared_ptr<Program> ShaderManager::initFogFBOProg()
 {
 	std::shared_ptr<Program> texProg = makeProgram("/tex_vert.glsl", "/fog_fbo_frag.glsl");
@@ -167,6 +178,13 @@ shared_ptr<Program> ShaderManager::initWaterFBOProg()
 		 glUniform1f(prog->getUniform("time"), uniformData.time);
 		 //texture->bind(prog->getUniform("Texture0"));
 		 //blendTexture->bind(prog->getUniform("Texture1"));
+	 }
+	 else if (i == DEPTHPROG)
+	 {
+		 mat4 M(1.0);
+		 glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, value_ptr(uniformData.P));
+		 glUniformMatrix4fv(prog->getUniform("V"), 1, GL_FALSE, value_ptr(uniformData.V));
+		 glUniformMatrix4fv(prog->getUniform("M"), 1, GL_FALSE, value_ptr(M));
 	 }
 	 else if (i == FOGFBOPROG)
 	 {

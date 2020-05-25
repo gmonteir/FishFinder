@@ -32,6 +32,13 @@ void FBOManager::bindBuffer()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
+void FBOManager::processDepth()
+{
+	glBindFramebuffer(GL_FRAMEBUFFER, frameBuf[1]);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	processDrawTex(texBuf[0], DEPTHPROG);
+}
+
 void FBOManager::processFog()
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, frameBuf[1]);
@@ -177,4 +184,11 @@ void FBOManager::processDrawTex(GLuint tex, int program)
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 	glDisableVertexAttribArray(0);
 	fboProg->unbind();
+}
+
+void FBOManager::processBindTex(int prog, int frameIndex, int texIndex)
+{
+	glBindFramebuffer(GL_FRAMEBUFFER, frameBuf[frameIndex]);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	processDrawTex(texBuf[texIndex], prog);
 }

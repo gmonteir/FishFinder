@@ -1,5 +1,6 @@
 
 #include "MatrixStack.h"
+#include "Program.h"
 
 #include <vector>
 #include <string>
@@ -19,7 +20,9 @@ public:
 	static Skybox& getInstance();
 
 	~Skybox() {}
-	void draw(std::shared_ptr<MatrixStack>& M, glm::vec3 position);
+	void draw(std::shared_ptr<MatrixStack>& M, glm::vec3 position) const;
+	void draw(std::shared_ptr<Program>& prog, std::shared_ptr<MatrixStack>& M, 
+		glm::vec3 position) const;
 
 private:
 	// texture for skymap

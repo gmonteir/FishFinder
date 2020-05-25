@@ -204,6 +204,7 @@ public:
 		Floor::getInstance()->draw(Model);
 		Skybox::getInstance().draw(Model, camera.getEye());
 
+		FBOManager::getInstance().processDepth();
 		//FBOManager::getInstance().processFog();
 		FBOManager::getInstance().processBlur();
 		player->draw(Model);

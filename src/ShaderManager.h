@@ -45,6 +45,7 @@ class ShaderManager
 	    std::shared_ptr<Program> initTextureProg();
 	    std::shared_ptr<Program> initGlyphProg();
 	    std::shared_ptr<Program> initFloorProg();
+		std::shared_ptr<Program> initDepthProg();
 		std::shared_ptr<Program> initFogFBOProg();
 		std::shared_ptr<Program> initBlurProg();
 		std::shared_ptr<Program> initWaterFBOProg();

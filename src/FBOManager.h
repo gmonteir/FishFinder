@@ -15,6 +15,7 @@ class FBOManager
 		~FBOManager() {}
 
 		void bindBuffer();
+		void processDepth();
 		void processFog();
 		void processBlur();
 		void drawBuffer();
@@ -51,4 +52,5 @@ class FBOManager
 		/* Process Texture on the specificed texture  - could vary what it does based on
 			shader  - works on inTex - runs shaders and output to textured quad */
 		void processDrawTex(GLuint tex, int program);
+		void processBindTex(int prog, int frameIndex, int texIndex);
 };

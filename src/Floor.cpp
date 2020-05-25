@@ -1,9 +1,10 @@
 #include "Floor.h"
 #include "Constants.h"
 
+using namespace std;
 using namespace glm;
 
-Floor::Floor()
+Floor::Floor() : terrain()
 {
 	int w, h, ncomps;
 	stbi_set_flip_vertically_on_load(true);
@@ -72,14 +73,19 @@ void Floor::draw(shared_ptr<MatrixStack>& M) const
 	ShaderManager::getInstance()->sendUniforms(FLOORPROG,
 		          Textures::getInstance()->getTexture(CAUSTIC_TEXTURE+to_string(counter)),
 		          Textures::getInstance()->getTexture(FLOOR_TEXTURE));
-	M->pushMatrix();
-		M->translate(FLOOR_POSITION);
-		M->scale(FLOOR_SIZE);
-		glUniformMatrix4fv(prog->getUniform("M"), 1, GL_FALSE, value_ptr(M->topMatrix()));
-		Shapes::getInstance()->getShape(FLOOR_SHAPE)->at(0)->draw(prog);
-	M->popMatrix();
+	draw(prog, M);
 	prog->unbind();
 	counter = (counter + 1) % NUM_CAUSTICS;
+}
+
+void Floor::draw(shared_ptr<Program>& prog, shared_ptr<MatrixStack>& M) const
+{
+	M->pushMatrix();
+	M->translate(FLOOR_POSITION);
+	M->scale(FLOOR_SIZE);
+	glUniformMatrix4fv(prog->getUniform("M"), 1, GL_FALSE, value_ptr(M->topMatrix()));
+	Shapes::getInstance()->getShape(FLOOR_SHAPE)->at(0)->draw(prog);
+	M->popMatrix();
 }
 
 bool Floor::isAboveFloor(const vec3 min, const vec3 max) const
