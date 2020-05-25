@@ -25,6 +25,7 @@ const std::string CAUSTIC_TEXTURE = "CAUSTIC_TXT";
 const std::string FLOOR_TEXTURE = "FLOOR_TXT";
 
 const std::string CUBE_SHAPE = "CUBE";
+const std::string SPHERE_SHAPE = "SPHERE";
 const std::string DORY_SHAPE = "DORY";
 const std::string NEMO_SHAPE = "NEMO";
 const std::string SQUIRT_SHAPE = "SQUIRT";
@@ -102,7 +103,7 @@ constexpr float FOLLOWER_OFFSET = 10.0;
 constexpr float POWERUP_OFFSET = 7.0;
 
 // Powerup Constants
-constexpr float POWERUP_SIZE = 0.7;
+constexpr float POWERUP_SIZE = 1.7;
 constexpr int POWERUP_MATERIAL = 5;
 constexpr float POWERUP_DESPAWN_TIME = 50;
 constexpr float STAMINA_INCREMENT = 20;
@@ -137,7 +138,7 @@ constexpr float PARENT_SIZE = 3;
 constexpr int NUM_CAUSTICS = 32;
 
 // Shader Constants
-constexpr int NUM_SHADERS = 7;
+constexpr int NUM_SHADERS = 8;
 constexpr int SIMPLEPROG = 0;
 constexpr int SKYBOXPROG = 1;
 constexpr int TEXTUREPROG = 2;
@@ -145,6 +146,7 @@ constexpr int GLYPHPROG = 3;
 constexpr int FLOORPROG = 4;
 constexpr int FBOPROG = 5;
 constexpr int BLURPROG = 6;
+constexpr int REFLECTPROG = 7;
 
 // Freetype Constants
 constexpr int LEFT = 0;

@@ -6,6 +6,7 @@ using namespace glm;
 Shapes::Shapes()
 {
 	addShape(RESOURCE_DIR + "/cube.obj", CUBE_SHAPE);
+	addShape(RESOURCE_DIR + "/sphere.obj", SPHERE_SHAPE);
 	addShape(RESOURCE_DIR + "/dory.obj", DORY_SHAPE);
 	addShape(RESOURCE_DIR + "/nemo.obj", NEMO_SHAPE);
 	addShape(RESOURCE_DIR + "/squirt.obj", SQUIRT_SHAPE);
