@@ -1,12 +1,13 @@
 #include "GameManager.h"
 #include "WindowManager.h"
+#include "Constants.h"
 
 #include <iostream>
 
 using namespace std;
 using namespace glm;
 
-GameManager::GameManager() : fpsCounter{}, gameStats{ INITIAL_TIME_LIMIT, NUM_CHARACTERS, true, INITIAL_STAMINA } {
+GameManager::GameManager() : fpsCounter{}, gameStats{ INITIAL_TIME_LIMIT, NUM_CHARACTERS, true, false, INITIAL_STAMINA } {
 	FT_Library ft;
 	textRenderer = new RenderText(&ft, ShaderManager::getInstance()->getShader(GLYPHPROG));
 
@@ -28,6 +29,11 @@ void GameManager::update(float deltaTime, float gameTime)
 	{
 		lose();
 		gameStats.timeRemaining = 0;
+	}
+
+	if (gameStats.timeRemaining > 0 && gameStats.charRemaining == 0)
+	{
+		win();
 	}
 
 	fpsCounter.accumulator += deltaTime;
@@ -55,29 +61,37 @@ void GameManager::draw()
 	glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, glm::value_ptr(proj));
 
 	// ------------------- Drawing -------------------- //
-	if (!gameStats.inGame)
-		drawText("Game Over", width / 2, height / 2, TITLE_FONT_SIZE);
 
-	drawText("Characters Remaining: " + to_string(gameStats.charRemaining), UI_LEFT_MARGIN, height - UI_LINE_OFFSET);
-	drawTextWithFloat("Stamina: %.1f %%", 100 * gameStats.stamina / MAX_STAMINA, UI_LEFT_MARGIN, height - 2 * UI_LINE_OFFSET);
-	drawTextWithFloat("Time Remaining: %.1f s", gameStats.timeRemaining, UI_LEFT_MARGIN, height - 3 * UI_LINE_OFFSET);
-	drawText("FPS: " + to_string(fpsCounter.fps), UI_LEFT_MARGIN, UI_BOTTOM_MARGIN);
+	if (!gameStats.inGame && !gameStats.wonGame)
+		drawText(CENTER, "Game Over", width / 2, height / 2, TITLE_FONT_SIZE, UI_RED_COLOR);
+	else if (gameStats.wonGame)
+		drawText(CENTER, "You won!", width / 2, height / 2, TITLE_FONT_SIZE, UI_GREEN_COLOR);
+
+	drawText(LEFT, "Characters Remaining: " + to_string(gameStats.charRemaining), UI_LEFT_MARGIN, height - UI_LINE_OFFSET);
+	drawTextWithFloat(LEFT, "Stamina: %.1f %%", 100 * gameStats.stamina / MAX_STAMINA, UI_LEFT_MARGIN, height - 2 * UI_LINE_OFFSET);
+	if (!gameStats.wonGame) {
+		if (gameStats.timeRemaining > 15)
+			drawTextWithFloat(CENTER, "%.1f s", gameStats.timeRemaining, width / 2, height - 2 * UI_LINE_OFFSET, 2 * UI_FONT_SIZE);
+		else 
+			drawTextWithFloat(CENTER, "%.1f s", gameStats.timeRemaining, width / 2, height - 2 * UI_LINE_OFFSET, 2 * UI_FONT_SIZE, UI_RED_COLOR);
+	}
+	drawText(LEFT, "FPS: " + to_string(fpsCounter.fps), UI_LEFT_MARGIN, UI_BOTTOM_MARGIN);
 	 
 	// ------------------- End Drawing -------------------- //
 	prog->unbind();
 	glDisable(GL_BLEND);
 }
 
-void GameManager::drawText(const std::string& text, float x, float y, float scale, glm::vec3 color)
+void GameManager::drawText(int alignment, const std::string& text, float x, float y, float scale, glm::vec3 color)
 {
 	// TODO: make work with aspect ratios and window size
-	textRenderer->drawText(text, x, y, scale, color);
+	textRenderer->drawText(alignment, text, x, y, scale, color);
 }
 
-void GameManager::drawTextWithFloat(const char* format, float num,
+void GameManager::drawTextWithFloat(int alignment, const char* format, float num,
 	float x, float y, float scale, glm::vec3 color)
 {
 	char buffer[40];
 	sprintf(buffer, format, num);
-	drawText(buffer, x, y, scale, color);
+	drawText(alignment, buffer, x, y, scale, color);
 }

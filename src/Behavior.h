@@ -46,6 +46,7 @@ public:
 	void remove() { toRemove = true; }
 
 	void bringToFloor(float offset = 0);
+	string pickCharacterTexture(int i);
 
 protected:
 	Transform& transform;
@@ -133,7 +134,7 @@ public:
 		: Behavior(POWERUP, transform, model), timer(POWERUP_DESPAWN_TIME) {}
 	virtual ~PowerupBehavior() {}
 
-	void start() override {}
+	void start() override;
 	void update(float deltaTime) override;
 
 	void onOutOfBounds(float deltaTime) override {}
