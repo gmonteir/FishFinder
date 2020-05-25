@@ -28,6 +28,7 @@ struct uniforms {
 	glm::vec3 eye;
 	glm::vec3 targetPos;
 	float time;
+	int remaining; // characters
 };
 
 class ShaderManager

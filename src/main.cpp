@@ -190,7 +190,8 @@ public:
 		mat4 V = camera.getView();
 		targetPos = playerBehavior->getTargetPos();
 		float time = glfwGetTime();
-		uniforms commonUniforms{P->topMatrix(), V, camera.getEye(), targetPos, time};
+		int remaining = GameManager::getInstance()->getGameStats().charRemaining;
+		uniforms commonUniforms{P->topMatrix(), V, camera.getEye(), targetPos, time, remaining};
 		ShaderManager::getInstance()->setData(commonUniforms);
 		P->popMatrix();
 
