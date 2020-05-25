@@ -17,6 +17,7 @@ ShaderManager::ShaderManager()
 	shaderProgs[TEXTUREPROG] = initTextureProg();
 	shaderProgs[GLYPHPROG] = initGlyphProg();
 	shaderProgs[FLOORPROG] = initFloorProg();
+	shaderProgs[REFLECTPROG] = initReflectProg();
 	shaderProgs[FBOPROG] = initFBOProg();
 	shaderProgs[BLURPROG] = initBlurProg();
 	shaderProgs[PARTICLEPROG] = initParticleProg();
@@ -95,6 +96,29 @@ shared_ptr<Program> ShaderManager::initFloorProg()
 	return texProg;
 }
 
+shared_ptr<Program> ShaderManager::initReflectProg()
+{
+	std::shared_ptr<Program> reflProg = make_shared<Program>();
+	reflProg->setVerbose(true);
+	reflProg->setShaderNames(
+		RESOURCE_DIR + "/simple_vert.glsl",
+		RESOURCE_DIR + "/refl_frag.glsl");
+	if (! reflProg->init())
+	{
+		std::cerr << "One or more shaders failed to compile... exiting!" << std::endl;
+		exit(1);
+	}
+	reflProg->addUniform("P");
+	reflProg->addUniform("M");
+	reflProg->addUniform("V");
+	reflProg->addUniform("eye");
+	//addLightUniforms(reflProg);
+	reflProg->addAttribute("vertPos");
+	reflProg->addAttribute("vertNor");
+	reflProg->addAttribute("vertTex");
+	return reflProg;
+}
+
 shared_ptr<Program> ShaderManager::initFBOProg()
 {
 	std::shared_ptr<Program> texProg = makeProgram("/pass_vert.glsl", "/tex_fbo_frag.glsl");
@@ -164,6 +188,13 @@ shared_ptr<Program> ShaderManager::initParticleProg()
 		 glUniform3f(prog->getUniform("targetPos"), uniformData.targetPos.x, uniformData.targetPos.y, uniformData.targetPos.z);
 		 glUniform3f(prog->getUniform("eye"), uniformData.eye.x, uniformData.eye.y, uniformData.eye.z);
 		 glUniform1f(prog->getUniform("time"), uniformData.time);
+	 }
+	 else if (i == REFLECTPROG)
+	 {
+	     glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, value_ptr(uniformData.P));
+		 glUniformMatrix4fv(prog->getUniform("V"), 1, GL_FALSE, value_ptr(uniformData.V));
+		 //sendLightUniforms(prog);
+		 glUniform3f(prog->getUniform("eye"), uniformData.eye.x, uniformData.eye.y, uniformData.eye.z);
 	 }
 	 else if (i == FBOPROG)
 	 {

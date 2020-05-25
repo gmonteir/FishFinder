@@ -93,7 +93,9 @@ void Behavior::PlayerBehavior::onCollision(Behavior& collider)
 			return;
 		follower->setTarget(previousCharacter);
 		follower->followTarget();
-		target = &Spawner::getInstance()->spawnFollower()->getTransform();
+		if (GameManager::getInstance()->getGameStats().charRemaining > 1) {
+			target = &Spawner::getInstance()->spawnFollower()->getTransform();
+		}
 		previousCharacter = &collider.transform;
 		GameManager::getInstance()->decrementNumChar();
 		break;
@@ -168,6 +170,12 @@ void Behavior::FollowerBehavior::setPathVelocity(float deltaTime)
 
 
 // ----------------------------- POWERUP ----------------------------- //
+void Behavior::PowerupBehavior::start()
+{
+	//model.setTexture(DORY_TEXTURE);
+	model.setProgram(REFLECTPROG);
+}
+
 void Behavior::PowerupBehavior::update(float deltaTime)
 {
 	transform.move(vec3(0, sin(timer) * deltaTime, 0));

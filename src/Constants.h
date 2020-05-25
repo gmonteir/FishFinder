@@ -25,6 +25,7 @@ const std::string CAUSTIC_TEXTURE = "CAUSTIC_TXT";
 const std::string FLOOR_TEXTURE = "FLOOR_TXT";
 
 const std::string CUBE_SHAPE = "CUBE";
+const std::string SPHERE_SHAPE = "SPHERE";
 const std::string DORY_SHAPE = "DORY";
 const std::string NEMO_SHAPE = "NEMO";
 const std::string SQUIRT_SHAPE = "SQUIRT";
@@ -42,14 +43,16 @@ const std::string RESOURCE_DIR = "../resources";
 
 // Game Constants
 constexpr int NUM_CHARACTERS = 7;
-constexpr float INITIAL_TIME_LIMIT = 10.0f; // seconds
+constexpr float INITIAL_TIME_LIMIT = 100.0f; // seconds
 
 // UI Constants
 constexpr float WINDOW_WIDTH = 2048;
 constexpr float WINDOW_HEIGHT = 1024;
 constexpr float WINDOW_ASPECT = WINDOW_WIDTH / WINDOW_HEIGHT;
 
-const glm::vec3 UI_COLOR = glm::vec3(0.2f, 1.0f, 0.2f);
+const glm::vec3 UI_COLOR = glm::vec3(0.99f, 0.86f, 0.01f);
+const glm::vec3 UI_RED_COLOR = glm::vec3(1.0f, 0.0f, 0.0f);
+const glm::vec3 UI_GREEN_COLOR = glm::vec3(0.0f, 1.0f, 0.0f);
 constexpr float UI_LINE_OFFSET = 50.0f;
 constexpr float UI_BOTTOM_MARGIN = 25.0f;
 constexpr float UI_LEFT_MARGIN = 25.0f;
@@ -102,10 +105,10 @@ constexpr float FOLLOWER_OFFSET = 10.0;
 constexpr float POWERUP_OFFSET = 7.0;
 
 // Powerup Constants
-constexpr float POWERUP_SIZE = 0.7;
+constexpr float POWERUP_SIZE = 1.7;
 constexpr int POWERUP_MATERIAL = 5;
 constexpr float POWERUP_DESPAWN_TIME = 50;
-constexpr float STAMINA_INCREMENT = 20;
+constexpr float STAMINA_INCREMENT = 10;
 
 // Coral Constants
 constexpr int NUM_CORAL = 50;
@@ -137,7 +140,7 @@ constexpr float PARENT_SIZE = 3;
 constexpr int NUM_CAUSTICS = 32;
 
 // Shader Constants
-constexpr int NUM_SHADERS = 8;
+constexpr int NUM_SHADERS = 9;
 constexpr int SIMPLEPROG = 0;
 constexpr int SKYBOXPROG = 1;
 constexpr int TEXTUREPROG = 2;
@@ -145,8 +148,8 @@ constexpr int GLYPHPROG = 3;
 constexpr int FLOORPROG = 4;
 constexpr int FBOPROG = 5;
 constexpr int BLURPROG = 6;
-constexpr int PARTICLEPROG = 7;
-
+constexpr int REFLECTPROG = 7;
+constexpr int PARTICLEPROG = 8;
 
 // Freetype Constants
 constexpr int LEFT = 0;

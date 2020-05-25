@@ -21,6 +21,7 @@ class GameManager
 		float timeRemaining;
 		int charRemaining;
 		bool inGame;
+		bool wonGame;
 		float stamina;
 	};
 
@@ -34,6 +35,9 @@ public:
 	void update(float deltaTime, float gameTime);
 	void draw();
 	void lose() { gameStats.inGame = false; }
+	void win() { gameStats.wonGame = true; }
+
+	struct GameStats getGameStats() { return gameStats; }
 
 	float getStamina() { return gameStats.stamina; }
 	void increaseStamina(float delta) { gameStats.stamina = glm::min(gameStats.stamina + delta, MAX_STAMINA); }
