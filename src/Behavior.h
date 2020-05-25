@@ -102,7 +102,7 @@ class Behavior::FollowerBehavior : public Behavior
 public:
 	FollowerBehavior(Transform& transform, Model& model)
 		: Behavior(FOLLOWER, transform, model), target(nullptr), 
-		speed(NEMO_SPEED), offset(FOLLOWING_OFFSET), following(false) {}
+		speed(FOLLOWER_SPEED), offset(FOLLOWING_OFFSET), following(false) {}
 	virtual ~FollowerBehavior() {}
 
 	void start() override;
