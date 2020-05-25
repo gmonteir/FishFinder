@@ -43,14 +43,16 @@ const std::string RESOURCE_DIR = "../resources";
 
 // Game Constants
 constexpr int NUM_CHARACTERS = 7;
-constexpr float INITIAL_TIME_LIMIT = 10.0f; // seconds
+constexpr float INITIAL_TIME_LIMIT = 100.0f; // seconds
 
 // UI Constants
 constexpr float WINDOW_WIDTH = 2048;
 constexpr float WINDOW_HEIGHT = 1024;
 constexpr float WINDOW_ASPECT = WINDOW_WIDTH / WINDOW_HEIGHT;
 
-const glm::vec3 UI_COLOR = glm::vec3(0.2f, 1.0f, 0.2f);
+const glm::vec3 UI_COLOR = glm::vec3(0.99f, 0.86f, 0.01f);
+const glm::vec3 UI_RED_COLOR = glm::vec3(1.0f, 0.0f, 0.0f);
+const glm::vec3 UI_GREEN_COLOR = glm::vec3(0.0f, 1.0f, 0.0f);
 constexpr float UI_LINE_OFFSET = 50.0f;
 constexpr float UI_BOTTOM_MARGIN = 25.0f;
 constexpr float UI_LEFT_MARGIN = 25.0f;
@@ -106,7 +108,7 @@ constexpr float POWERUP_OFFSET = 7.0;
 constexpr float POWERUP_SIZE = 1.7;
 constexpr int POWERUP_MATERIAL = 5;
 constexpr float POWERUP_DESPAWN_TIME = 50;
-constexpr float STAMINA_INCREMENT = 20;
+constexpr float STAMINA_INCREMENT = 10;
 
 // Coral Constants
 constexpr int NUM_CORAL = 50;
