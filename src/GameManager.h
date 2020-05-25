@@ -41,8 +41,8 @@ public:
 
 	void decrementNumChar() { gameStats.charRemaining--; }
 
-	void drawText(const std::string& text, float x, float y, float scale = UI_FONT_SIZE, glm::vec3 color = UI_COLOR);
-	void drawTextWithFloat(const char* format, float num,
+	void drawText(int alignment, const std::string& text, float x, float y, float scale = UI_FONT_SIZE, glm::vec3 color = UI_COLOR);
+	void drawTextWithFloat(int alignment, const char* format, float num,
 		float x, float y, float scale = UI_FONT_SIZE, glm::vec3 color = UI_COLOR);
 
 private:
