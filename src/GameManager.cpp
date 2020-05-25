@@ -63,14 +63,18 @@ void GameManager::draw()
 	// ------------------- Drawing -------------------- //
 
 	if (!gameStats.inGame && !gameStats.wonGame)
-		drawText(CENTER, "Game Over", width / 2, height / 2, TITLE_FONT_SIZE);
+		drawText(CENTER, "Game Over", width / 2, height / 2, TITLE_FONT_SIZE, UI_RED_COLOR);
 	else if (gameStats.wonGame)
-		drawText(CENTER, "You won!", width / 2, height / 2, TITLE_FONT_SIZE);
+		drawText(CENTER, "You won!", width / 2, height / 2, TITLE_FONT_SIZE, UI_GREEN_COLOR);
 
 	drawText(LEFT, "Characters Remaining: " + to_string(gameStats.charRemaining), UI_LEFT_MARGIN, height - UI_LINE_OFFSET);
 	drawTextWithFloat(LEFT, "Stamina: %.1f %%", 100 * gameStats.stamina / MAX_STAMINA, UI_LEFT_MARGIN, height - 2 * UI_LINE_OFFSET);
-	if (!gameStats.wonGame)
-		drawTextWithFloat(CENTER, "%.1f s", gameStats.timeRemaining, width / 2, height - 2 * UI_LINE_OFFSET, 2 * UI_FONT_SIZE);
+	if (!gameStats.wonGame) {
+		if (gameStats.timeRemaining > 15)
+			drawTextWithFloat(CENTER, "%.1f s", gameStats.timeRemaining, width / 2, height - 2 * UI_LINE_OFFSET, 2 * UI_FONT_SIZE);
+		else 
+			drawTextWithFloat(CENTER, "%.1f s", gameStats.timeRemaining, width / 2, height - 2 * UI_LINE_OFFSET, 2 * UI_FONT_SIZE, UI_RED_COLOR);
+	}
 	drawText(LEFT, "FPS: " + to_string(fpsCounter.fps), UI_LEFT_MARGIN, UI_BOTTOM_MARGIN);
 	 
 	// ------------------- End Drawing -------------------- //
