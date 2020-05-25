@@ -7,7 +7,7 @@
 using namespace std;
 using namespace glm;
 
-GameManager::GameManager() : fpsCounter{}, gameStats{ INITIAL_TIME_LIMIT, NUM_CHARACTERS, true, INITIAL_STAMINA } {
+GameManager::GameManager() : fpsCounter{}, gameStats{ INITIAL_TIME_LIMIT, NUM_CHARACTERS, true, false, INITIAL_STAMINA } {
 	FT_Library ft;
 	textRenderer = new RenderText(&ft, ShaderManager::getInstance()->getShader(GLYPHPROG));
 
@@ -29,6 +29,11 @@ void GameManager::update(float deltaTime, float gameTime)
 	{
 		lose();
 		gameStats.timeRemaining = 0;
+	}
+
+	if (gameStats.timeRemaining > 0 && gameStats.charRemaining == 0)
+	{
+		win();
 	}
 
 	fpsCounter.accumulator += deltaTime;
@@ -56,12 +61,16 @@ void GameManager::draw()
 	glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, glm::value_ptr(proj));
 
 	// ------------------- Drawing -------------------- //
-	if (!gameStats.inGame)
+
+	if (!gameStats.inGame && !gameStats.wonGame)
 		drawText(CENTER, "Game Over", width / 2, height / 2, TITLE_FONT_SIZE);
+	else if (gameStats.wonGame)
+		drawText(CENTER, "You won!", width / 2, height / 2, TITLE_FONT_SIZE);
 
 	drawText(LEFT, "Characters Remaining: " + to_string(gameStats.charRemaining), UI_LEFT_MARGIN, height - UI_LINE_OFFSET);
 	drawTextWithFloat(LEFT, "Stamina: %.1f %%", 100 * gameStats.stamina / MAX_STAMINA, UI_LEFT_MARGIN, height - 2 * UI_LINE_OFFSET);
-	drawTextWithFloat(LEFT, "Time Remaining: %.1f s", gameStats.timeRemaining, UI_LEFT_MARGIN, height - 3 * UI_LINE_OFFSET);
+	if (!gameStats.wonGame)
+		drawTextWithFloat(CENTER, "%.1f s", gameStats.timeRemaining, width / 2, height - 2 * UI_LINE_OFFSET, 2 * UI_FONT_SIZE);
 	drawText(LEFT, "FPS: " + to_string(fpsCounter.fps), UI_LEFT_MARGIN, UI_BOTTOM_MARGIN);
 	 
 	// ------------------- End Drawing -------------------- //

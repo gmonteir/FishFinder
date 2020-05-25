@@ -43,7 +43,7 @@ const std::string RESOURCE_DIR = "../resources";
 
 // Game Constants
 constexpr int NUM_CHARACTERS = 7;
-constexpr float INITIAL_TIME_LIMIT = 10.0f; // seconds
+constexpr float INITIAL_TIME_LIMIT = 100.0f; // seconds
 
 // UI Constants
 constexpr float WINDOW_WIDTH = 2048;
