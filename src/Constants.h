@@ -38,7 +38,7 @@ const std::string TREE_CORAL_SHAPE = "TREE_CORAL";
 const std::string SOFT_CORAL_SHAPE = "SOFT_CORAL";
 const std::string ELKHORN_CORAL_SHAPE = "ELKHORN_CORAL";
 const std::string FLOOR_SHAPE = "FLOOR_SHAPE";
-const std::string ENEMY_SHAPE = "CUBE";
+const std::string ENEMY_SHAPE = "ENEMY";
 const std::string RESOURCE_DIR = "../resources";
 
 // Game Constants
@@ -121,7 +121,8 @@ constexpr int ELKHORN_CORAL_MATERIAL = 9;
 
 // Enemy Constants
 constexpr int ENEMY_SIZE = 3;
-constexpr int ENEMY_MATERIAL = 3;
+constexpr int ENEMY_MATERIAL = 7;
+constexpr float ENEMY_OFFSET = 7.0;
 constexpr int NUM_ENEMIES = 5;
 
 // Nemo Constants
