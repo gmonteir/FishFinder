@@ -16,6 +16,11 @@ const glm::vec3 ZAXIS = glm::vec3(0.0, 0.0, 1.0);
 const std::string DORY_TEXTURE = "DORY_TXT";
 const std::string NEMO_TEXTURE = "NEMO_TXT";
 const std::string SQUIRT_TEXTURE = "SQUIRT_TXT";
+const std::string JENNY_TEXTURE = "JENNY_TXT";
+const std::string CHARLIE_TEXTURE = "CHARLIE_TXT";
+const std::string BLOAT_TEXTURE = "BLOAT_TXT";
+const std::string MARLIN_TEXTURE = "MARLIN_TXT";
+const std::string GURGLE_TEXTURE = "GURGLE_TXT";
 const std::string CAUSTIC_TEXTURE = "CAUSTIC_TXT";
 const std::string FLOOR_TEXTURE = "FLOOR_TXT";
 
@@ -24,6 +29,11 @@ const std::string SPHERE_SHAPE = "SPHERE";
 const std::string DORY_SHAPE = "DORY";
 const std::string NEMO_SHAPE = "NEMO";
 const std::string SQUIRT_SHAPE = "SQUIRT";
+const std::string JENNY_SHAPE = "JENNY";
+const std::string CHARLIE_SHAPE = "CHARLIE";
+const std::string BLOAT_SHAPE = "BLOAT";
+const std::string MARLIN_SHAPE = "MARLIN";
+const std::string GURGLE_SHAPE = "GURGLE";
 const std::string TREE_CORAL_SHAPE = "TREE_CORAL";
 const std::string SOFT_CORAL_SHAPE = "SOFT_CORAL";
 const std::string ELKHORN_CORAL_SHAPE = "ELKHORN_CORAL";
@@ -121,6 +131,9 @@ constexpr float FOLLOWING_OFFSET = 10;
 // Squirt Constants
 constexpr float SQUIRT_SIZE = 3;
 
+// Jenny and Charlie Constants
+constexpr float PARENT_SIZE = 3;
+
 // Caustics Constants
 constexpr int NUM_CAUSTICS = 32;
 
@@ -134,3 +147,7 @@ constexpr int FLOORPROG = 4;
 constexpr int FBOPROG = 5;
 constexpr int BLURPROG = 6;
 constexpr int REFLECTPROG = 7;
+
+// Freetype Constants
+constexpr int LEFT = 0;
+constexpr int CENTER = 1;
