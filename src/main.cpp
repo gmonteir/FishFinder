@@ -91,6 +91,14 @@ public:
 		{
 			FBOManager::getInstance().toggleEnabled();
 		}
+		if (key == GLFW_KEY_T && action == GLFW_PRESS)
+		{
+			FBOManager::getInstance().writeNextTexture();
+		}
+		if (key == GLFW_KEY_Y && action == GLFW_PRESS)
+		{
+			FBOManager::getInstance().toggleTexture();
+		}
 		Keys::getInstance().update(key, action);
 	}
 
@@ -196,6 +204,7 @@ public:
 		Floor::getInstance()->draw(Model);
 		Skybox::getInstance().draw(Model, camera.getEye());
 
+		//FBOManager::getInstance().processFog();
 		FBOManager::getInstance().processBlur();
 		player->draw(Model);
 		FBOManager::getInstance().drawBuffer();

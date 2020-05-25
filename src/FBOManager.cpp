@@ -8,7 +8,7 @@
 using namespace std;
 using namespace glm;
 
-FBOManager::FBOManager() : blurAmount(0), enabled(true)
+FBOManager::FBOManager() : blurAmount(0), enabled(true), write(false), texture(0)
 {
 	initFBOs();
 	initQuad();
@@ -32,6 +32,13 @@ void FBOManager::bindBuffer()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
+void FBOManager::processFog()
+{
+	glBindFramebuffer(GL_FRAMEBUFFER, frameBuf[1]);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	processDrawTex(texBuf[0], FOGFBOPROG);
+}
+
 void FBOManager::processBlur()
 {
 	if (!enabled) return;
@@ -39,7 +46,7 @@ void FBOManager::processBlur()
 	glDisable(GL_DEPTH_TEST);
 	for (size_t i = 0; i < round(blurAmount); i++)
 	{
-		glBindFramebuffer(GL_FRAMEBUFFER, frameBuf[(i + 1) % 2]);
+		glBindFramebuffer(GL_FRAMEBUFFER, frameBuf[(i+1) % 2]);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		processDrawTex(texBuf[i % 2], BLURFBOPROG);
 	}
@@ -51,17 +58,18 @@ void FBOManager::drawBuffer()
 	if (!enabled) return;
 
 	/* code to write out the FBO (texture) just once  - this is for debugging*/
-	//if (firstTime) {
-	//	writeTexture("texture_output.png");
-	//	firstTime = false;
-	//}
+	if (write) {
+		writeTexture("texture0.png", texBuf[0]);
+		writeTexture("texture1.png", texBuf[1]);
+		write = false;
+	}
 
 	// render to the screen
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glDisable(GL_DEPTH_TEST);
-	processDrawTex(texBuf[0], WATERFBOPROG);
+	processDrawTex(texBuf[texture], WATERFBOPROG);
 	glEnable(GL_DEPTH_TEST);
 }
 
@@ -70,9 +78,9 @@ void FBOManager::update(float deltaTime, float gameTime)
 	blurAmount = mix(blurAmount, 0.0f, deltaTime * RECOVERY_SPEED);
 }
 
-void FBOManager::writeTexture(const std::string filename)
+void FBOManager::writeTexture(const std::string filename, GLuint tex)
 {
-	assert(GLTextureWriter::WriteImage(texBuf[0], filename));
+	assert(GLTextureWriter::WriteImage(tex, filename));
 	cout << "FBOManager: Wrote out texture to " << filename << endl;
 }
 

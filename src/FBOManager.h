@@ -15,6 +15,7 @@ class FBOManager
 		~FBOManager() {}
 
 		void bindBuffer();
+		void processFog();
 		void processBlur();
 		void drawBuffer();
 
@@ -22,9 +23,11 @@ class FBOManager
 
 		void increaseBlurAmount(float delta) { blurAmount += delta; }
 		void toggleEnabled() { enabled = !enabled; }
+		void writeNextTexture() { write = true; }
+		void toggleTexture() { texture = (texture + 1) % 2; }
 
 		/* code to write out the FBO (texture) - helpful for debugging*/
-		void writeTexture(const std::string filename);
+		void writeTexture(const std::string filename, GLuint tex);
 
 	private:
 		GLuint frameBuf[2];
@@ -34,6 +37,8 @@ class FBOManager
 		GLuint quadVertexBuffer;
 
 		bool enabled;
+		bool write;
+		int texture;
 		float blurAmount;
 		
 		void initFBOs();

@@ -8,6 +8,8 @@ uniform float time;
 uniform vec3 targetPos;
 
 void main(){
+
+	/*
 	vec3 blue = vec3(0.01, 0.08, 0.2);
 	vec3 yellow = vec3(0.15, 0.15, 0.01);
 
@@ -17,10 +19,10 @@ void main(){
 	float x = cos(gl_FragCoord.x / 800  + time / 2);
 	float y = sin(gl_FragCoord.y / 700 + time);
 	texColor += yellow * pow(sin(x - y), 2);
-
+	*/
 
 	// --------------- 3 waves ----------------- //
-	/*
+	
 	vec3 blue = vec3(0.03, 0.05, 0.1);
 	vec3 yellow = vec3(0.1, 0.1, 0.01);
 
@@ -30,7 +32,7 @@ void main(){
 	float x = gl_FragCoord.x / 800 * cos(time / 2);
 	float y = gl_FragCoord.y / 700 * sin(time) + 3;
 	texColor += yellow * sin(x - y);
-	*/
+	
 	
 	// --------------- 2 faded lights ----------------- //
 	/* 
@@ -46,17 +48,18 @@ void main(){
 	*/
 	
 	// --------------- first draft of water ----------------- //
-	/* 
+	/*
 	vec3 blue = vec3(0.03, 0.05, 0.1);
 	vec3 yellow = vec3(0.09, 0.09, 0.01);
 
 	vec3 texColor = texture( texBuf, texCoord ).rgb;
 	texColor += blue;
 
-	float x = (gl_FragCoord.x * cos(time / 2)) / 600;
-	float y = (gl_FragCoord.y * sin(time)) / 400;
+	float x = (gl_FragCoord.x * cos(time / 2)) / 800;
+	float y = (gl_FragCoord.y * sin(time)) / 700;
 	texColor += yellow * sin(time + sin(time / 200 + pow(x, 2) - pow(y, 2)));
 	*/
+	
 	
 	// --------------- modifying color based on side of the screen ----------------- //
 	/* 

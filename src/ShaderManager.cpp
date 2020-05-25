@@ -97,7 +97,10 @@ shared_ptr<Program> ShaderManager::initFloorProg()
 
 shared_ptr<Program> ShaderManager::initFogFBOProg()
 {
-	std::shared_ptr<Program> texProg = makeProgram("/pass_vert.glsl", "/fog_fbo_frag.glsl");
+	std::shared_ptr<Program> texProg = makeProgram("/tex_vert.glsl", "/fog_fbo_frag.glsl");
+	texProg->addUniform("P");
+	texProg->addUniform("M");
+	texProg->addUniform("V");
 	texProg->addUniform("texBuf");
 	texProg->addUniform("fTime");
 	texProg->addUniform("targetPos");
@@ -119,7 +122,6 @@ shared_ptr<Program> ShaderManager::initWaterFBOProg()
 	std::shared_ptr<Program> texProg = makeProgram("/pass_vert.glsl", "/water_fbo_frag.glsl");
 	texProg->addUniform("texBuf");
 	texProg->addUniform("time");
-	texProg->addUniform("targetPos");
 	texProg->addAttribute("vertPos");
 	return texProg;
 }
@@ -168,7 +170,12 @@ shared_ptr<Program> ShaderManager::initWaterFBOProg()
 	 }
 	 else if (i == FOGFBOPROG)
 	 {
+		 mat4 M(1.0);
+		 glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, value_ptr(uniformData.P));
+		 glUniformMatrix4fv(prog->getUniform("V"), 1, GL_FALSE, value_ptr(uniformData.V));
+		 glUniformMatrix4fv(prog->getUniform("M"), 1, GL_FALSE, value_ptr(M));
 		 glUniform1i(prog->getUniform("texBuf"), 0);
+		 glUniform3f(prog->getUniform("targetPos"), uniformData.targetPos.x, uniformData.targetPos.y, uniformData.targetPos.z);
 	 }
 	 else if (i == BLURFBOPROG)
 	 {
@@ -178,7 +185,6 @@ shared_ptr<Program> ShaderManager::initWaterFBOProg()
 	 {
 		 glUniform1i(prog->getUniform("texBuf"), 0);
 		 glUniform1f(prog->getUniform("time"), uniformData.time);
-		 glUniform3f(prog->getUniform("targetPos"), uniformData.targetPos.x, uniformData.targetPos.y, uniformData.targetPos.z);
 	 }
 
  }
