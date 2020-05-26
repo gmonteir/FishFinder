@@ -11,18 +11,24 @@ void Model::draw(shared_ptr<MatrixStack> &M, const Transform& transform) const
 	shared_ptr<Program> prog = ShaderManager::getInstance()->getShader(program);
 	prog->bind();
 	ShaderManager::getInstance()->sendUniforms(program, texture);
-	M->pushMatrix();
-	M->translate(transform.getPosition());
-	M->rotate(transform.getXZAngle() + rotationOffset, YAXIS);
-	M->scale(scale*transform.getSize());
-	M->translate(-shift);
 	if (!texture)
 	{
 		SetMaterial(prog, material);
 	}
+	draw(prog, M, transform);
+	prog->unbind();
+}
+
+void Model::draw(std::shared_ptr<Program>& prog,
+	std::shared_ptr<MatrixStack>& M, const Transform& transform) const
+{
+	M->pushMatrix();
+	M->translate(transform.getPosition());
+	M->rotate(transform.getXZAngle() + rotationOffset, YAXIS);
+	M->scale(scale * transform.getSize());
+	M->translate(-shift);
 	animator->drawModel(M, prog, shapes);
 	M->popMatrix();
-	prog->unbind();
 }
 
 void Model::extractMinMax()

@@ -32,6 +32,17 @@ void FBOManager::bindBuffer()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
+bool FBOManager::bindSideBuffer()
+{
+	if (enabled)
+	{
+		//set up to render to first FBO stored in array position 0
+		glBindFramebuffer(GL_FRAMEBUFFER, frameBuf[2]);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	}
+	return enabled;
+}
+
 void FBOManager::processDepth()
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, frameBuf[1]);
@@ -41,9 +52,13 @@ void FBOManager::processDepth()
 
 void FBOManager::processFog()
 {
+	glDisable(GL_DEPTH_TEST);
 	glBindFramebuffer(GL_FRAMEBUFFER, frameBuf[1]);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glActiveTexture(GL_TEXTURE0 + 1);
+	glBindTexture(GL_TEXTURE_2D, texBuf[2]);
 	processDrawTex(texBuf[0], FOGFBOPROG);
+	glEnable(GL_DEPTH_TEST);
 }
 
 void FBOManager::processBlur()
@@ -66,8 +81,10 @@ void FBOManager::drawBuffer()
 
 	/* code to write out the FBO (texture) just once  - this is for debugging*/
 	if (write) {
-		writeTexture("texture0.png", texBuf[0]);
-		writeTexture("texture1.png", texBuf[1]);
+		for (int i = 0; i < NUM_BUFFERS; i++)
+		{
+			writeTexture("texture" + to_string(i) + ".png", texBuf[i]);
+		}
 		write = false;
 	}
 
@@ -96,28 +113,28 @@ void FBOManager::initFBOs()
 	int width, height;
 	glfwGetFramebufferSize(WindowManager::instance->getHandle(), &width, &height);
 
-	GLuint depthBuf;
+	GLuint depthBuf[NUM_BUFFERS];
 
 	//create two frame buffer objects to toggle between
 	//make two FBOs and two textures
-	glGenFramebuffers(2, frameBuf);
-	glGenTextures(2, texBuf);
-	glGenRenderbuffers(1, &depthBuf);
+	glGenFramebuffers(NUM_BUFFERS, frameBuf);
+	glGenTextures(NUM_BUFFERS, texBuf);
+	glGenRenderbuffers(NUM_BUFFERS, depthBuf);
 
-	//create one FBO
-	createFBO(frameBuf[0], texBuf[0]);
-
-	//set up depth necessary since we are rendering a mesh that needs depth test
-	glBindRenderbuffer(GL_RENDERBUFFER, depthBuf);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthBuf);
-
-	//more FBO set up
 	GLenum drawBuffers[1] = { GL_COLOR_ATTACHMENT0 };
-	glDrawBuffers(1, drawBuffers);
 
-	//create another FBO so we can swap back and forth
-	createFBO(frameBuf[1], texBuf[1]);
+	for (int i = 0; i < NUM_BUFFERS; i++)
+	{
+		//create another FBO so we can swap back and forth
+		createFBO(frameBuf[i], texBuf[i]);
+
+		//set up depth necessary since we are rendering a mesh that needs depth test
+		glBindRenderbuffer(GL_RENDERBUFFER, depthBuf[i]);
+		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
+		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthBuf[i]);
+		//more FBO set up
+		glDrawBuffers(1, drawBuffers);
+	}
 }
 
 void FBOManager::initQuad()

@@ -7,6 +7,8 @@
 
 class FBOManager
 {
+	static const int NUM_BUFFERS = 3;
+
 	FBOManager();
 
 	public:
@@ -15,6 +17,7 @@ class FBOManager
 		~FBOManager() {}
 
 		void bindBuffer();
+		bool bindSideBuffer();
 		void processDepth();
 		void processFog();
 		void processBlur();
@@ -25,14 +28,14 @@ class FBOManager
 		void increaseBlurAmount(float delta) { blurAmount += delta; }
 		void toggleEnabled() { enabled = !enabled; }
 		void writeNextTexture() { write = true; }
-		void toggleTexture() { texture = (texture + 1) % 2; }
+		void toggleTexture() { texture = (texture + 1) % NUM_BUFFERS; }
 
 		/* code to write out the FBO (texture) - helpful for debugging*/
 		void writeTexture(const std::string filename, GLuint tex);
 
 	private:
-		GLuint frameBuf[2];
-		GLuint texBuf[2];
+		GLuint frameBuf[NUM_BUFFERS];
+		GLuint texBuf[NUM_BUFFERS];
 		//geometry for texture render
 		GLuint quadVertexArrayID;
 		GLuint quadVertexBuffer;

@@ -29,7 +29,8 @@ public:
 	~EntityCollection() {}
 
 	void update(float deltaTime);
-	void draw(std::shared_ptr<MatrixStack>& M);
+	void draw(std::shared_ptr<MatrixStack>& M) const;
+	void draw(std::shared_ptr<Program>& prog, std::shared_ptr<MatrixStack>& M) const;
 
 	void addEntity(shared_ptr<Entity>& entity);
 	shared_ptr<vector<shared_ptr<Entity>>> getEntitiesFromCollectionPos(int i, int j, int k);

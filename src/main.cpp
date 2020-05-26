@@ -180,8 +180,6 @@ public:
 		int width, height;
 		glfwGetFramebufferSize(windowManager->getHandle(), &width, &height);
 		glViewport(0, 0, width, height);
-
-		FBOManager::getInstance().bindBuffer();
 		
 		/* Leave this code to just draw the meshes alone */
 		float aspect = width/(float)height;
@@ -199,14 +197,28 @@ public:
 		ShaderManager::getInstance()->setData(commonUniforms);
 		P->popMatrix();
 
+		// ---------------------- drawing depth buffer ----------------- //
+		FBOManager::getInstance().bindSideBuffer();
+		glEnable(GL_DEPTH_TEST);
+		prog = ShaderManager::getInstance()->getShader(DEPTHPROG);
+		prog->bind();
+		ShaderManager::getInstance()->sendUniforms(DEPTHPROG);
+		EntityCollection::getInstance()->draw(prog, Model);
+		Floor::getInstance()->draw(prog, Model);
+		Skybox::getInstance().draw(prog, Model, camera.getEye());
+		prog->unbind();
+
+		//FBOManager::getInstance().processDepth();
+
 		// ---------------------- drawing ----------------- //
+		FBOManager::getInstance().bindBuffer();
+
 		EntityCollection::getInstance()->draw(Model);
 		Floor::getInstance()->draw(Model);
 		Skybox::getInstance().draw(Model, camera.getEye());
 
-		FBOManager::getInstance().processDepth();
-		//FBOManager::getInstance().processFog();
-		FBOManager::getInstance().processBlur();
+		FBOManager::getInstance().processFog();
+		//FBOManager::getInstance().processBlur();
 		player->draw(Model);
 		FBOManager::getInstance().drawBuffer();
 

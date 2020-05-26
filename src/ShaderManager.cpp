@@ -98,23 +98,22 @@ shared_ptr<Program> ShaderManager::initFloorProg()
 
 shared_ptr<Program> ShaderManager::initDepthProg()
 {
-	std::shared_ptr<Program> texProg = makeProgram("/simple_vert.glsl", "/depth_frag.glsl");
+	std::shared_ptr<Program> texProg = makeProgram("/tex_vert.glsl", "/depth_frag.glsl");
 	texProg->addUniform("P");
 	texProg->addUniform("M");
 	texProg->addUniform("V");
+	texProg->addUniform("eye");
 	texProg->addAttribute("vertPos");
+	texProg->addAttribute("vertNor");
+	texProg->addAttribute("vertTex");
 	return texProg;
 }
 
 shared_ptr<Program> ShaderManager::initFogFBOProg()
 {
-	std::shared_ptr<Program> texProg = makeProgram("/tex_vert.glsl", "/fog_fbo_frag.glsl");
-	texProg->addUniform("P");
-	texProg->addUniform("M");
-	texProg->addUniform("V");
+	std::shared_ptr<Program> texProg = makeProgram("/pass_vert.glsl", "/fog_fbo_frag.glsl");
 	texProg->addUniform("texBuf");
-	texProg->addUniform("fTime");
-	texProg->addUniform("targetPos");
+	texProg->addUniform("depthBuf");
 	texProg->addAttribute("vertPos");
 	return texProg;
 }
@@ -181,19 +180,13 @@ shared_ptr<Program> ShaderManager::initWaterFBOProg()
 	 }
 	 else if (i == DEPTHPROG)
 	 {
-		 mat4 M(1.0);
 		 glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, value_ptr(uniformData.P));
 		 glUniformMatrix4fv(prog->getUniform("V"), 1, GL_FALSE, value_ptr(uniformData.V));
-		 glUniformMatrix4fv(prog->getUniform("M"), 1, GL_FALSE, value_ptr(M));
+		 glUniform3f(prog->getUniform("eye"), uniformData.eye.x, uniformData.eye.y, uniformData.eye.z);
 	 }
 	 else if (i == FOGFBOPROG)
 	 {
-		 mat4 M(1.0);
-		 glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, value_ptr(uniformData.P));
-		 glUniformMatrix4fv(prog->getUniform("V"), 1, GL_FALSE, value_ptr(uniformData.V));
-		 glUniformMatrix4fv(prog->getUniform("M"), 1, GL_FALSE, value_ptr(M));
 		 glUniform1i(prog->getUniform("texBuf"), 0);
-		 glUniform3f(prog->getUniform("targetPos"), uniformData.targetPos.x, uniformData.targetPos.y, uniformData.targetPos.z);
 	 }
 	 else if (i == BLURFBOPROG)
 	 {
