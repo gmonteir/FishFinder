@@ -28,7 +28,6 @@ ShaderManager::ShaderManager()
 
 shared_ptr<Program> ShaderManager::initSimpleProg()
 {
-	cout << "ShaderManager: Initializing Simple" << endl;
 	shared_ptr<Program> prog = makeProgram("/simple_vert.glsl", "/simple_frag.glsl");
 	prog->addUniform("P");
 	prog->addUniform("M");
@@ -47,7 +46,6 @@ shared_ptr<Program> ShaderManager::initSimpleProg()
 
 shared_ptr<Program> ShaderManager::initSkyboxProg()
 {
-	cout << "ShaderManager: Initializing Sky" << endl;
 	shared_ptr<Program> cubeProg = makeProgram("/cube_vert.glsl", "/cube_frag.glsl");
 	cubeProg->addUniform("P");
 	cubeProg->addUniform("M");
@@ -59,7 +57,6 @@ shared_ptr<Program> ShaderManager::initSkyboxProg()
 
 shared_ptr<Program> ShaderManager::initTextureProg()
 {
-	cout << "ShaderManager: Initializing texture" << endl;
 	shared_ptr<Program> texProg = makeProgram("/tex_vert.glsl", "/tex_frag.glsl");
 	texProg->addUniform("P");
 	texProg->addUniform("M");
@@ -74,7 +71,6 @@ shared_ptr<Program> ShaderManager::initTextureProg()
 
 shared_ptr<Program> ShaderManager::initGlyphProg()
 {
-	cout << "ShaderManager: Initializing glyph" << endl;
 	shared_ptr<Program> glyphProg = makeProgram("/glyph_vert.glsl", "/glyph_frag.glsl");
 	glyphProg->addUniform("P");
 	glyphProg->addUniform("text");
@@ -85,7 +81,6 @@ shared_ptr<Program> ShaderManager::initGlyphProg()
 
 shared_ptr<Program> ShaderManager::initFloorProg()
 {
-	cout << "ShaderManager: Initializing floor" << endl;
 	shared_ptr<Program> texProg = makeProgram("/tex_vert.glsl", "/floor_frag.glsl");
 	texProg->addUniform("P");
 	texProg->addUniform("M");
@@ -104,7 +99,6 @@ shared_ptr<Program> ShaderManager::initFloorProg()
 
 shared_ptr<Program> ShaderManager::initReflectProg()
 {
-	cout << "ShaderManager: Initializing reflect" << endl;
 	std::shared_ptr<Program> reflProg = makeProgram("/simple_vert.glsl", "/refl_frag.glsl");
 	reflProg->addUniform("P");
 	reflProg->addUniform("M");
@@ -119,7 +113,6 @@ shared_ptr<Program> ShaderManager::initReflectProg()
 
 shared_ptr<Program> ShaderManager::initDepthProg()
 {
-	cout << "ShaderManager: Initializing depth" << endl;
 	std::shared_ptr<Program> texProg = makeProgram("/tex_vert.glsl", "/depth_frag.glsl");
 	texProg->addUniform("P");
 	texProg->addUniform("M");
