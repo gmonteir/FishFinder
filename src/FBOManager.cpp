@@ -22,35 +22,30 @@ FBOManager& FBOManager::getInstance()
 	return instance;
 }
 
-void FBOManager::bindBuffer()
+void FBOManager::bindScreen() const
 {
-	if (enabled)
-		//set up to render to first FBO stored in array position 0
-		glBindFramebuffer(GL_FRAMEBUFFER, frameBuf[MAIN_BUFFER]);
-	else
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	//set up to render to first FBO stored in array position 0
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+}
+
+void FBOManager::bindBuffer(int bufferIndex) const
+{
+	//set up to render to first FBO stored in array position 0
+	glBindFramebuffer(GL_FRAMEBUFFER, frameBuf[bufferIndex]);
 	// Clear framebuffer.
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void FBOManager::bindDepthBuffer()
-{
-	if (enabled)
-	{
-		//set up to render to first FBO stored in array position 0
-		glBindFramebuffer(GL_FRAMEBUFFER, frameBuf[2]);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	}
-}
-
 void FBOManager::processFog()
 {
+	if (!enabled) return;
+
 	glDisable(GL_DEPTH_TEST);
-	glBindFramebuffer(GL_FRAMEBUFFER, frameBuf[1]);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	bindBuffer(FOG_BUFFER);
 	glActiveTexture(GL_TEXTURE0 + 1);
-	glBindTexture(GL_TEXTURE_2D, texBuf[2]);
-	processDrawTex(texBuf[0], FOGFBOPROG);
+	glBindTexture(GL_TEXTURE_2D, texBuf[DEPTH_BUFFER]);
+	processDrawTex(texBuf[MAIN_BUFFER], FOGFBOPROG);
 	glEnable(GL_DEPTH_TEST);
 }
 
@@ -61,8 +56,7 @@ void FBOManager::processBlur()
 	glDisable(GL_DEPTH_TEST);
 	for (size_t i = 0; i < round(blurAmount); i++)
 	{
-		glBindFramebuffer(GL_FRAMEBUFFER, frameBuf[(i+1) % 2]);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		bindBuffer((i + 1) % 2);
 		processDrawTex(texBuf[i % 2], BLURFBOPROG);
 	}
 	glEnable(GL_DEPTH_TEST);
@@ -81,9 +75,7 @@ void FBOManager::drawBuffer()
 		write = false;
 	}
 
-	// render to the screen
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	bindScreen();
 
 	glDisable(GL_DEPTH_TEST);
 	shared_ptr<Program> fboProg = ShaderManager::getInstance()->getShader(WATERFBOPROG);

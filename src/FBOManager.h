@@ -11,19 +11,19 @@ class FBOManager
 	FBOManager();
 
 	public:
-		static const int MAIN_BUFFER = 0;
-		static const int BLUR_BUFFER = 1;
-		static const int FOG_BUFFER = 2;
-		static const int DEPTH_BUFFER = 3;
-		static const int NUM_BUFFERS = 4;
+		static constexpr int MAIN_BUFFER = 0;
+		static constexpr int BLUR_BUFFER = 1;
+		static constexpr int FOG_BUFFER = 2;
+		static constexpr int DEPTH_BUFFER = 3;
+		static constexpr int NUM_BUFFERS = 4;
 
 
 		static FBOManager& getInstance();
 
 		~FBOManager() {}
 
-		void bindBuffer();
-		void bindDepthBuffer();
+		void bindScreen() const;
+		void bindBuffer(int bufferIndex) const;
 		void processFog();
 		void processBlur();
 		void drawBuffer();
@@ -40,7 +40,7 @@ class FBOManager
 		void toggleShake() { shake = !shake; }
 		void toggleWater() { water = !water; }
 
-		bool isEnabled() { return enabled; }
+		bool isEnabled() const { return enabled; }
 
 		/* code to write out the FBO (texture) - helpful for debugging*/
 		void writeTexture(const std::string filename, GLuint tex);

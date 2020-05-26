@@ -219,7 +219,7 @@ public:
 		// ---------------------- drawing depth buffer ----------------- //
 		if (FBOManager::getInstance().isEnabled())
 		{
-			FBOManager::getInstance().bindDepthBuffer();
+			FBOManager::getInstance().bindBuffer(int(FBOManager::DEPTH_BUFFER));
 			prog = ShaderManager::getInstance()->getShader(DEPTHPROG);
 			prog->bind();
 			ShaderManager::getInstance()->sendUniforms(DEPTHPROG);
@@ -227,11 +227,15 @@ public:
 			Floor::getInstance()->draw(prog, Model);
 			Skybox::getInstance().draw(prog, Model, camera.getEye());
 			prog->unbind();
+
+			FBOManager::getInstance().bindBuffer(int(FBOManager::MAIN_BUFFER));
+		}
+		else
+		{
+			FBOManager::getInstance().bindScreen();
 		}
 
 		// ---------------------- drawing ----------------- //
-		FBOManager::getInstance().bindBuffer();
-
 		EntityCollection::getInstance()->draw(Model);
 		Floor::getInstance()->draw(Model);
 		Skybox::getInstance().draw(Model, camera.getEye());
