@@ -7,11 +7,17 @@
 
 class FBOManager
 {
-	static const int NUM_BUFFERS = 3;
 
 	FBOManager();
 
 	public:
+		static const int MAIN_BUFFER = 0;
+		static const int BLUR_BUFFER = 1;
+		static const int FOG_BUFFER = 2;
+		static const int DEPTH_BUFFER = 3;
+		static const int NUM_BUFFERS = 4;
+
+
 		static FBOManager& getInstance();
 
 		~FBOManager() {}
@@ -32,6 +38,7 @@ class FBOManager
 		void toggleChaos() { chaos = !chaos; }
 		void toggleConfuse() { confuse = !confuse; }
 		void toggleShake() { shake = !shake; }
+		void toggleWater() { water = !water; }
 
 		bool isEnabled() { return enabled; }
 
@@ -50,7 +57,7 @@ class FBOManager
 		int texture;
 		float blurAmount;
 
-		bool chaos, confuse, shake;
+		bool chaos, confuse, shake, water;
 		
 		void initFBOs();
 		/**** geometry set up for a quad *****/

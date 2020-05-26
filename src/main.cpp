@@ -111,6 +111,10 @@ public:
 		{
 			FBOManager::getInstance().toggleShake();
 		}
+		if (key == GLFW_KEY_N && action == GLFW_PRESS)
+		{
+			FBOManager::getInstance().toggleWater();
+		}
 		Keys::getInstance().update(key, action);
 	}
 

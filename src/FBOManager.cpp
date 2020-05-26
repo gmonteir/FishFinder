@@ -9,7 +9,7 @@ using namespace std;
 using namespace glm;
 
 FBOManager::FBOManager() : blurAmount(0), enabled(true), write(false), texture(0),
-	chaos(false), confuse(false), shake(false)
+	chaos(false), confuse(false), shake(false), water(false)
 {
 	initFBOs();
 	initQuad();
@@ -26,7 +26,7 @@ void FBOManager::bindBuffer()
 {
 	if (enabled)
 		//set up to render to first FBO stored in array position 0
-		glBindFramebuffer(GL_FRAMEBUFFER, frameBuf[0]);
+		glBindFramebuffer(GL_FRAMEBUFFER, frameBuf[MAIN_BUFFER]);
 	else
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	// Clear framebuffer.
@@ -91,6 +91,7 @@ void FBOManager::drawBuffer()
 	glUniform1f(fboProg->getUniform("chaos"), chaos);
 	glUniform1f(fboProg->getUniform("confuse"), confuse);
 	glUniform1f(fboProg->getUniform("shake"), shake);
+	glUniform1f(fboProg->getUniform("water"), water);
 	ShaderManager::getInstance()->sendUniforms(WATERFBOPROG);
 	drawTex(texBuf[texture]);
 	fboProg->unbind();

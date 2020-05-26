@@ -10,18 +10,9 @@ uniform sampler2D depthBuf;
 void main(){
 	vec3 texColor = texture( texBuf, texCoord ).rgb;
 	float depth = texture( depthBuf, texCoord ).r;
+	vec3 fogColor = vec3(0.1, 0.15, 0.2);
 
-	//color = vec4(vec3(depth), 1.0f);
 
-	/*
-	if (gl_FragCoord.z > 0.5)
-		texColor = vec3(0);
-
-	color = vec4(texColor, 1.0);
-	color = vec4(vec3(distance(targetPos, fragPos)), 1.0);
-	*/
-
-	vec3 fogColor = vec3(0.1, 0.1, 0.4);
 	/*
 	float fogDensity = 0.2;
 	const float LOG2 = 1.442695;

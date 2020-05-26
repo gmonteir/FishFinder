@@ -148,6 +148,7 @@ shared_ptr<Program> ShaderManager::initWaterFBOProg()
 	texProg->addUniform("chaos");
 	texProg->addUniform("confuse");
 	texProg->addUniform("shake");
+	texProg->addUniform("water");
 
 	texProg->addUniform("texBuf");
 	texProg->addUniform("time");
