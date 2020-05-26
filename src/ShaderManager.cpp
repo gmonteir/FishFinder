@@ -17,6 +17,7 @@ ShaderManager::ShaderManager()
 	shaderProgs[TEXTUREPROG] = initTextureProg();
 	shaderProgs[GLYPHPROG] = initGlyphProg();
 	shaderProgs[FLOORPROG] = initFloorProg();
+	shaderProgs[REFLECTPROG] = initReflectProg();
 	shaderProgs[DEPTHPROG] = initDepthProg();
 	shaderProgs[FOGFBOPROG] = initFogFBOProg();
 	shaderProgs[BLURFBOPROG] = initBlurProg();
@@ -27,6 +28,7 @@ ShaderManager::ShaderManager()
 
 shared_ptr<Program> ShaderManager::initSimpleProg()
 {
+	cout << "ShaderManager: Initializing Simple" << endl;
 	shared_ptr<Program> prog = makeProgram("/simple_vert.glsl", "/simple_frag.glsl");
 	prog->addUniform("P");
 	prog->addUniform("M");
@@ -45,6 +47,7 @@ shared_ptr<Program> ShaderManager::initSimpleProg()
 
 shared_ptr<Program> ShaderManager::initSkyboxProg()
 {
+	cout << "ShaderManager: Initializing Sky" << endl;
 	shared_ptr<Program> cubeProg = makeProgram("/cube_vert.glsl", "/cube_frag.glsl");
 	cubeProg->addUniform("P");
 	cubeProg->addUniform("M");
@@ -56,6 +59,7 @@ shared_ptr<Program> ShaderManager::initSkyboxProg()
 
 shared_ptr<Program> ShaderManager::initTextureProg()
 {
+	cout << "ShaderManager: Initializing texture" << endl;
 	shared_ptr<Program> texProg = makeProgram("/tex_vert.glsl", "/tex_frag.glsl");
 	texProg->addUniform("P");
 	texProg->addUniform("M");
@@ -70,6 +74,7 @@ shared_ptr<Program> ShaderManager::initTextureProg()
 
 shared_ptr<Program> ShaderManager::initGlyphProg()
 {
+	cout << "ShaderManager: Initializing glyph" << endl;
 	shared_ptr<Program> glyphProg = makeProgram("/glyph_vert.glsl", "/glyph_frag.glsl");
 	glyphProg->addUniform("P");
 	glyphProg->addUniform("text");
@@ -80,6 +85,7 @@ shared_ptr<Program> ShaderManager::initGlyphProg()
 
 shared_ptr<Program> ShaderManager::initFloorProg()
 {
+	cout << "ShaderManager: Initializing floor" << endl;
 	shared_ptr<Program> texProg = makeProgram("/tex_vert.glsl", "/floor_frag.glsl");
 	texProg->addUniform("P");
 	texProg->addUniform("M");
@@ -96,8 +102,24 @@ shared_ptr<Program> ShaderManager::initFloorProg()
 	return texProg;
 }
 
+shared_ptr<Program> ShaderManager::initReflectProg()
+{
+	cout << "ShaderManager: Initializing reflect" << endl;
+	std::shared_ptr<Program> reflProg = makeProgram("/simple_vert.glsl", "/refl_frag.glsl");
+	reflProg->addUniform("P");
+	reflProg->addUniform("M");
+	reflProg->addUniform("V");
+	reflProg->addUniform("eye");
+	//addLightUniforms(reflProg);
+	reflProg->addAttribute("vertPos");
+	reflProg->addAttribute("vertNor");
+	reflProg->addAttribute("vertTex");
+	return reflProg;
+}
+
 shared_ptr<Program> ShaderManager::initDepthProg()
 {
+	cout << "ShaderManager: Initializing depth" << endl;
 	std::shared_ptr<Program> texProg = makeProgram("/tex_vert.glsl", "/depth_frag.glsl");
 	texProg->addUniform("P");
 	texProg->addUniform("M");
@@ -136,69 +158,65 @@ shared_ptr<Program> ShaderManager::initWaterFBOProg()
 	return texProg;
 }
 
- void ShaderManager::sendUniforms(int i, const shared_ptr<Texture> texture, const std::shared_ptr<Texture> blendTexture)
- {
-	 shared_ptr<Program> prog = getShader(i);
-	 if (i == SIMPLEPROG)
-	 {
-		 glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, value_ptr(uniformData.P));
-		 glUniformMatrix4fv(prog->getUniform("V"), 1, GL_FALSE, value_ptr(uniformData.V));
-		 sendLightUniforms(prog);
-		 glUniform3f(prog->getUniform("eye"), uniformData.eye.x, uniformData.eye.y, uniformData.eye.z);
-	 }
-	 else if (i == TEXTUREPROG)
-	 {
-		 glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, value_ptr(uniformData.P));
-		 glUniformMatrix4fv(prog->getUniform("V"), 1, GL_FALSE, value_ptr(uniformData.V));
-		 sendLightUniforms(prog);
-		 // This probably should be updated in the future to work with different textures
-		 texture->bind(prog->getUniform("Texture0"));
-	 }
-	 else if (i == SKYBOXPROG)
-	 {
-		 glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, value_ptr(uniformData.P));
-		 glUniformMatrix4fv(prog->getUniform("V"), 1, GL_FALSE, value_ptr(uniformData.V));
-	 }
-	 else if (i == FLOORPROG)
-	 {
-	 	 glActiveTexture(GL_TEXTURE0);
-	 	 glBindTexture(GL_TEXTURE_2D, texture->getID());
-	 	 glUniform1i(prog->getUniform("Texture0"), 0);
+void ShaderManager::sendUniforms(int progIndex, const shared_ptr<Texture> texture, const std::shared_ptr<Texture> blendTexture)
+{
+	shared_ptr<Program> prog = getShader(progIndex);
+	switch (progIndex)
+	{
+	case SIMPLEPROG:
+		glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, value_ptr(uniformData.P));
+		glUniformMatrix4fv(prog->getUniform("V"), 1, GL_FALSE, value_ptr(uniformData.V));
+		sendLightUniforms(prog);
+		glUniform3f(prog->getUniform("eye"), uniformData.eye.x, uniformData.eye.y, uniformData.eye.z);
+		break;
+	case TEXTUREPROG:
+		glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, value_ptr(uniformData.P));
+		glUniformMatrix4fv(prog->getUniform("V"), 1, GL_FALSE, value_ptr(uniformData.V));
+		sendLightUniforms(prog);
+		// This probably should be updated in the future to work with different textures
+		texture->bind(prog->getUniform("Texture0"));
+		break;
+	case SKYBOXPROG:
+		glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, value_ptr(uniformData.P));
+		glUniformMatrix4fv(prog->getUniform("V"), 1, GL_FALSE, value_ptr(uniformData.V));
+		break;
+	case FLOORPROG:
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, texture->getID());
+		glUniform1i(prog->getUniform("Texture0"), 0);
 
-	 	 glActiveTexture(GL_TEXTURE1);
-	 	 glBindTexture(GL_TEXTURE_2D, blendTexture->getID());
-	 	 glUniform1i(prog->getUniform("Texture1"), 1);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, blendTexture->getID());
+		glUniform1i(prog->getUniform("Texture1"), 1);
 
-		 glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, value_ptr(uniformData.P));
-		 glUniformMatrix4fv(prog->getUniform("V"), 1, GL_FALSE, value_ptr(uniformData.V));
-		 sendLightUniforms(prog);
-		 glUniform3f(prog->getUniform("targetPos"), uniformData.targetPos.x, uniformData.targetPos.y, uniformData.targetPos.z);
-		 glUniform3f(prog->getUniform("eye"), uniformData.eye.x, uniformData.eye.y, uniformData.eye.z);
-		 glUniform1f(prog->getUniform("time"), uniformData.time);
-		 //texture->bind(prog->getUniform("Texture0"));
-		 //blendTexture->bind(prog->getUniform("Texture1"));
-	 }
-	 else if (i == DEPTHPROG)
-	 {
-		 glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, value_ptr(uniformData.P));
-		 glUniformMatrix4fv(prog->getUniform("V"), 1, GL_FALSE, value_ptr(uniformData.V));
-		 glUniform3f(prog->getUniform("eye"), uniformData.eye.x, uniformData.eye.y, uniformData.eye.z);
-	 }
-	 else if (i == FOGFBOPROG)
-	 {
-		 glUniform1i(prog->getUniform("texBuf"), 0);
-	 }
-	 else if (i == BLURFBOPROG)
-	 {
-		 glUniform1i(prog->getUniform("texBuf"), 0);
-	 }
-	 else if (i == WATERFBOPROG)
-	 {
-		 glUniform1i(prog->getUniform("texBuf"), 0);
-		 glUniform1f(prog->getUniform("time"), uniformData.time);
-	 }
-
- }
+		glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, value_ptr(uniformData.P));
+		glUniformMatrix4fv(prog->getUniform("V"), 1, GL_FALSE, value_ptr(uniformData.V));
+		sendLightUniforms(prog);
+		glUniform3f(prog->getUniform("targetPos"), uniformData.targetPos.x, uniformData.targetPos.y, uniformData.targetPos.z);
+		glUniform3f(prog->getUniform("eye"), uniformData.eye.x, uniformData.eye.y, uniformData.eye.z);
+		glUniform1f(prog->getUniform("time"), uniformData.time);
+		//texture->bind(prog->getUniform("Texture0"));
+		//blendTexture->bind(prog->getUniform("Texture1"));
+		break;
+	case REFLECTPROG:
+		glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, value_ptr(uniformData.P));
+		glUniformMatrix4fv(prog->getUniform("V"), 1, GL_FALSE, value_ptr(uniformData.V));
+		//sendLightUniforms(prog);
+		glUniform3f(prog->getUniform("eye"), uniformData.eye.x, uniformData.eye.y, uniformData.eye.z);
+		break;
+	case DEPTHPROG:
+		glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, value_ptr(uniformData.P));
+		glUniformMatrix4fv(prog->getUniform("V"), 1, GL_FALSE, value_ptr(uniformData.V));
+		glUniform3f(prog->getUniform("eye"), uniformData.eye.x, uniformData.eye.y, uniformData.eye.z);
+		break;
+	case WATERFBOPROG:
+		glUniform1f(prog->getUniform("time"), uniformData.time);
+	case FOGFBOPROG:
+	case BLURFBOPROG:
+		glUniform1i(prog->getUniform("texBuf"), 0);
+		break;
+	}
+}
 
  void ShaderManager::addLightUniforms(std::shared_ptr<Program>& prog)
  {

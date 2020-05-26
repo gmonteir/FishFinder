@@ -93,7 +93,9 @@ void Behavior::PlayerBehavior::onCollision(Behavior& collider)
 			return;
 		follower->setTarget(previousCharacter);
 		follower->followTarget();
-		target = &Spawner::getInstance()->spawnFollower()->getTransform();
+		if (GameManager::getInstance()->getGameStats().charRemaining > 1) {
+			target = &Spawner::getInstance()->spawnFollower()->getTransform();
+		}
 		previousCharacter = &collider.transform;
 		GameManager::getInstance()->decrementNumChar();
 		break;
@@ -115,9 +117,30 @@ void Behavior::PlayerBehavior::onCollision(Behavior& collider)
 void Behavior::FollowerBehavior::start()
 {
 	static int i = 0; // Need to abstract textures from behavior
-	model.setTexture(i % 2 == 0 ? NEMO_TEXTURE : SQUIRT_TEXTURE);
+	model.setTexture(pickCharacterTexture(i % NUM_CHARACTERS));
 	model.setProgram(TEXTUREPROG);
 	i++;
+}
+
+string Behavior::pickCharacterTexture(int i)
+{
+	switch(i)
+	{
+		case 0:
+			return MARLIN_TEXTURE;
+		case 1:
+			return NEMO_TEXTURE;
+		case 2:
+			return SQUIRT_TEXTURE;
+		case 3:
+			return BLOAT_TEXTURE;
+		case 4:
+			return GURGLE_TEXTURE;
+		case 5:
+			return JENNY_TEXTURE;
+		case 6:
+			return CHARLIE_TEXTURE;
+	}
 }
 
 void Behavior::FollowerBehavior::update(float deltaTime)
@@ -148,6 +171,12 @@ void Behavior::FollowerBehavior::setPathVelocity(float deltaTime)
 
 
 // ----------------------------- POWERUP ----------------------------- //
+void Behavior::PowerupBehavior::start()
+{
+	//model.setTexture(DORY_TEXTURE);
+	model.setProgram(REFLECTPROG);
+}
+
 void Behavior::PowerupBehavior::update(float deltaTime)
 {
 	transform.move(vec3(0, sin(timer) * deltaTime, 0));

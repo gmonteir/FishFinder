@@ -1,5 +1,6 @@
 
 #include "RenderText.h"
+#include "Constants.h"
 
 RenderText::RenderText(FT_Library *ft, const shared_ptr<Program> prog)
 {
@@ -8,7 +9,7 @@ RenderText::RenderText(FT_Library *ft, const shared_ptr<Program> prog)
 	    std::cout << "ERROR::FREETYPE: Could not init FreeType Library" << std::endl;
 
 	FT_Face face;
-	if (FT_New_Face(*ft, "../fonts/Avenir.ttc", 0, &face))
+	if (FT_New_Face(*ft, "../fonts/GROBOLD.ttf", 0, &face))
 	    std::cout << "ERROR::FREETYPE: Failed to load font" << std::endl; 
 	FT_Set_Pixel_Sizes(face, 0, 48);  
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1); // Disable byte-alignment restriction
@@ -66,7 +67,7 @@ RenderText::RenderText(FT_Library *ft, const shared_ptr<Program> prog)
     glBindVertexArray(0);
 }
 
-void RenderText::drawText(std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color)
+void RenderText::drawText(int alignment, std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color)
 {
     // Activate corresponding render state	
     //prog->bind();
@@ -76,11 +77,18 @@ void RenderText::drawText(std::string text, GLfloat x, GLfloat y, GLfloat scale,
 
     // Iterate through all characters
     std::string::const_iterator c;
+    int x_len = 0;
+    if (alignment == CENTER)
+    {
+        for (c = text.begin(); c != text.end(); c++)
+            x_len += (Characters[*c].Advance >> 6)*scale;
+    }
+
     for (c = text.begin(); c != text.end(); c++) 
     {
         Character ch = Characters[*c];
 
-        GLfloat xpos = x + ch.Bearing.x * scale;
+        GLfloat xpos = x + ch.Bearing.x * scale - x_len/2.f;
         GLfloat ypos = y - (ch.Size.y - ch.Bearing.y) * scale;
 
         GLfloat w = ch.Size.x * scale;

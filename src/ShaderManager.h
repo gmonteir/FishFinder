@@ -45,6 +45,7 @@ class ShaderManager
 	    std::shared_ptr<Program> initTextureProg();
 	    std::shared_ptr<Program> initGlyphProg();
 	    std::shared_ptr<Program> initFloorProg();
+		std::shared_ptr<Program> initReflectProg();
 		std::shared_ptr<Program> initDepthProg();
 		std::shared_ptr<Program> initFogFBOProg();
 		std::shared_ptr<Program> initBlurProg();
@@ -52,7 +53,7 @@ class ShaderManager
 
 		std::shared_ptr<Program> getShader(int i) const { return shaderProgs[i]; }
 	    void setData(const uniforms& common) { uniformData = common; }
-		void sendUniforms(int i, const std::shared_ptr<Texture> texture=nullptr, 
+		void sendUniforms(int progIndex, const std::shared_ptr<Texture> texture=nullptr,
 			const std::shared_ptr<Texture> blendTexture=nullptr);
 
 	private:

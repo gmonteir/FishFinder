@@ -24,6 +24,7 @@ public:
 	void spawnPowerup();
 	void spawnCoral(int type);
 	void spawnEnemy();
+	string pickCharacter(int i);
 	shared_ptr<Entity> spawnRandom(const string& shapeName, int behavior, float offset);
 
 	void findSpawnPosition(shared_ptr<Entity>& entity, float offset);
