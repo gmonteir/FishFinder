@@ -145,6 +145,10 @@ shared_ptr<Program> ShaderManager::initBlurProg()
 shared_ptr<Program> ShaderManager::initWaterFBOProg()
 {
 	std::shared_ptr<Program> texProg = makeProgram("/pass_vert.glsl", "/water_fbo_frag.glsl");
+	texProg->addUniform("chaos");
+	texProg->addUniform("confuse");
+	texProg->addUniform("shake");
+
 	texProg->addUniform("texBuf");
 	texProg->addUniform("time");
 	texProg->addAttribute("vertPos");
@@ -200,7 +204,6 @@ void ShaderManager::sendUniforms(int progIndex, const shared_ptr<Texture> textur
 	case DEPTHPROG:
 		glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, value_ptr(uniformData.P));
 		glUniformMatrix4fv(prog->getUniform("V"), 1, GL_FALSE, value_ptr(uniformData.V));
-		glUniform3f(prog->getUniform("eye"), uniformData.eye.x, uniformData.eye.y, uniformData.eye.z);
 		break;
 	case WATERFBOPROG:
 		glUniform1f(prog->getUniform("time"), uniformData.time);

@@ -29,6 +29,10 @@ class FBOManager
 		void writeNextTexture() { write = true; }
 		void toggleTexture() { texture = (texture + 1) % NUM_BUFFERS; }
 
+		void toggleChaos() { chaos = !chaos; }
+		void toggleConfuse() { confuse = !confuse; }
+		void toggleShake() { shake = !shake; }
+
 		bool isEnabled() { return enabled; }
 
 		/* code to write out the FBO (texture) - helpful for debugging*/
@@ -42,9 +46,11 @@ class FBOManager
 		GLuint quadVertexBuffer;
 
 		bool enabled;
-		bool write;
+		bool write; // debug
 		int texture;
 		float blurAmount;
+
+		bool chaos, confuse, shake;
 		
 		void initFBOs();
 		/**** geometry set up for a quad *****/
@@ -56,5 +62,6 @@ class FBOManager
 		/* Process Texture on the specificed texture  - could vary what it does based on
 			shader  - works on inTex - runs shaders and output to textured quad */
 		void processDrawTex(GLuint tex, int program);
+		void drawTex(GLuint tex);
 		void processBindTex(int prog, int frameIndex, int texIndex);
 };

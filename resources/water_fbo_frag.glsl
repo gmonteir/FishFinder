@@ -4,11 +4,13 @@ in vec2 texCoord;
 out vec4 color;
 uniform sampler2D texBuf;
 
+uniform bool chaos;
+uniform bool confuse;
+uniform bool shake;
 uniform float time;
-uniform vec3 targetPos;
 
 void main(){
-	vec3 texColor = texture( texBuf, texCoord ).rgb;
+	//vec3 texColor = texture( texBuf, texCoord ).rgb;
 
 	/*
 	vec3 blue = vec3(0.01, 0.08, 0.2);
@@ -23,7 +25,7 @@ void main(){
 	*/
 
 	// --------------- 3 waves ----------------- //
-	/*
+	
 	vec3 blue = vec3(0.03, 0.05, 0.1);
 	vec3 yellow = vec3(0.1, 0.1, 0.01);
 
@@ -33,7 +35,7 @@ void main(){
 	float x = gl_FragCoord.x / 800 * cos(time / 2);
 	float y = gl_FragCoord.y / 700 * sin(time) + 3;
 	texColor += yellow * sin(x - y);
-	*/
+	
 	
 	// --------------- 2 faded lights ----------------- //
 	/* 
@@ -86,5 +88,4 @@ void main(){
 
 
 	color = vec4(texColor, 1.0);
-
 }

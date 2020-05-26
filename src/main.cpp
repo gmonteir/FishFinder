@@ -99,6 +99,18 @@ public:
 		{
 			FBOManager::getInstance().toggleTexture();
 		}
+		if (key == GLFW_KEY_X && action == GLFW_PRESS)
+		{
+			FBOManager::getInstance().toggleConfuse();
+		}
+		if (key == GLFW_KEY_C && action == GLFW_PRESS)
+		{
+			FBOManager::getInstance().toggleChaos();
+		}
+		if (key == GLFW_KEY_V && action == GLFW_PRESS)
+		{
+			FBOManager::getInstance().toggleShake();
+		}
 		Keys::getInstance().update(key, action);
 	}
 

@@ -8,7 +8,8 @@
 using namespace std;
 using namespace glm;
 
-FBOManager::FBOManager() : blurAmount(0), enabled(true), write(false), texture(0)
+FBOManager::FBOManager() : blurAmount(0), enabled(true), write(false), texture(0),
+	chaos(false), confuse(false), shake(false)
 {
 	initFBOs();
 	initQuad();
@@ -85,7 +86,14 @@ void FBOManager::drawBuffer()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glDisable(GL_DEPTH_TEST);
-	processDrawTex(texBuf[texture], WATERFBOPROG);
+	shared_ptr<Program> fboProg = ShaderManager::getInstance()->getShader(WATERFBOPROG);
+	fboProg->bind();
+	glUniform1f(fboProg->getUniform("chaos"), chaos);
+	glUniform1f(fboProg->getUniform("confuse"), confuse);
+	glUniform1f(fboProg->getUniform("shake"), shake);
+	ShaderManager::getInstance()->sendUniforms(WATERFBOPROG);
+	drawTex(texBuf[texture]);
+	fboProg->unbind();
 	glEnable(GL_DEPTH_TEST);
 }
 
@@ -179,20 +187,26 @@ void FBOManager::createFBO(GLuint fb, GLuint tex)
 void FBOManager::processDrawTex(GLuint tex, int program)
 {
 	shared_ptr<Program> fboProg = ShaderManager::getInstance()->getShader(program);
-	//set up inTex as my input texture
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, tex);
 	//example applying of 'drawing' the FBO texture
 	//this shader just draws right now
 	fboProg->bind();
 	ShaderManager::getInstance()->sendUniforms(program);
+	drawTex(tex);
+	fboProg->unbind();
+}
+
+void FBOManager::drawTex(GLuint tex)
+{
+	//set up inTex as my input texture
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, tex);
+
 	glBindVertexArray(quadVertexArrayID);
 	glEnableVertexAttribArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, quadVertexBuffer);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 	glDisableVertexAttribArray(0);
-	fboProg->unbind();
 }
 
 void FBOManager::processBindTex(int prog, int frameIndex, int texIndex)
