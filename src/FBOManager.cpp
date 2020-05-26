@@ -32,7 +32,7 @@ void FBOManager::bindBuffer()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-bool FBOManager::bindSideBuffer()
+void FBOManager::bindDepthBuffer()
 {
 	if (enabled)
 	{
@@ -40,14 +40,6 @@ bool FBOManager::bindSideBuffer()
 		glBindFramebuffer(GL_FRAMEBUFFER, frameBuf[2]);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
-	return enabled;
-}
-
-void FBOManager::processDepth()
-{
-	glBindFramebuffer(GL_FRAMEBUFFER, frameBuf[1]);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	processDrawTex(texBuf[0], DEPTHPROG);
 }
 
 void FBOManager::processFog()

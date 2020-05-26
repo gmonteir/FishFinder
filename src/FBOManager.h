@@ -17,8 +17,7 @@ class FBOManager
 		~FBOManager() {}
 
 		void bindBuffer();
-		bool bindSideBuffer();
-		void processDepth();
+		void bindDepthBuffer();
 		void processFog();
 		void processBlur();
 		void drawBuffer();
@@ -29,6 +28,8 @@ class FBOManager
 		void toggleEnabled() { enabled = !enabled; }
 		void writeNextTexture() { write = true; }
 		void toggleTexture() { texture = (texture + 1) % NUM_BUFFERS; }
+
+		bool isEnabled() { return enabled; }
 
 		/* code to write out the FBO (texture) - helpful for debugging*/
 		void writeTexture(const std::string filename, GLuint tex);
