@@ -117,7 +117,7 @@ void Spawner::spawnCoral(int type)
 
 void Spawner::spawnEnemy()
 {
-	shared_ptr<Entity> e = spawnRandom(ENEMY_SHAPE, Behavior::ENEMY, FLOOR_OFFSET);
+	shared_ptr<Entity> e = spawnRandom(ENEMY_SHAPE, Behavior::ENEMY, ENEMY_OFFSET);
 	e->getTransform()
 		.setSize(vec3(ENEMY_SIZE))
 		.setFacing(Random::facingXZ());
