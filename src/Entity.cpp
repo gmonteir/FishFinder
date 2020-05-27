@@ -57,9 +57,14 @@ void Entity::update(float deltaTime, shared_ptr<vector<shared_ptr<Entity>>>(&ent
 	}
 }
 
-void Entity::draw(shared_ptr<MatrixStack> &M)
+void Entity::draw(shared_ptr<MatrixStack> &M) const
 {
 	model.draw(M, transform);
+}
+
+void Entity::draw(shared_ptr<Program>& prog, shared_ptr<MatrixStack>& M) const
+{
+	model.draw(prog, M, transform);
 }
 
 bool Entity::hasCollided(Entity &entity) const

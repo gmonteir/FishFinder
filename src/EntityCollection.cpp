@@ -42,13 +42,26 @@ void EntityCollection::update(float deltaTime)
 	}
 }
 
-void EntityCollection::draw(std::shared_ptr<MatrixStack>& M)
+void EntityCollection::draw(std::shared_ptr<MatrixStack>& M) const
 {
 	for (int i = 0; i < MAP_I; i++) {
 		for (int j = 0; j < MAP_J; j++) {
 			for (int k = 0; k < MAP_K; k++) {
 				for (int l = 0; l < entities[i][j][k]->size(); l++) {
 					entities[i][j][k]->at(l)->draw(M);							
+				}
+			}
+		}
+	}
+}
+
+void EntityCollection::draw(shared_ptr<Program>& prog, shared_ptr<MatrixStack>& M) const
+{
+	for (int i = 0; i < MAP_I; i++) {
+		for (int j = 0; j < MAP_J; j++) {
+			for (int k = 0; k < MAP_K; k++) {
+				for (int l = 0; l < entities[i][j][k]->size(); l++) {
+					entities[i][j][k]->at(l)->draw(prog, M);
 				}
 			}
 		}
