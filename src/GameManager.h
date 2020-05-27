@@ -12,16 +12,18 @@
 class GameManager
 {
 	struct FPSCounter {
+		FPSCounter() : fps(0), frameCount(0), accumulator(0) {}
 		int fps;
 		int frameCount;
 		float accumulator;
 	};
 
 	struct GameStats {
+		GameStats() : timeRemaining(INITIAL_TIME_LIMIT), charRemaining(NUM_CHARACTERS), 
+			gameState(GAME_ACTIVE), stamina(INITIAL_STAMINA) {}
 		float timeRemaining;
 		int charRemaining;
-		bool inGame;
-		bool wonGame;
+		int gameState;
 		float stamina;
 	};
 
@@ -34,10 +36,8 @@ public:
 
 	void update(float deltaTime, float gameTime);
 	void draw();
-	void lose() { gameStats.inGame = false; }
-	void win() { gameStats.wonGame = true; }
-
-	struct GameStats getGameStats() { return gameStats; }
+	void lose() { gameStats.gameState = GAME_LOST; }
+	void win() { gameStats.gameState = GAME_WON; }
 
 	float getStamina() { return gameStats.stamina; }
 	void increaseStamina(float delta) { gameStats.stamina = glm::min(gameStats.stamina + delta, MAX_STAMINA); }
@@ -54,6 +54,7 @@ private:
 	FPSCounter fpsCounter;
 	GameStats gameStats;
 
+	int sceneText;
 	int width, height;
 };
 
