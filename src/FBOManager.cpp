@@ -9,7 +9,7 @@ using namespace std;
 using namespace glm;
 
 FBOManager::FBOManager() : blurAmount(0), enabled(true), write(false), texture(0),
-	chaos(false), confuse(false), shake(false), water(false)
+	chaos(false), confuse(false), shake(false), water(true)
 {
 	initFBOs();
 	initQuad();
