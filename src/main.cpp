@@ -16,6 +16,7 @@
 #include "ShaderManager.h"
 #include "GameManager.h"
 #include "FBOManager.h"
+#include "ParticleManager.h"
 #include "Textures.h"
 #include "Floor.h"
 
@@ -130,6 +131,8 @@ public:
 		glClearColor(.12f, .34f, .56f, 1.0f);
 		// Enable z-buffer test.
 		glEnable(GL_DEPTH_TEST);
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	 }
 
 	void initEntities()
@@ -190,7 +193,8 @@ public:
 		mat4 V = camera.getView();
 		targetPos = playerBehavior->getTargetPos();
 		float time = glfwGetTime();
-		uniforms commonUniforms{P->topMatrix(), V, camera.getEye(), targetPos, time};
+		int remaining = GameManager::getInstance()->getGameStats().charRemaining;
+		uniforms commonUniforms{P->topMatrix(), V, camera.getEye(), targetPos, time, remaining};
 		ShaderManager::getInstance()->setData(commonUniforms);
 		P->popMatrix();
 
@@ -198,7 +202,7 @@ public:
 		EntityCollection::getInstance()->draw(Model);
 		Floor::getInstance()->draw(Model);
 		Skybox::getInstance().draw(Model, camera.getEye());
-
+		ParticleManager::getInstance().processParticles();
 		FBOManager::getInstance().blur();
 		player->draw(Model);
 		FBOManager::getInstance().drawBuffer();
