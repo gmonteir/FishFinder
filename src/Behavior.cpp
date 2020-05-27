@@ -110,6 +110,7 @@ void Behavior::PlayerBehavior::onCollision(Behavior& collider)
 		immuneTime = IMMUNITY_TIME;
 		transform.setVelocity(ORIGIN);
 		FBOManager::getInstance().increaseBlurAmount(BLUR_INCREMENT);
+		FBOManager::getInstance().triggerShake();
 		break;
 	}
 }

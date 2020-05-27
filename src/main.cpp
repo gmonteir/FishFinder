@@ -101,7 +101,7 @@ public:
 		}
 		if (key == GLFW_KEY_X && action == GLFW_PRESS)
 		{
-			FBOManager::getInstance().toggleConfuse();
+			FBOManager::getInstance().triggerConfuse();
 		}
 		if (key == GLFW_KEY_C && action == GLFW_PRESS)
 		{
@@ -109,7 +109,7 @@ public:
 		}
 		if (key == GLFW_KEY_V && action == GLFW_PRESS)
 		{
-			FBOManager::getInstance().toggleShake();
+			FBOManager::getInstance().triggerShake();
 		}
 		if (key == GLFW_KEY_N && action == GLFW_PRESS)
 		{

@@ -7,6 +7,19 @@
 
 class FBOManager
 {
+	struct DebugData {
+		DebugData() : enabled(true), write(false), texture(0) {}
+		bool enabled;
+		bool write; // debug
+		int texture;
+	};
+
+	struct FBOData {
+		FBOData() : chaos(false), water(true), 
+			blurAmount(0), confuseTimer(0), shakeTimer(0) {}
+		bool chaos, water;
+		float blurAmount, confuseTimer, shakeTimer;
+	};
 
 	FBOManager();
 
@@ -16,6 +29,9 @@ class FBOManager
 		static constexpr int FOG_BUFFER = 2;
 		static constexpr int DEPTH_BUFFER = 3;
 		static constexpr int NUM_BUFFERS = 4;
+
+		static constexpr float CONFUSE_TIME = 3; // seconds
+		static constexpr float SHAKE_TIME = 0.5; // seconds
 
 
 		static FBOManager& getInstance();
@@ -30,17 +46,17 @@ class FBOManager
 
 		void update(float deltaTime, float gameTime);
 
-		void increaseBlurAmount(float delta) { blurAmount += delta; }
-		void toggleEnabled() { enabled = !enabled; }
-		void writeNextTexture() { write = true; }
-		void toggleTexture() { texture = (texture + 1) % NUM_BUFFERS; }
+		void increaseBlurAmount(float delta) { data.blurAmount += delta; }
+		void toggleEnabled() { debug.enabled = !debug.enabled; }
+		void writeNextTexture() { debug.write = true; }
+		void toggleTexture() { debug.texture = (debug.texture + 1) % NUM_BUFFERS; }
 
-		void toggleChaos() { chaos = !chaos; }
-		void toggleConfuse() { confuse = !confuse; }
-		void toggleShake() { shake = !shake; }
-		void toggleWater() { water = !water; }
+		void toggleChaos() { data.chaos = !data.chaos; }
+		void triggerConfuse() { data.confuseTimer = CONFUSE_TIME; }
+		void triggerShake() { data.shakeTimer = SHAKE_TIME; }
+		void toggleWater() { data.water = !data.water; }
 
-		bool isEnabled() const { return enabled; }
+		bool isEnabled() const { return debug.enabled; }
 
 		/* code to write out the FBO (texture) - helpful for debugging*/
 		void writeTexture(const std::string filename, GLuint tex);
@@ -52,12 +68,8 @@ class FBOManager
 		GLuint quadVertexArrayID;
 		GLuint quadVertexBuffer;
 
-		bool enabled;
-		bool write; // debug
-		int texture;
-		float blurAmount;
-
-		bool chaos, confuse, shake, water;
+		FBOData data;
+		DebugData debug;
 		
 		void initFBOs();
 		/**** geometry set up for a quad *****/

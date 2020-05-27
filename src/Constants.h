@@ -176,3 +176,10 @@ constexpr int CENTER = 1;
 
 // Particle Constants
 constexpr int NUM_PARTICLES = 100;
+
+
+// Scene Texts
+const std::string SCENE1TEXT[]{
+	"Ugh! Where am I?",
+	"I need to find my friends!"
+};
