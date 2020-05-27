@@ -132,6 +132,7 @@ const int CORAL_MATERIALS[]{
 constexpr float ENEMY_SIZE = 3;
 constexpr int ENEMY_MATERIAL = 7;
 const glm::vec2 ENEMY_FLOOR_OFFSET_RANGE = glm::vec2(8, 15);
+const glm::vec2 ENEMY_TIMER_RANGE = glm::vec2(5, 10);
 constexpr int NUM_ENEMIES = 10;
 
 // Character Constants

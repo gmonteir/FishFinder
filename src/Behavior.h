@@ -150,14 +150,14 @@ public:
 		: Behavior(ENEMY, transform, model) {}
 	virtual ~EnemyBehavior() {}
 
-	void start() override {}
-	void update(float deltaTime) override {}
+	void start() override;
+	void update(float deltaTime) override;
 
 	void onOutOfBounds(float deltaTime) override {}
 	void onCollision(Behavior& collider) override {}
 
 private:
-	
+	float timer;
 };
 
 #endif

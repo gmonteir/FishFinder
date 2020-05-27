@@ -3,6 +3,7 @@
 #include "Keys.h"
 #include "GameManager.h"
 #include "FBOManager.h"
+#include "Random.h"
 
 #include <iostream>
 
@@ -165,3 +166,20 @@ void Behavior::PowerupBehavior::update(float deltaTime)
 }
 
 // ----------------------------- ENEMY ----------------------------- //
+
+void Behavior::EnemyBehavior::start()
+{
+	timer = Random::range(ENEMY_TIMER_RANGE);
+}
+
+void Behavior::EnemyBehavior::update(float deltaTime)
+{
+	timer -= deltaTime;
+
+	if (timer <= 0)
+	{
+		transform.setVelocity(Random::facingXZ());
+		timer = Random::range(ENEMY_TIMER_RANGE);
+	}
+}
+

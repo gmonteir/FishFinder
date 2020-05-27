@@ -18,6 +18,7 @@ public:
 	static glm::vec3 facingXZ();
 
 	static float range(const float min, const float max);
+	static float range(const glm::vec2& interval) { return range(interval.x, interval.y); }
 	/* same xyz */
 	static glm::vec3 vec3xyz(const float min, const float max);
 	/* different xz, y = 0 */
