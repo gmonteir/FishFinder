@@ -1,6 +1,7 @@
 #include "GameManager.h"
 #include "WindowManager.h"
 #include "Constants.h"
+#include "CutSceneManager.h"
 
 #include <iostream>
 
@@ -43,24 +44,6 @@ void GameManager::update(float deltaTime, float gameTime)
 		fpsCounter.fps = (int)((float)fpsCounter.frameCount / fpsCounter.accumulator);
 		fpsCounter.accumulator = 0;
 		fpsCounter.frameCount = 0;
-	}
-
-	scene.timer -= deltaTime;
-	if (!scene.active) return;
-
-	if (scene.timer <= 0) {
-		if (scene.amount >= SCENE1TEXT[scene.text].size()) {
-			scene.amount = 0;
-			scene.text++;
-			if (scene.text >= SCENE1TEXT.size()) {
-				scene.text = 0;
-				scene.active = false;
-			}
-		}
-		else {
-			scene.amount++;
-		}
-		scene.timer = scene.amount == SCENE1TEXT[scene.text].size() ? SCENE_TEXT_DELAY : SCENE_CHAR_DELAY;
 	}
 }
 
@@ -117,6 +100,6 @@ void GameManager::drawTextWithFloat(int alignment, const char* format, float num
 
 void GameManager::drawCutSceneText()
 {
-	if (!scene.active && scene.timer <= 0) return;
-	drawText(CENTER, SCENE1TEXT[scene.text].substr(0, scene.amount), width / 2, UI_BOTTOM_MARGIN + 2 * UI_LINE_OFFSET, SCENE_FONT_SIZE, UI_YELLOW_COLOR);
+	if (!CutSceneManager::getInstance().shouldDraw()) return;
+	drawText(CENTER, CutSceneManager::getInstance().getText(), width / 2, UI_BOTTOM_MARGIN + 2 * UI_LINE_OFFSET, SCENE_FONT_SIZE, UI_YELLOW_COLOR);
 }

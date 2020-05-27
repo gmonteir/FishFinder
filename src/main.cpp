@@ -15,6 +15,7 @@
 #include "Spawner.h"
 #include "ShaderManager.h"
 #include "GameManager.h"
+#include "CutSceneManager.h"
 #include "FBOManager.h"
 #include "ParticleManager.h"
 #include "Textures.h"
@@ -187,6 +188,7 @@ public:
 	void update(float deltaTime, float gameTime)
 	{
 		Spawner::getInstance()->update(deltaTime, gameTime);
+		CutSceneManager::getInstance().update(deltaTime, gameTime);
 		GameManager::getInstance()->update(deltaTime, gameTime);
 		EntityCollection::getInstance()->update(deltaTime);
 		camera.update(deltaTime, player->getTransform());
@@ -273,7 +275,7 @@ int main(int argc, char **argv)
 	double gameTime = 0; // keep track of how long we have been in the game.
 	double currentTime = glfwGetTime();
 	glfwSetInputMode(windowManager->getHandle(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-	GameManager::getInstance()->nextCutScene();
+	CutSceneManager::getInstance().nextCutScene();
 	// Loop until the user closes the window.
 	while (! glfwWindowShouldClose(windowManager->getHandle()))
 	{
