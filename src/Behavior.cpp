@@ -116,31 +116,7 @@ void Behavior::PlayerBehavior::onCollision(Behavior& collider)
 // ----------------------------- FOLLOWER ----------------------------- //
 void Behavior::FollowerBehavior::start()
 {
-	static int i = 0; // Need to abstract textures from behavior
-	model.setTexture(pickCharacterTexture(i % NUM_CHARACTERS));
 	model.setProgram(TEXTUREPROG);
-	i++;
-}
-
-string Behavior::pickCharacterTexture(int i)
-{
-	switch(i)
-	{
-		case 0:
-			return MARLIN_TEXTURE;
-		case 1:
-			return NEMO_TEXTURE;
-		case 2:
-			return SQUIRT_TEXTURE;
-		case 3:
-			return BLOAT_TEXTURE;
-		case 4:
-			return GURGLE_TEXTURE;
-		case 5:
-			return JENNY_TEXTURE;
-		case 6:
-			return CHARLIE_TEXTURE;
-	}
 }
 
 void Behavior::FollowerBehavior::update(float deltaTime)
