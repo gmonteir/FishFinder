@@ -7,6 +7,9 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+using namespace glm;
+using namespace std;
+
 class Camera
 {
 
@@ -24,12 +27,19 @@ public:
 	glm::vec3 getEye() { return eye; }
 	glm::vec3 getDirection() { return direction; }
 
+	void setEye(vec3 eyePos) { eye = eyePos; }
+	void setLA(vec3 lookDir) { LA = lookDir; }
+
 	void update(float deltaTime, Transform& transform);
 	void cursorCallback(float xpos, float ypos);
 
 	/* deltas should be from -1 to 1 */
 	void interpolateRotation(float dx, float dy, float deltaTime);
 	void interpolatePosition(glm::vec3 pos, float deltaTime);
+
+	glm::vec4* ExtractVFPlanes(mat4 P, mat4 V, vec4* planes);
+
+	static int ViewFrustCull(vec3 center, float radius, vec4* planes);
 	
 	void firstPerson() { reverse = false; offset = FIRST_PERSON_OFFSET; }
 	void secondPerson() { reverse = true; offset = SECOND_PERSON_OFFSET; }

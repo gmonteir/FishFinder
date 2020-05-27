@@ -52,6 +52,9 @@ public:
 	shared_ptr<Behavior::PlayerBehavior> playerBehavior;
 	shared_ptr<Entity> testChar;
 	Camera camera;
+	Camera topCamera;
+
+	bool TOP_CAM = false;
 
 	void keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods) override
 	{
@@ -92,6 +95,10 @@ public:
 			FBOManager::getInstance().toggleEnabled();
 		}
 		Keys::getInstance().update(key, action);
+		if (key == GLFW_KEY_C && action == GLFW_PRESS)
+		{
+			TOP_CAM = !TOP_CAM;
+		}
 	}
 
 	void mouseCallback(GLFWwindow* window, int button, int action, int mods) override
@@ -168,9 +175,13 @@ public:
 		FBOManager::getInstance().update(deltaTime, gameTime);
 	}
 
+
+
 	void render()
 	{
 		shared_ptr<Program> prog;
+		Camera* Cam;
+
 		// Get current frame buffer size.
 		int width, height;
 		glfwGetFramebufferSize(windowManager->getHandle(), &width, &height);
@@ -188,6 +199,18 @@ public:
 		P->pushMatrix();
 		P->perspective(45.0f, aspect, 0.01f, 10000.0f);
 		mat4 V = camera.getView();
+
+		vec4 planes[6];
+		
+		camera.ExtractVFPlanes(P->topMatrix(), V, planes);
+
+		if (TOP_CAM) {
+			V = lookAt(vec3(0, 100, 0), vec3(0, 99, 1), YAXIS);
+			//topCamera.setEye(vec3(0, 100, 0));
+			//topCamera.setLA(vec3(0, 99, 0));
+			//Cam = &topCamera;
+		}
+
 		targetPos = playerBehavior->getTargetPos();
 		float time = glfwGetTime();
 		uniforms commonUniforms{P->topMatrix(), V, camera.getEye(), targetPos, time};
@@ -195,7 +218,10 @@ public:
 		P->popMatrix();
 
 		// ---------------------- drawing ----------------- //
-		EntityCollection::getInstance()->draw(Model);
+
+		/* draw the complete scene from a top down camera */
+
+		EntityCollection::getInstance()->draw(Model, planes);
 		Floor::getInstance()->draw(Model);
 		Skybox::getInstance().draw(Model, camera.getEye());
 
