@@ -165,10 +165,6 @@ void Behavior::FollowerBehavior::setPathVelocity(float deltaTime)
 	vec3 direction(normalize(difference));
 	float distance = length(difference) - offset;
 
-	//if (length(difference) > offset)
-	//	transform.interpolateVelocity(direction * distance, deltaTime * speed);
-	//else
-	//	transform.setVelocity(ORIGIN);
 	transform.interpolateVelocity(distance > offset / 4 ? distance * direction : ORIGIN, deltaTime * speed)
 		.setFacing(difference);
 }
@@ -177,7 +173,6 @@ void Behavior::FollowerBehavior::setPathVelocity(float deltaTime)
 // ----------------------------- POWERUP ----------------------------- //
 void Behavior::PowerupBehavior::start()
 {
-	//model.setTexture(DORY_TEXTURE);
 	model.setProgram(REFLECTPROG);
 }
 
