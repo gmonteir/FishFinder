@@ -1,8 +1,10 @@
 #pragma once
 
+#include "GLSL.h"
+#include <vector>
+
 #define _USE_MATH_DEFINES
 #include <math.h>
-#include "GLSL.h"
 // value_ptr for glm
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -48,6 +50,8 @@ constexpr int GAME_LOST = -1;
 constexpr int GAME_ACTIVE = 0;
 constexpr int GAME_WON = 1;
 constexpr float WARNING_TIME = 15.0f;
+constexpr float SCENE_CHAR_DELAY = 0.1f;
+constexpr float SCENE_TEXT_DELAY = 1.0f;
 
 // UI Constants
 constexpr float WINDOW_WIDTH = 2048;
@@ -57,12 +61,15 @@ constexpr float WINDOW_ASPECT = WINDOW_WIDTH / WINDOW_HEIGHT;
 const glm::vec3 UI_COLOR = glm::vec3(0.99f, 0.86f, 0.01f);
 const glm::vec3 UI_RED_COLOR = glm::vec3(1.0f, 0.0f, 0.0f);
 const glm::vec3 UI_GREEN_COLOR = glm::vec3(0.0f, 1.0f, 0.0f);
+const glm::vec3 UI_YELLOW_COLOR = glm::vec3(0.9f, 0.5f, 0.0f);
+
 constexpr float UI_LINE_OFFSET = 50.0f;
 constexpr float UI_BOTTOM_MARGIN = 25.0f;
 constexpr float UI_LEFT_MARGIN = 25.0f;
-constexpr float UI_FONT_SIZE = 0.75f;
 
+constexpr float UI_FONT_SIZE = 0.75f;
 constexpr float TITLE_FONT_SIZE = 2.5f;
+constexpr float SCENE_FONT_SIZE = 2.0f;
 
 // Player
 constexpr float PLAYER_SPEED = 25;
@@ -183,7 +190,9 @@ constexpr int NUM_PARTICLES = 100;
 
 
 // Scene Texts
-const std::string SCENE1TEXT[]{
-	"Ugh! Where am I?",
+
+const std::vector<std::string> SCENE1TEXT{
+	"Ugh!",
+	"Where am I?",
 	"I need to find my friends!"
 };

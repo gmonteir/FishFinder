@@ -214,7 +214,7 @@ public:
 		mat4 V = camera.getView();
 		targetPos = playerBehavior->getTargetPos();
 		float time = glfwGetTime();
-		int remaining = GameManager::getInstance()->getGameStats().charRemaining;
+		int remaining = GameManager::getInstance()->getCharRemaining();
 		uniforms commonUniforms{P->topMatrix(), V, camera.getEye(), targetPos, time, remaining};
 		ShaderManager::getInstance()->setData(commonUniforms);
 		P->popMatrix();
@@ -273,7 +273,7 @@ int main(int argc, char **argv)
 	double gameTime = 0; // keep track of how long we have been in the game.
 	double currentTime = glfwGetTime();
 	glfwSetInputMode(windowManager->getHandle(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-
+	GameManager::getInstance()->nextCutScene();
 	// Loop until the user closes the window.
 	while (! glfwWindowShouldClose(windowManager->getHandle()))
 	{

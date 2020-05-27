@@ -27,6 +27,15 @@ class GameManager
 		float stamina;
 	};
 
+	struct Scene {
+		Scene() : active(false), current(-1), text(0), amount(0), timer(SCENE_TEXT_DELAY) {}
+		bool active;
+		int current;
+		int text;
+		int amount;
+		float timer;
+	};
+
 	GameManager();
 
 public:
@@ -39,6 +48,8 @@ public:
 	void lose() { gameStats.gameState = GAME_LOST; }
 	void win() { gameStats.gameState = GAME_WON; }
 
+	int getCharRemaining() { return gameStats.charRemaining; }
+
 	float getStamina() { return gameStats.stamina; }
 	void increaseStamina(float delta) { gameStats.stamina = glm::min(gameStats.stamina + delta, MAX_STAMINA); }
 	void decreaseStamina(float delta) { gameStats.stamina = glm::max(gameStats.stamina - delta, 0.0f); }
@@ -49,12 +60,15 @@ public:
 	void drawTextWithFloat(int alignment, const char* format, float num,
 		float x, float y, float scale = UI_FONT_SIZE, glm::vec3 color = UI_COLOR);
 
+	void drawCutSceneText();
+	void nextCutScene() { scene.active = true; scene.current++; }
+
 private:
 	RenderText* textRenderer;
 	FPSCounter fpsCounter;
 	GameStats gameStats;
 
-	int sceneText;
+	Scene scene;
 	int width, height;
 };
 

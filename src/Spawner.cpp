@@ -39,7 +39,12 @@ void Spawner::update(float deltaTime, float gameTime)
 shared_ptr<Entity> Spawner::spawnFollower()
 {
 	static int i = 0;
-	const Character& c = CHARACTERS[i % NUM_CHARACTERS];
+	if (i >= NUM_CHARACTERS)
+	{
+		cout << "Spawner: No more Characters" << endl;
+		return nullptr;
+	}
+	const Character& c = CHARACTERS[i];
 	shared_ptr<Entity> e = make_shared<Entity>(c.shape, Behavior::FOLLOWER);
 	findSpawnPosition(e, FOLLOWER_FLOOR_OFFSET);
 	e->getTransform()

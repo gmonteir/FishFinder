@@ -94,7 +94,7 @@ void Behavior::PlayerBehavior::onCollision(Behavior& collider)
 			return;
 		follower->setTarget(previousCharacter);
 		follower->followTarget();
-		if (GameManager::getInstance()->getGameStats().charRemaining > 1) {
+		if (GameManager::getInstance()->getCharRemaining() > 1) {
 			target = &Spawner::getInstance()->spawnFollower()->getTransform();
 		}
 		previousCharacter = &collider.transform;

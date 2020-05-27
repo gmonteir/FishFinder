@@ -30,7 +30,7 @@ class FBOManager
 		static constexpr int DEPTH_BUFFER = 3;
 		static constexpr int NUM_BUFFERS = 4;
 
-		static constexpr float CONFUSE_TIME = 3; // seconds
+		static constexpr float CONFUSE_TIME = 5; // seconds
 		static constexpr float SHAKE_TIME = 0.5; // seconds
 
 

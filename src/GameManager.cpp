@@ -44,6 +44,24 @@ void GameManager::update(float deltaTime, float gameTime)
 		fpsCounter.accumulator = 0;
 		fpsCounter.frameCount = 0;
 	}
+
+	scene.timer -= deltaTime;
+	if (!scene.active) return;
+
+	if (scene.timer <= 0) {
+		if (scene.amount >= SCENE1TEXT[scene.text].size()) {
+			scene.amount = 0;
+			scene.text++;
+			if (scene.text >= SCENE1TEXT.size()) {
+				scene.text = 0;
+				scene.active = false;
+			}
+		}
+		else {
+			scene.amount++;
+		}
+		scene.timer = scene.amount == SCENE1TEXT[scene.text].size() ? SCENE_TEXT_DELAY : SCENE_CHAR_DELAY;
+	}
 }
 
 /* FreeType */
@@ -74,6 +92,7 @@ void GameManager::draw()
 			gameStats.timeRemaining > WARNING_TIME ? UI_COLOR : UI_RED_COLOR);
 	}
 
+	drawCutSceneText();
 
 	drawText(LEFT, "FPS: " + to_string(fpsCounter.fps), UI_LEFT_MARGIN, UI_BOTTOM_MARGIN);
 	 
@@ -94,4 +113,10 @@ void GameManager::drawTextWithFloat(int alignment, const char* format, float num
 	char buffer[40];
 	sprintf(buffer, format, num);
 	drawText(alignment, buffer, x, y, scale, color);
+}
+
+void GameManager::drawCutSceneText()
+{
+	if (!scene.active && scene.timer <= 0) return;
+	drawText(CENTER, SCENE1TEXT[scene.text].substr(0, scene.amount), width / 2, UI_BOTTOM_MARGIN + 2 * UI_LINE_OFFSET, SCENE_FONT_SIZE, UI_YELLOW_COLOR);
 }
