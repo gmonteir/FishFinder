@@ -39,7 +39,7 @@ void Behavior::bringToFloor(float offset) {
 void Behavior::PlayerBehavior::start()
 {
 	transform.setSize(glm::vec3(PLAYER_SIZE));
-	bringToFloor(FOLLOWER_OFFSET);
+	bringToFloor(FOLLOWER_FLOOR_OFFSET);
 	model.setTexture(DORY_TEXTURE);
 	model.setProgram(TEXTUREPROG);
 }

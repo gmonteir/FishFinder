@@ -41,7 +41,7 @@ shared_ptr<Entity> Spawner::spawnFollower()
 	static int i = 0;
 	const Character& c = CHARACTERS[i % NUM_CHARACTERS];
 	shared_ptr<Entity> e = make_shared<Entity>(c.shape, Behavior::FOLLOWER);
-	findSpawnPosition(e, FOLLOWER_OFFSET);
+	findSpawnPosition(e, FOLLOWER_FLOOR_OFFSET);
 	e->getTransform()
 		.setVelocity(Random::spawnVel())
 		.setSize(c.size)

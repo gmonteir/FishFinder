@@ -100,6 +100,7 @@ constexpr float MAX_SPAWN_SIZE = 6;
 constexpr int DEFAULT_MATERIAL = 3;
 constexpr float FOLLOWER_SPEED = 40;
 constexpr float FOLLOWER_OFFSET = 10.0f;
+constexpr float FOLLOWER_FLOOR_OFFSET = 10.0f;
 constexpr float POWERUP_OFFSET = 7.0;
 
 // Powerup Constants
@@ -130,8 +131,8 @@ const int CORAL_MATERIALS[]{
 // Enemy Constants
 constexpr float ENEMY_SIZE = 3;
 constexpr int ENEMY_MATERIAL = 7;
-const glm::vec2 ENEMY_FLOOR_OFFSET_RANGE = glm::vec2(5, 10);
-constexpr int NUM_ENEMIES = 5;
+const glm::vec2 ENEMY_FLOOR_OFFSET_RANGE = glm::vec2(8, 15);
+constexpr int NUM_ENEMIES = 10;
 
 // Character Constants
 struct Character {
