@@ -13,7 +13,7 @@ class Random
 public:
 	static glm::vec3 spawnPos() { return vec3xz(-MAX_SPAWN_DISTANCE, MAX_SPAWN_DISTANCE); }
 	static glm::vec3 spawnVel() { return vec3xz(-MAX_SPAWN_VELOCITY, MAX_SPAWN_VELOCITY); }
-	static glm::vec3 spawnSize() { return vec3xyz(MIN_SPAWN_SIZE, MIN_SPAWN_SIZE); }
+	static glm::vec3 spawnSize() { return vec3xyz(MIN_SPAWN_SIZE, MAX_SPAWN_SIZE); }
 
 	static glm::vec3 facingXZ();
 
