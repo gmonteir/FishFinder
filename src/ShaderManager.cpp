@@ -22,6 +22,7 @@ ShaderManager::ShaderManager()
 	shaderProgs[FOGFBOPROG] = initFogFBOProg();
 	shaderProgs[BLURFBOPROG] = initBlurProg();
 	shaderProgs[WATERFBOPROG] = initWaterFBOProg();
+	shaderProgs[PARTICLEPROG] = initParticleProg();
 
 	cout << "ShaderManager: Initialized" << endl;
 }
@@ -89,6 +90,7 @@ shared_ptr<Program> ShaderManager::initFloorProg()
 	texProg->addUniform("targetPos");
 	texProg->addUniform("eye");
 	texProg->addUniform("time");
+	texProg->addUniform("remaining");
 	texProg->addUniform("Texture0");
 	texProg->addUniform("Texture1");
 	texProg->addAttribute("vertPos");
@@ -156,6 +158,17 @@ shared_ptr<Program> ShaderManager::initWaterFBOProg()
 	return texProg;
 }
 
+shared_ptr<Program> ShaderManager::initParticleProg()
+{
+	std::shared_ptr<Program> prog = makeProgram("/particle_vert.glsl", "/particle_frag.glsl");
+	prog->addUniform("P");
+	prog->addUniform("V");
+	prog->addUniform("M");
+	prog->addUniform("time");
+	prog->addAttribute("vertPos");
+	return prog;
+}
+
 void ShaderManager::sendUniforms(int progIndex, const shared_ptr<Texture> texture, const std::shared_ptr<Texture> blendTexture)
 {
 	shared_ptr<Program> prog = getShader(progIndex);
@@ -193,8 +206,7 @@ void ShaderManager::sendUniforms(int progIndex, const shared_ptr<Texture> textur
 		glUniform3f(prog->getUniform("targetPos"), uniformData.targetPos.x, uniformData.targetPos.y, uniformData.targetPos.z);
 		glUniform3f(prog->getUniform("eye"), uniformData.eye.x, uniformData.eye.y, uniformData.eye.z);
 		glUniform1f(prog->getUniform("time"), uniformData.time);
-		//texture->bind(prog->getUniform("Texture0"));
-		//blendTexture->bind(prog->getUniform("Texture1"));
+		glUniform1i(prog->getUniform("remaining"), uniformData.remaining);
 		break;
 	case REFLECTPROG:
 		glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, value_ptr(uniformData.P));
@@ -211,6 +223,11 @@ void ShaderManager::sendUniforms(int progIndex, const shared_ptr<Texture> textur
 	case FOGFBOPROG:
 	case BLURFBOPROG:
 		glUniform1i(prog->getUniform("texBuf"), 0);
+		break;
+	case PARTICLEPROG:
+		glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, value_ptr(uniformData.P));
+		glUniformMatrix4fv(prog->getUniform("V"), 1, GL_FALSE, value_ptr(uniformData.V));
+		glUniform1f(prog->getUniform("time"), uniformData.time);
 		break;
 	}
 }

@@ -140,7 +140,7 @@ constexpr float PARENT_SIZE = 3;
 constexpr int NUM_CAUSTICS = 32;
 
 // Shader Constants
-constexpr int NUM_SHADERS = 10;
+constexpr int NUM_SHADERS = 11;
 constexpr int SIMPLEPROG = 0;
 constexpr int SKYBOXPROG = 1;
 constexpr int TEXTUREPROG = 2;
@@ -151,7 +151,11 @@ constexpr int DEPTHPROG = 6;
 constexpr int FOGFBOPROG = 7;
 constexpr int BLURFBOPROG = 8;
 constexpr int WATERFBOPROG = 9;
+constexpr int PARTICLEPROG = 10;
 
 // Freetype Constants
 constexpr int LEFT = 0;
 constexpr int CENTER = 1;
+
+// Particle Constants
+constexpr int NUM_PARTICLES = 100;
