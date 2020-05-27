@@ -12,21 +12,21 @@
 #include "Shape.h"
 #include "Shapes.h"
 #include "Textures.h"
+#include "Program.h"
 #include "stb_image.h"
 #include "ShaderManager.h"
 #include "MatrixStack.h"
-
-using namespace std;
 
 class Floor {
 
 	Floor();
 
 public:
-	static shared_ptr<Floor> getInstance();
+	static std::shared_ptr<Floor> getInstance();
 
 	~Floor() {}
-	void draw(shared_ptr<MatrixStack>& M) const;
+	void draw(std::shared_ptr<MatrixStack>& M) const;
+	void draw(std::shared_ptr<Program>& prog, std::shared_ptr<MatrixStack>& M) const;
 	bool isAboveFloor(const glm::vec3 min, const glm::vec3 max) const;
 	float getHeight(float x, float z) const;
 

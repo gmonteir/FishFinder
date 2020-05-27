@@ -1,5 +1,4 @@
 #include "Skybox.h"
-#include "Program.h"
 #include "ShaderManager.h"
 #include "Shapes.h"
 #include "stb_image.h"
@@ -31,12 +30,18 @@ Skybox& Skybox::getInstance()
 	return instance;
 }
 
-void Skybox::draw(shared_ptr<MatrixStack>& M, vec3 position)
+void Skybox::draw(shared_ptr<MatrixStack>& M, vec3 position) const
 {
 	//draw the sky box
 	shared_ptr<Program> prog = ShaderManager::getInstance()->getShader(SKYBOXPROG);
 	prog->bind();
 	ShaderManager::getInstance()->sendUniforms(SKYBOXPROG);
+	draw(prog, M, position);
+	prog->unbind();
+}
+
+void Skybox::draw(shared_ptr<Program>& prog, shared_ptr<MatrixStack>& M, vec3 position) const
+{
 	glDepthFunc(GL_LEQUAL);
 	M->pushMatrix();
 	M->loadIdentity();
@@ -49,7 +54,6 @@ void Skybox::draw(shared_ptr<MatrixStack>& M, vec3 position)
 	Shapes::getInstance()->getShape(CUBE_SHAPE)->at(0)->draw(prog);
 	glDepthFunc(GL_LESS);
 	M->popMatrix();
-	prog->unbind();
 }
 
 unsigned int Skybox::createSky(const string& dir, const vector<string> faces)
