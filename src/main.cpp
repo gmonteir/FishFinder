@@ -41,7 +41,6 @@ class Application : public EventCallbacks
 {
 
 public:
-	WindowManager* windowManager = nullptr;
 
 	//example data that might be useful when trying to compute bounds on multi-shape
 	vec3 lightPos = vec3(0, 70, 0);
@@ -200,7 +199,7 @@ public:
 		shared_ptr<Program> prog;
 		// Get current frame buffer size.
 		int width, height;
-		glfwGetFramebufferSize(windowManager->getHandle(), &width, &height);
+		glfwGetFramebufferSize(WindowManager::instance->getHandle(), &width, &height);
 		glViewport(0, 0, width, height);
 		
 		/* Leave this code to just draw the meshes alone */
@@ -265,7 +264,6 @@ int main(int argc, char **argv)
 	WindowManager *windowManager = new WindowManager();
 	windowManager->init(int(WINDOW_WIDTH), int(WINDOW_HEIGHT));
 	windowManager->setEventCallbacks(application);
-	application->windowManager = windowManager;
 
 	// This is the code that will likely change program to program as you
 	// may need to initialize or set up different data and state
