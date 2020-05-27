@@ -40,7 +40,7 @@ const std::string TREE_CORAL_SHAPE = "TREE_CORAL";
 const std::string SOFT_CORAL_SHAPE = "SOFT_CORAL";
 const std::string ELKHORN_CORAL_SHAPE = "ELKHORN_CORAL";
 const std::string FLOOR_SHAPE = "FLOOR_SHAPE";
-const std::string ENEMY_SHAPE = "CUBE";
+const std::string ENEMY_SHAPE = "ENEMY";
 
 // Game Constants
 constexpr float INITIAL_TIME_LIMIT = 100.0f; // seconds
@@ -129,8 +129,8 @@ const int CORAL_MATERIALS[]{
 
 // Enemy Constants
 constexpr float ENEMY_SIZE = 3;
-constexpr int ENEMY_MATERIAL = 3;
-const glm::vec2 ENEMY_FLOOR_OFFSET_RANGE = glm::vec2(3, 5);
+constexpr int ENEMY_MATERIAL = 7;
+const glm::vec2 ENEMY_FLOOR_OFFSET_RANGE = glm::vec2(5, 10);
 constexpr int NUM_ENEMIES = 5;
 
 // Character Constants
