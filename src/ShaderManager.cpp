@@ -87,6 +87,7 @@ shared_ptr<Program> ShaderManager::initFloorProg()
 	texProg->addUniform("targetPos");
 	texProg->addUniform("eye");
 	texProg->addUniform("time");
+	texProg->addUniform("remaining");
 	texProg->addUniform("Texture0");
 	texProg->addUniform("Texture1");
 	texProg->addAttribute("vertPos");
@@ -176,6 +177,7 @@ shared_ptr<Program> ShaderManager::initBlurProg()
 		 glUniform3f(prog->getUniform("targetPos"), uniformData.targetPos.x, uniformData.targetPos.y, uniformData.targetPos.z);
 		 glUniform3f(prog->getUniform("eye"), uniformData.eye.x, uniformData.eye.y, uniformData.eye.z);
 		 glUniform1f(prog->getUniform("time"), uniformData.time);
+		 glUniform1i(prog->getUniform("remaining"), uniformData.remaining);
 		 //texture->bind(prog->getUniform("Texture0"));
 		 //blendTexture->bind(prog->getUniform("Texture1"));
 	 }
