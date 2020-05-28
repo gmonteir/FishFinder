@@ -99,7 +99,6 @@ void Behavior::PlayerBehavior::onCollision(Behavior& collider)
 			target = &Spawner::getInstance()->spawnFollower()->getTransform();
 		}
 		CutSceneManager::getInstance().nextCutScene();
-		FBOManager::getInstance().triggerShake();
 		previousCharacter = &collider.transform;
 		GameManager::getInstance()->decrementNumChar();
 		break;

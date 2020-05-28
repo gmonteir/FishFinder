@@ -208,39 +208,75 @@ const Character CHARACTERS[]{
 	{CHARLIE_SHAPE, CHARLIE_TEXTURE, 4},
 };
 
-// Scene Texts
-const std::vector<std::vector<std::string>> SCENETEXTS{ 
-	std::vector<std::string>{
-		"Ugh!",
-		"Where am I?",
-		"I need to find my friends!"
+// CutScene Texts Constants
+// order by priority
+constexpr int MAIN_TEXTS = 0;
+constexpr int ENEMY_TEXTS = 1;
+constexpr int BOOST_TEXTS = 2;
+constexpr int RANDOM_TEXTS = 3;
+constexpr int NUM_TEXTS = 4;
+
+const std::vector<std::vector<std::vector<std::string>>> CUTSCENETEXTS{
+	std::vector<std::vector<std::string>> { // Main
+		std::vector<std::string>{
+			"Ugh!",
+			"Where am I?",
+			"I need to find my friends!"
+		},
+		std::vector<std::string>{
+			"Marlin?",
+			"You found me!"
+		},
+		std::vector<std::string>{
+			"Oh! It's Nemo!"
+		},
+		std::vector<std::string>{
+			"Squirt!"
+		},
+		std::vector<std::string>{
+			"Who are you?",
+			"You're name's Bloat?",
+			"You have a friend named Gurgle?"
+		},
+		std::vector<std::string>{
+			"I found all my friends",
+			"Now to find my parents!"
+		},
+		std::vector<std::string>{
+			"It's you!",
+			"It's really you!",
+			"Where's Dad?"
+		},
+		std::vector<std::string>{
+			"Dad, you're here!",
+			"We found you!"
+		}
 	},
-	std::vector<std::string>{
-		"Marlin?",
-		"You found me!"
+	std::vector<std::vector<std::string>> { // Enemy
+		std::vector<std::string>{
+			"Ouch!"
+		},
+		std::vector<std::string>{
+			"That hurt!"
+		},
+		std::vector<std::string>{
+			"Bad Squishy,",
+			"Bad Squishy!"
+		}
 	},
-	std::vector<std::string>{
-		"Oh! It's Nemo!"
+	std::vector<std::vector<std::string>> { // Boost
+		std::vector<std::string>{
+			"Whooo!",
+		},
+		std::vector<std::string>{
+			"Wheeee!"
+		}
 	},
-	std::vector<std::string>{
-		"Squirt!"
-	},
-	std::vector<std::string>{
-		"Who are you?",
-		"You're name's Bloat?",
-		"You have a friend named Gurgle?"
-	},
-	std::vector<std::string>{
-		"I found all my friends",
-		"Now to find my parents!"
-	},
-	std::vector<std::string>{
-		"It's you!",
-		"It's really you!",
-		"Where's Dad?"
-	},
-	std::vector<std::string>{
-		"Dad, you're here!",
-		"We found you!"
+	std::vector<std::vector<std::string>> { // Random
+		std::vector<std::string>{
+			"Just keep swimming",
+			"Just keep swimming",
+			"Just keep swimming"
+		}
 	}
 };

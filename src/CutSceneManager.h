@@ -11,20 +11,21 @@
 class CutSceneManager
 {
 	struct CutScene {
-		CutScene() : active(false), current(-1), text(0), amount(0), 
-			timer(SCENE_TEXT_DELAY), currentText(nullptr) {}
+		CutScene() : active(false), sequence(0), current(-1), text(0), amount(0), 
+			timer(0), currentText("") {}
 		bool active;
+		int sequence;
 		int current, text, amount;
 		float timer;
-		std::string* currentText;
+		std::string currentText;
 
+		void init(int sequenceIndex) { sequence = sequenceIndex; }
 		bool shouldDraw() const { return active || timer > 0; }
 		void update(float deltaTime, float gameTime);
-		void next() { active = true; current++; text = 0; }
-		std::string getText() const { return SCENETEXTS[current][text].substr(0, amount); }
+		void next() { active = true; current++; text = 0; amount = 0; }
 	};
 
-	CutSceneManager() : mainScene(), randomScene() {}
+	CutSceneManager();
 
 public:
 	static CutSceneManager& getInstance();
@@ -36,12 +37,12 @@ public:
 
 	void update(float deltaTime, float gameTime);
 
-	bool shouldDraw() const { return mainScene.shouldDraw() || randomScene.shouldDraw(); }
-	std::string getText() const { return mainScene.getText(); }
-	void nextCutScene() { mainScene.next(); }
+	bool shouldDraw() const;
+	const std::string& getText() const;
+	void nextCutScene() { cutScenes[MAIN_TEXTS].next(); }
 
 private:
-	CutScene mainScene;
-	CutScene randomScene;
+	CutScene cutScenes[NUM_TEXTS];
+	float randomTimer;
 };
 

@@ -5,6 +5,16 @@
 using namespace std;
 using namespace glm;
 
+CutSceneManager::CutSceneManager() : cutScenes(), randomTimer(0)
+{
+	for (int i = 0; i < NUM_TEXTS; i++)
+	{
+		cutScenes[i].init(i);
+	}
+
+	cout << "CutSceneManager: Initialized" << endl;
+}
+
 
 CutSceneManager& CutSceneManager::getInstance()
 {
@@ -15,28 +25,54 @@ CutSceneManager& CutSceneManager::getInstance()
 
 void CutSceneManager::update(float deltaTime, float gameTime)
 {
-	mainScene.update(deltaTime, gameTime);
-	randomScene.update(deltaTime, gameTime);
+	for (int i = 0; i < NUM_TEXTS; i++)
+	{
+		cutScenes[i].update(deltaTime, gameTime);
+	}
 }
 
 
 void CutSceneManager::CutScene::update(float deltaTime, float gameTime)
 {
 	timer -= deltaTime;
-	if (!active) return;
+	if (!active || timer > 0) return;
 
-	if (timer <= 0) {
-		if (amount >= SCENETEXTS[current][text].size()) {
-			amount = 0;
-			text++;
-			if (text >= SCENETEXTS[current].size()) {
-				active = false;
-				return;
-			}
+	if (amount >= CUTSCENETEXTS[sequence][current][text].size()) {
+		amount = 0;
+		text++;
+		timer = SCENE_TEXT_DELAY;
+		if (text >= CUTSCENETEXTS[sequence][current].size()) {
+			active = false;
+			return;
 		}
-		else {
-			amount++;
-		}
-		timer = amount == SCENETEXTS[current][text].size() ? SCENE_TEXT_DELAY : SCENE_CHAR_DELAY;
 	}
+	else {
+		amount++;
+		timer = SCENE_CHAR_DELAY;
+		currentText = CUTSCENETEXTS[sequence][current][text].substr(0, amount);
+	}
+	cout << "CutSceneManager: update " <<  currentText << endl;
+}
+
+
+bool CutSceneManager::shouldDraw() const
+{
+	for (int i = 0; i < NUM_TEXTS; i++)
+	{
+		if (cutScenes[i].shouldDraw())
+			return true;
+	}
+	return false;
+}
+
+
+const string& CutSceneManager::getText() const
+{
+	for (int i = 0; i < NUM_TEXTS; i++)
+	{
+		cout << "Text: " << cutScenes[i].timer << ", " << cutScenes[i].active << ", " << cutScenes[i].currentText << endl;
+		if (cutScenes[i].shouldDraw())
+			return cutScenes[i].currentText;
+	}
+	return "";
 }
