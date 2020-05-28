@@ -120,7 +120,7 @@ public:
 			FBOManager::getInstance().toggleWater();
 		}
 		Keys::getInstance().update(key, action);
-		if (key == GLFW_KEY_C && action == GLFW_PRESS)
+		if (key == GLFW_KEY_P && action == GLFW_PRESS)
 		{
 			TOP_CAM = !TOP_CAM;
 		}
