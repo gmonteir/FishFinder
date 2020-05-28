@@ -34,7 +34,8 @@ public:
 
 	void update(float deltaTime, shared_ptr<vector<shared_ptr<Entity>>> (&entities)[MAP_I][MAP_J][MAP_K],
 		int i, int j, int k);
-	void draw(std::shared_ptr<MatrixStack> &M);
+	void draw(std::shared_ptr<MatrixStack> &M) const;
+	void draw(std::shared_ptr<Program>& prog, std::shared_ptr<MatrixStack>& M) const;
 
 	bool hasCollided(Entity &entity) const;
 	bool hasCollided(shared_ptr<vector<shared_ptr<Entity>>>(&entities)[MAP_I][MAP_J][MAP_K],

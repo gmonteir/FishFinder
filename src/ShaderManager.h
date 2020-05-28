@@ -28,6 +28,7 @@ struct uniforms {
 	glm::vec3 eye;
 	glm::vec3 targetPos;
 	float time;
+	int remaining; // characters
 };
 
 class ShaderManager
@@ -45,18 +46,21 @@ class ShaderManager
 	    std::shared_ptr<Program> initTextureProg();
 	    std::shared_ptr<Program> initGlyphProg();
 	    std::shared_ptr<Program> initFloorProg();
-	    std::shared_ptr<Program> initReflectProg();
-		std::shared_ptr<Program> initFBOProg();
+		std::shared_ptr<Program> initReflectProg();
+		std::shared_ptr<Program> initDepthProg();
+		std::shared_ptr<Program> initFogFBOProg();
 		std::shared_ptr<Program> initBlurProg();
+		std::shared_ptr<Program> initWaterFBOProg();
+		std::shared_ptr<Program> initParticleProg();
 
 		std::shared_ptr<Program> getShader(int i) const { return shaderProgs[i]; }
 	    void setData(const uniforms& common) { uniformData = common; }
-		void sendUniforms(int i, const std::shared_ptr<Texture> texture=nullptr, 
+		void sendUniforms(int progIndex, const std::shared_ptr<Texture> texture=nullptr,
 			const std::shared_ptr<Texture> blendTexture=nullptr);
 
+		uniforms uniformData;
 	private:
 		std::shared_ptr<Program> shaderProgs[NUM_SHADERS];
-		uniforms uniformData;
 
 		void addLightUniforms(std::shared_ptr<Program>& prog);
 		void sendLightUniforms(std::shared_ptr<Program>& prog);

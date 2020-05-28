@@ -161,10 +161,11 @@ void Behavior::FollowerBehavior::onOutOfBounds(float deltaTime)
 
 void Behavior::FollowerBehavior::setPathVelocity(float deltaTime)
 {
-	vec3 direction(target->getPosition() - transform.getPosition());
-	vec3 normal(normalize(direction));
+	vec3 difference(target->getPosition() - transform.getPosition());
+	vec3 direction(normalize(difference));
+	float distance = length(difference) - offset;
 
-	transform.interpolateVelocity(length(direction) > offset ? normal * speed : ORIGIN, deltaTime)
+	transform.interpolateVelocity(direction * glm::max(distance, 0.0f), deltaTime * speed)
 		.syncFacing();
 }
 

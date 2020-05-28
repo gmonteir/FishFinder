@@ -32,7 +32,9 @@ public:
 	}
 	~Model() {}
 
-	virtual void draw(std::shared_ptr<MatrixStack> &M, const Transform& transform) const;
+	void draw(std::shared_ptr<MatrixStack> &M, const Transform& transform) const;
+	void draw(std::shared_ptr<Program>& prog, 
+		std::shared_ptr<MatrixStack>& M, const Transform& transform) const;
 
 	glm::vec3 getScaledMin() const { return min * scale; }
 	glm::vec3 getScaledMax() const { return max * scale; }

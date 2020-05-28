@@ -42,7 +42,7 @@ void EntityCollection::update(float deltaTime)
 	}
 }
 
-void EntityCollection::draw(std::shared_ptr<MatrixStack>& M, vec4* planes)
+void EntityCollection::draw(std::shared_ptr<MatrixStack>& M, vec4* planes) const
 {
 	for (int i = 0; i < MAP_I; i++) {
 		for (int j = 0; j < MAP_J; j++) {
@@ -56,6 +56,25 @@ void EntityCollection::draw(std::shared_ptr<MatrixStack>& M, vec4* planes)
 						entity->draw(M);
 					}
 													
+				}
+			}
+		}
+	}
+}
+
+void EntityCollection::draw(shared_ptr<Program>& prog, shared_ptr<MatrixStack>& M, vec4* planes) const
+{
+	for (int i = 0; i < MAP_I; i++) {
+		for (int j = 0; j < MAP_J; j++) {
+			for (int k = 0; k < MAP_K; k++) {
+				for (int l = 0; l < entities[i][j][k]->size(); l++) {
+					shared_ptr<Entity> entity = entities[i][j][k]->at(l);
+
+					float entitySize = length(entity->getMaxBoundCoordinate() - entity->getTransform().getPosition());
+
+					if (!Camera::ViewFrustCull(entity->getTransform().getPosition(), entitySize, planes)) {
+						entity->draw(prog, M);
+					}
 				}
 			}
 		}

@@ -38,7 +38,7 @@ const std::string TREE_CORAL_SHAPE = "TREE_CORAL";
 const std::string SOFT_CORAL_SHAPE = "SOFT_CORAL";
 const std::string ELKHORN_CORAL_SHAPE = "ELKHORN_CORAL";
 const std::string FLOOR_SHAPE = "FLOOR_SHAPE";
-const std::string ENEMY_SHAPE = "CUBE";
+const std::string ENEMY_SHAPE = "ENEMY";
 const std::string RESOURCE_DIR = "../resources";
 
 // Game Constants
@@ -92,7 +92,7 @@ const glm::vec3 FLOOR_SIZE = glm::vec3(2, 1, 2);
 const glm::vec3 FLOOR_POSITION = glm::vec3((-MAP_X / 2) * FLOOR_SIZE.x, -200, (-MAP_Z / 2) * FLOOR_SIZE.z);
 constexpr float WORLD_SIZE = 255;
 
-// Entity Constants
+// Follower Constants
 constexpr int MAX_SPAWN_ENTITIES = 50;
 constexpr float MAX_SPAWN_DISTANCE = 200;
 constexpr float MAX_SPAWN_VELOCITY = 15;
@@ -101,7 +101,8 @@ constexpr float MAX_SPAWN_SIZE = 6;
 constexpr int DEFAULT_MATERIAL = 3;
 constexpr int STOPPED_MATERIAL = 0;
 constexpr float FLOOR_OFFSET = 1.0;
-constexpr float FOLLOWER_OFFSET = 10.0;
+constexpr float FOLLOWER_SPEED = 40;
+constexpr float FOLLOWER_OFFSET = 5.0f;
 constexpr float POWERUP_OFFSET = 7.0;
 
 // Powerup Constants
@@ -111,7 +112,7 @@ constexpr float POWERUP_DESPAWN_TIME = 50;
 constexpr float STAMINA_INCREMENT = 10;
 
 // Coral Constants
-constexpr int NUM_CORAL = 300;
+constexpr int NUM_CORAL = 100;
 constexpr int TREE_CORAL_INDEX = 0;
 constexpr int SOFT_CORAL_INDEX = 1;
 constexpr int ELKHORN_CORAL_INDEX = 2;
@@ -121,11 +122,11 @@ constexpr int ELKHORN_CORAL_MATERIAL = 9;
 
 // Enemy Constants
 constexpr int ENEMY_SIZE = 3;
-constexpr int ENEMY_MATERIAL = 3;
+constexpr int ENEMY_MATERIAL = 7;
+constexpr float ENEMY_OFFSET = 7.0;
 constexpr int NUM_ENEMIES = 5;
 
 // Nemo Constants
-constexpr float NEMO_SPEED = 20;
 constexpr float NEMO_SIZE = 2;
 constexpr int NEMO_MATERIAL = 5;
 constexpr float FOLLOWING_OFFSET = 10;
@@ -140,16 +141,22 @@ constexpr float PARENT_SIZE = 3;
 constexpr int NUM_CAUSTICS = 32;
 
 // Shader Constants
-constexpr int NUM_SHADERS = 8;
+constexpr int NUM_SHADERS = 11;
 constexpr int SIMPLEPROG = 0;
 constexpr int SKYBOXPROG = 1;
 constexpr int TEXTUREPROG = 2;
 constexpr int GLYPHPROG = 3;
 constexpr int FLOORPROG = 4;
-constexpr int FBOPROG = 5;
-constexpr int BLURPROG = 6;
-constexpr int REFLECTPROG = 7;
+constexpr int REFLECTPROG = 5;
+constexpr int DEPTHPROG = 6;
+constexpr int FOGFBOPROG = 7;
+constexpr int BLURFBOPROG = 8;
+constexpr int WATERFBOPROG = 9;
+constexpr int PARTICLEPROG = 10;
 
 // Freetype Constants
 constexpr int LEFT = 0;
 constexpr int CENTER = 1;
+
+// Particle Constants
+constexpr int NUM_PARTICLES = 100;

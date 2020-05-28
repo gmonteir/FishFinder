@@ -16,6 +16,7 @@
 #include "ShaderManager.h"
 #include "GameManager.h"
 #include "FBOManager.h"
+#include "ParticleManager.h"
 #include "Textures.h"
 #include "Floor.h"
 
@@ -94,6 +95,30 @@ public:
 		{
 			FBOManager::getInstance().toggleEnabled();
 		}
+		if (key == GLFW_KEY_T && action == GLFW_PRESS)
+		{
+			FBOManager::getInstance().writeNextTexture();
+		}
+		if (key == GLFW_KEY_Y && action == GLFW_PRESS)
+		{
+			FBOManager::getInstance().toggleTexture();
+		}
+		if (key == GLFW_KEY_X && action == GLFW_PRESS)
+		{
+			FBOManager::getInstance().toggleConfuse();
+		}
+		if (key == GLFW_KEY_C && action == GLFW_PRESS)
+		{
+			FBOManager::getInstance().toggleChaos();
+		}
+		if (key == GLFW_KEY_V && action == GLFW_PRESS)
+		{
+			FBOManager::getInstance().toggleShake();
+		}
+		if (key == GLFW_KEY_N && action == GLFW_PRESS)
+		{
+			FBOManager::getInstance().toggleWater();
+		}
 		Keys::getInstance().update(key, action);
 		if (key == GLFW_KEY_C && action == GLFW_PRESS)
 		{
@@ -137,6 +162,8 @@ public:
 		glClearColor(.12f, .34f, .56f, 1.0f);
 		// Enable z-buffer test.
 		glEnable(GL_DEPTH_TEST);
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	 }
 
 	void initEntities()
@@ -186,8 +213,6 @@ public:
 		int width, height;
 		glfwGetFramebufferSize(windowManager->getHandle(), &width, &height);
 		glViewport(0, 0, width, height);
-
-		FBOManager::getInstance().bindBuffer();
 		
 		/* Leave this code to just draw the meshes alone */
 		float aspect = width/(float)height;
@@ -213,9 +238,29 @@ public:
 
 		targetPos = playerBehavior->getTargetPos();
 		float time = glfwGetTime();
-		uniforms commonUniforms{P->topMatrix(), V, camera.getEye(), targetPos, time};
+		int remaining = GameManager::getInstance()->getGameStats().charRemaining;
+		uniforms commonUniforms{P->topMatrix(), V, camera.getEye(), targetPos, time, remaining};
 		ShaderManager::getInstance()->setData(commonUniforms);
 		P->popMatrix();
+
+		// ---------------------- drawing depth buffer ----------------- //
+		if (FBOManager::getInstance().isEnabled())
+		{
+			FBOManager::getInstance().bindBuffer(int(FBOManager::DEPTH_BUFFER));
+			prog = ShaderManager::getInstance()->getShader(DEPTHPROG);
+			prog->bind();
+			ShaderManager::getInstance()->sendUniforms(DEPTHPROG);
+			EntityCollection::getInstance()->draw(prog, Model, planes);
+			Floor::getInstance()->draw(prog, Model);
+			Skybox::getInstance().draw(prog, Model, camera.getEye());
+			prog->unbind();
+
+			FBOManager::getInstance().bindBuffer(int(FBOManager::MAIN_BUFFER));
+		}
+		else
+		{
+			FBOManager::getInstance().bindScreen();
+		}
 
 		// ---------------------- drawing ----------------- //
 
@@ -224,8 +269,11 @@ public:
 		EntityCollection::getInstance()->draw(Model, planes);
 		Floor::getInstance()->draw(Model);
 		Skybox::getInstance().draw(Model, camera.getEye());
+		ParticleManager::getInstance().processParticles();
 
-		FBOManager::getInstance().blur();
+		FBOManager::getInstance().processFog();
+		FBOManager::getInstance().processBlur();
+
 		player->draw(Model);
 		FBOManager::getInstance().drawBuffer();
 
