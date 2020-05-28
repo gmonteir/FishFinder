@@ -3,6 +3,7 @@
 #include "Program.h"
 #include "MatrixStack.h"
 #include "Entity.h"
+#include "Camera.h"
 
 using namespace glm;
 using namespace std;
@@ -29,8 +30,8 @@ public:
 	~EntityCollection() {}
 
 	void update(float deltaTime);
-	void draw(std::shared_ptr<MatrixStack>& M) const;
-	void draw(std::shared_ptr<Program>& prog, std::shared_ptr<MatrixStack>& M) const;
+	void draw(std::shared_ptr<MatrixStack>& M, vec4* planes) const;
+	void draw(std::shared_ptr<Program>& prog, std::shared_ptr<MatrixStack>& M, vec4* planes) const;
 
 	void addEntity(shared_ptr<Entity>& entity);
 	shared_ptr<vector<shared_ptr<Entity>>> getEntitiesFromCollectionPos(int i, int j, int k);

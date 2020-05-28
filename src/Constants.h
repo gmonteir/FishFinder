@@ -112,7 +112,7 @@ constexpr float POWERUP_DESPAWN_TIME = 50;
 constexpr float STAMINA_INCREMENT = 10;
 
 // Coral Constants
-constexpr int NUM_CORAL = 50;
+constexpr int NUM_CORAL = 100;
 constexpr int TREE_CORAL_INDEX = 0;
 constexpr int SOFT_CORAL_INDEX = 1;
 constexpr int ELKHORN_CORAL_INDEX = 2;
