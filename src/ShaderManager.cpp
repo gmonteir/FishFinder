@@ -26,7 +26,8 @@ ShaderManager::ShaderManager()
 	shaderProgs[PARTICLEPROG] = initParticleProg();
 	shaderProgs[LIGHTDEPTHPROG] = initLightDepthProg();
 
-	luData.LP = glm::ortho(-ORTHO_SIZE, ORTHO_SIZE, -ORTHO_SIZE, ORTHO_SIZE, 1.0f, 1000.0f);
+	//luData.LP = glm::ortho(-ORTHO_SIZE, ORTHO_SIZE, -ORTHO_SIZE, ORTHO_SIZE, 1.0f, 1000.0f);
+	luData.LP = glm::ortho(-ORTHO_SIZE, ORTHO_SIZE, -ORTHO_SIZE, ORTHO_SIZE, NEAR_PLANE, 2 * ORTHO_SIZE);
 	luData.LV = glm::lookAt(POINT_LIGHTS[0].pos, vec3(0), vec3(0, 1, 0));
 
 	cout << "ShaderManager: Initialized" << endl;
