@@ -203,11 +203,27 @@ public:
 		FBOManager::getInstance().update(deltaTime, gameTime);
 	}
 
+	void renderScene(shared_ptr<MatrixStack> Model, vec4* planes)
+	{
+		EntityCollection::getInstance()->draw(Model, planes);
+		Floor::getInstance()->draw(Model);
+		Skybox::getInstance().draw(Model, camera.getEye());
+		ParticleManager::getInstance().processParticles();
+	}
 
+	void renderSceneToFBO(int fbo, int progIndex, shared_ptr<MatrixStack> Model, vec4* planes)
+	{
+		FBOManager::getInstance().bindBuffer(fbo);
+		shared_ptr<Program> prog = ShaderManager::getInstance()->getShader(progIndex);
+		prog->bind();
+			ShaderManager::getInstance()->sendUniforms(LIGHTDEPTHPROG);
+			EntityCollection::getInstance()->draw(prog, Model, planes);
+			Floor::getInstance()->draw(prog, Model);
+		prog->unbind();
+	}
 
 	void render()
 	{
-		shared_ptr<Program> prog;
 		Camera* Cam;
 
 		// Get current frame buffer size.
@@ -232,9 +248,6 @@ public:
 
 		if (TOP_CAM) {
 			V = lookAt(vec3(0, 100, 0), vec3(0, 99, 1), YAXIS);
-			//topCamera.setEye(vec3(0, 100, 0));
-			//topCamera.setLA(vec3(0, 99, 0));
-			//Cam = &topCamera;
 		}
 
 		targetPos = playerBehavior->getTargetPos();
@@ -248,45 +261,23 @@ public:
 		if (FBOManager::getInstance().isEnabled())
 		{
 			//glCullFace(GL_FRONT);
-			FBOManager::getInstance().bindBuffer(int(FBOManager::SHADOW_BUFFER));
-			prog = ShaderManager::getInstance()->getShader(LIGHTDEPTHPROG);
-			prog->bind();
-			ShaderManager::getInstance()->sendUniforms(LIGHTDEPTHPROG);
-			EntityCollection::getInstance()->draw(prog, Model, planes);
-			Floor::getInstance()->draw(prog, Model);
-			prog->unbind();
+			renderSceneToFBO(int(FBOManager::SHADOW_BUFFER), LIGHTDEPTHPROG, Model, planes);
 			//glCullFace(GL_BACK);
-			
-			FBOManager::getInstance().bindBuffer(int(FBOManager::DEPTH_BUFFER));
-			prog = ShaderManager::getInstance()->getShader(DEPTHPROG);
-			prog->bind();
-			ShaderManager::getInstance()->sendUniforms(DEPTHPROG);
-			EntityCollection::getInstance()->draw(prog, Model, planes);
-			Floor::getInstance()->draw(prog, Model);
-			Skybox::getInstance().draw(prog, Model, camera.getEye());
-			prog->unbind();
+			renderSceneToFBO(int(FBOManager::DEPTH_BUFFER), DEPTHPROG, Model, planes);
 
 			FBOManager::getInstance().bindBuffer(int(FBOManager::MAIN_BUFFER));
+			renderScene(Model, planes);
+
+			FBOManager::getInstance().processFog();
+			FBOManager::getInstance().processBlur();
+			player->draw(Model);
+			FBOManager::getInstance().drawBuffer();
 		}
 		else
 		{
 			FBOManager::getInstance().bindScreen();
+			renderScene(Model, planes);
 		}
-
-		// ---------------------- drawing ----------------- //
-
-		/* draw the complete scene from a top down camera */
-
-		EntityCollection::getInstance()->draw(Model, planes);
-		Floor::getInstance()->draw(Model);
-		Skybox::getInstance().draw(Model, camera.getEye());
-		ParticleManager::getInstance().processParticles();
-
-		FBOManager::getInstance().processFog();
-		FBOManager::getInstance().processBlur();
-
-		player->draw(Model);
-		FBOManager::getInstance().drawBuffer();
 
 		GameManager::getInstance()->draw();
 	}	
