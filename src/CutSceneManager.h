@@ -24,7 +24,12 @@ class CutSceneManager
 		bool shouldDraw() const { return active || timer > 0; }
 		bool update(float deltaTime, float gameTime);
 
-		void start(int newCurrent) { active = newCurrent != getNumOptions(); current = newCurrent; text = amount = 0; }
+		void start(int newCurrent) {
+			if (newCurrent == getNumOptions()) return;
+			active = true; 
+			current = newCurrent; 
+			text = amount = 0; 
+		}
 		void stop() { active = false; timer = 0; }
 		void next() { active = true; current++; text = amount = 0; }
 

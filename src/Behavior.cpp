@@ -63,6 +63,7 @@ void Behavior::PlayerBehavior::update(float deltaTime)
 		boost = 30;
 		GameManager::getInstance()->decreaseStamina(deltaTime);
 		FBOManager::getInstance().increaseBlurAmount(deltaTime);
+		//CutSceneManager::getInstance().startBoostScene();
 	}
 
 	if (Keys::getInstance().keyPressed(Keys::LEFT))
@@ -113,6 +114,7 @@ void Behavior::PlayerBehavior::onCollision(Behavior& collider)
 		transform.setVelocity(ORIGIN);
 		FBOManager::getInstance().increaseBlurAmount(BLUR_INCREMENT);
 		FBOManager::getInstance().triggerShake();
+		CutSceneManager::getInstance().startEnemyScene();
 		break;
 	}
 }
