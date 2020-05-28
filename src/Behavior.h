@@ -46,7 +46,6 @@ public:
 	void remove() { toRemove = true; }
 
 	void bringToFloor(float offset = 0);
-	string pickCharacterTexture(int i);
 
 protected:
 	Transform& transform;
@@ -103,7 +102,7 @@ class Behavior::FollowerBehavior : public Behavior
 public:
 	FollowerBehavior(Transform& transform, Model& model)
 		: Behavior(FOLLOWER, transform, model), target(nullptr), 
-		speed(FOLLOWER_SPEED), offset(FOLLOWING_OFFSET), following(false) {}
+		speed(FOLLOWER_SPEED), offset(FOLLOWER_OFFSET), following(false) {}
 	virtual ~FollowerBehavior() {}
 
 	void start() override;
@@ -151,14 +150,14 @@ public:
 		: Behavior(ENEMY, transform, model) {}
 	virtual ~EnemyBehavior() {}
 
-	void start() override {}
-	void update(float deltaTime) override {}
+	void start() override;
+	void update(float deltaTime) override;
 
 	void onOutOfBounds(float deltaTime) override {}
 	void onCollision(Behavior& collider) override {}
 
 private:
-	
+	float timer;
 };
 
 #endif

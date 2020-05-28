@@ -15,6 +15,7 @@
 #include "Spawner.h"
 #include "ShaderManager.h"
 #include "GameManager.h"
+#include "CutSceneManager.h"
 #include "FBOManager.h"
 #include "ParticleManager.h"
 #include "Textures.h"
@@ -41,7 +42,6 @@ class Application : public EventCallbacks
 {
 
 public:
-	WindowManager* windowManager = nullptr;
 
 	//example data that might be useful when trying to compute bounds on multi-shape
 	vec3 targetPos = vec3(0, 0, -10);
@@ -104,7 +104,7 @@ public:
 		}
 		if (key == GLFW_KEY_X && action == GLFW_PRESS)
 		{
-			FBOManager::getInstance().toggleConfuse();
+			FBOManager::getInstance().triggerConfuse();
 		}
 		if (key == GLFW_KEY_C && action == GLFW_PRESS)
 		{
@@ -112,7 +112,7 @@ public:
 		}
 		if (key == GLFW_KEY_V && action == GLFW_PRESS)
 		{
-			FBOManager::getInstance().toggleShake();
+			FBOManager::getInstance().triggerShake();
 		}
 		if (key == GLFW_KEY_N && action == GLFW_PRESS)
 		{
@@ -194,6 +194,7 @@ public:
 	void update(float deltaTime, float gameTime)
 	{
 		Spawner::getInstance()->update(deltaTime, gameTime);
+		CutSceneManager::getInstance().update(deltaTime, gameTime);
 		GameManager::getInstance()->update(deltaTime, gameTime);
 		EntityCollection::getInstance()->update(deltaTime);
 		camera.update(deltaTime, player->getTransform());
@@ -210,7 +211,7 @@ public:
 
 		// Get current frame buffer size.
 		int width, height;
-		glfwGetFramebufferSize(windowManager->getHandle(), &width, &height);
+		glfwGetFramebufferSize(WindowManager::instance->getHandle(), &width, &height);
 		glViewport(0, 0, width, height);
 		
 		/* Leave this code to just draw the meshes alone */
@@ -237,7 +238,7 @@ public:
 
 		targetPos = playerBehavior->getTargetPos();
 		float time = glfwGetTime();
-		int remaining = GameManager::getInstance()->getGameStats().charRemaining;
+		int remaining = GameManager::getInstance()->getCharRemaining();
 		uniforms commonUniforms{P->topMatrix(), V, camera.getEye(), targetPos, time, remaining};
 		ShaderManager::getInstance()->setData(commonUniforms);
 		P->popMatrix();
@@ -300,7 +301,6 @@ int main(int argc, char **argv)
 	WindowManager *windowManager = new WindowManager();
 	windowManager->init(int(WINDOW_WIDTH), int(WINDOW_HEIGHT));
 	windowManager->setEventCallbacks(application);
-	application->windowManager = windowManager;
 
 	// This is the code that will likely change program to program as you
 	// may need to initialize or set up different data and state
@@ -310,7 +310,7 @@ int main(int argc, char **argv)
 	double gameTime = 0; // keep track of how long we have been in the game.
 	double currentTime = glfwGetTime();
 	glfwSetInputMode(windowManager->getHandle(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-
+	CutSceneManager::getInstance().nextCutScene();
 	// Loop until the user closes the window.
 	while (! glfwWindowShouldClose(windowManager->getHandle()))
 	{

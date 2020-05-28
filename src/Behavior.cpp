@@ -3,6 +3,7 @@
 #include "Keys.h"
 #include "GameManager.h"
 #include "FBOManager.h"
+#include "Random.h"
 
 #include <iostream>
 
@@ -39,7 +40,7 @@ void Behavior::bringToFloor(float offset) {
 void Behavior::PlayerBehavior::start()
 {
 	transform.setSize(glm::vec3(PLAYER_SIZE));
-	bringToFloor(FOLLOWER_OFFSET);
+	bringToFloor(FOLLOWER_FLOOR_OFFSET);
 	model.setTexture(DORY_TEXTURE);
 	model.setProgram(TEXTUREPROG);
 }
@@ -93,7 +94,7 @@ void Behavior::PlayerBehavior::onCollision(Behavior& collider)
 			return;
 		follower->setTarget(previousCharacter);
 		follower->followTarget();
-		if (GameManager::getInstance()->getGameStats().charRemaining > 1) {
+		if (GameManager::getInstance()->getCharRemaining() > 1) {
 			target = &Spawner::getInstance()->spawnFollower()->getTransform();
 		}
 		previousCharacter = &collider.transform;
@@ -109,6 +110,7 @@ void Behavior::PlayerBehavior::onCollision(Behavior& collider)
 		immuneTime = IMMUNITY_TIME;
 		transform.setVelocity(ORIGIN);
 		FBOManager::getInstance().increaseBlurAmount(BLUR_INCREMENT);
+		FBOManager::getInstance().triggerShake();
 		break;
 	}
 }
@@ -116,31 +118,7 @@ void Behavior::PlayerBehavior::onCollision(Behavior& collider)
 // ----------------------------- FOLLOWER ----------------------------- //
 void Behavior::FollowerBehavior::start()
 {
-	static int i = 0; // Need to abstract textures from behavior
-	model.setTexture(pickCharacterTexture(i % NUM_CHARACTERS));
 	model.setProgram(TEXTUREPROG);
-	i++;
-}
-
-string Behavior::pickCharacterTexture(int i)
-{
-	switch(i)
-	{
-		case 0:
-			return MARLIN_TEXTURE;
-		case 1:
-			return NEMO_TEXTURE;
-		case 2:
-			return SQUIRT_TEXTURE;
-		case 3:
-			return BLOAT_TEXTURE;
-		case 4:
-			return GURGLE_TEXTURE;
-		case 5:
-			return JENNY_TEXTURE;
-		case 6:
-			return CHARLIE_TEXTURE;
-	}
 }
 
 void Behavior::FollowerBehavior::update(float deltaTime)
@@ -166,6 +144,7 @@ void Behavior::FollowerBehavior::setPathVelocity(float deltaTime)
 	float distance = length(difference) - offset;
 
 	transform.setVelocity(distance * direction)
+	//transform.interpolateVelocity(distance > offset / 4 ? distance * direction : ORIGIN, deltaTime * speed)
 		.setFacing(difference);
 }
 
@@ -173,7 +152,6 @@ void Behavior::FollowerBehavior::setPathVelocity(float deltaTime)
 // ----------------------------- POWERUP ----------------------------- //
 void Behavior::PowerupBehavior::start()
 {
-	//model.setTexture(DORY_TEXTURE);
 	model.setProgram(REFLECTPROG);
 }
 
@@ -190,3 +168,20 @@ void Behavior::PowerupBehavior::update(float deltaTime)
 }
 
 // ----------------------------- ENEMY ----------------------------- //
+
+void Behavior::EnemyBehavior::start()
+{
+	timer = Random::range(ENEMY_TIMER_RANGE);
+}
+
+void Behavior::EnemyBehavior::update(float deltaTime)
+{
+	timer -= deltaTime;
+
+	if (timer <= 0)
+	{
+		transform.setVelocity(Random::facingXZ());
+		timer = Random::range(ENEMY_TIMER_RANGE);
+	}
+}
+
