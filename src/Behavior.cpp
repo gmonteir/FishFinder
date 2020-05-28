@@ -3,6 +3,7 @@
 #include "Keys.h"
 #include "GameManager.h"
 #include "FBOManager.h"
+#include "CutSceneManager.h"
 #include "Random.h"
 
 #include <iostream>
@@ -97,6 +98,8 @@ void Behavior::PlayerBehavior::onCollision(Behavior& collider)
 		if (GameManager::getInstance()->getCharRemaining() > 1) {
 			target = &Spawner::getInstance()->spawnFollower()->getTransform();
 		}
+		CutSceneManager::getInstance().nextCutScene();
+		FBOManager::getInstance().triggerShake();
 		previousCharacter = &collider.transform;
 		GameManager::getInstance()->decrementNumChar();
 		break;

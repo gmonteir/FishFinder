@@ -14,8 +14,8 @@
 #include "Camera.h"
 #include "Spawner.h"
 #include "ShaderManager.h"
-#include "GameManager.h"
 #include "CutSceneManager.h"
+#include "GameManager.h"
 #include "FBOManager.h"
 #include "ParticleManager.h"
 #include "Textures.h"
@@ -184,6 +184,7 @@ public:
 
 		Spawner::getInstance()->init();
 		playerBehavior->setTarget(&Spawner::getInstance()->spawnFollower()->getTransform());
+		CutSceneManager::getInstance().nextCutScene();
 
 		/*for (int i = 0; i < 85; i++)
 			Spawner::getInstance()->spawnFollower();*/
@@ -310,7 +311,6 @@ int main(int argc, char **argv)
 	double gameTime = 0; // keep track of how long we have been in the game.
 	double currentTime = glfwGetTime();
 	glfwSetInputMode(windowManager->getHandle(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-	CutSceneManager::getInstance().nextCutScene();
 	// Loop until the user closes the window.
 	while (! glfwWindowShouldClose(windowManager->getHandle()))
 	{

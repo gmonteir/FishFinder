@@ -101,5 +101,5 @@ void GameManager::drawTextWithFloat(int alignment, const char* format, float num
 void GameManager::drawCutSceneText()
 {
 	if (!CutSceneManager::getInstance().shouldDraw()) return;
-	drawText(CENTER, CutSceneManager::getInstance().getText(), width / 2, UI_BOTTOM_MARGIN + 2 * UI_LINE_OFFSET, SCENE_FONT_SIZE, UI_YELLOW_COLOR);
+	drawText(CENTER, CutSceneManager::getInstance().getText(), width / 2, UI_BOTTOM_MARGIN + 2 * UI_LINE_OFFSET, SCENE_FONT_SIZE, UI_LAVENDER_COLOR);
 }

@@ -15,21 +15,28 @@ CutSceneManager& CutSceneManager::getInstance()
 
 void CutSceneManager::update(float deltaTime, float gameTime)
 {
+	mainScene.update(deltaTime, gameTime);
+	randomScene.update(deltaTime, gameTime);
+}
+
+
+void CutSceneManager::CutScene::update(float deltaTime, float gameTime)
+{
 	timer -= deltaTime;
 	if (!active) return;
 
 	if (timer <= 0) {
-		if (amount >= SCENE1TEXT[text].size()) {
+		if (amount >= SCENETEXTS[current][text].size()) {
 			amount = 0;
 			text++;
-			if (text >= SCENE1TEXT.size()) {
-				text = 0;
+			if (text >= SCENETEXTS[current].size()) {
 				active = false;
+				return;
 			}
 		}
 		else {
 			amount++;
 		}
-		timer = amount == SCENE1TEXT[text].size() ? SCENE_TEXT_DELAY : SCENE_CHAR_DELAY;
+		timer = amount == SCENETEXTS[current][text].size() ? SCENE_TEXT_DELAY : SCENE_CHAR_DELAY;
 	}
 }

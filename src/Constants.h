@@ -61,7 +61,7 @@ constexpr float WINDOW_ASPECT = WINDOW_WIDTH / WINDOW_HEIGHT;
 const glm::vec3 UI_COLOR = glm::vec3(0.99f, 0.86f, 0.01f);
 const glm::vec3 UI_RED_COLOR = glm::vec3(1.0f, 0.0f, 0.0f);
 const glm::vec3 UI_GREEN_COLOR = glm::vec3(0.0f, 1.0f, 0.0f);
-const glm::vec3 UI_YELLOW_COLOR = glm::vec3(0.9f, 0.5f, 0.0f);
+const glm::vec3 UI_LAVENDER_COLOR = glm::vec3(0.8f, 0.25f, 0.25f);
 
 constexpr float UI_LINE_OFFSET = 50.0f;
 constexpr float UI_BOTTOM_MARGIN = 25.0f;
@@ -146,24 +146,6 @@ const glm::vec2 ENEMY_FLOOR_OFFSET_RANGE = glm::vec2(8, 15);
 const glm::vec2 ENEMY_TIMER_RANGE = glm::vec2(5, 10);
 constexpr int NUM_ENEMIES = 10;
 
-// Character Constants
-struct Character {
-	std::string shape;
-	std::string texture;
-	float size;
-};
-
-constexpr int NUM_CHARACTERS = 7;
-const Character CHARACTERS[]{
-	{MARLIN_SHAPE, MARLIN_TEXTURE, 4},
-	{NEMO_SHAPE, NEMO_TEXTURE, 2},
-	{SQUIRT_SHAPE, SQUIRT_TEXTURE, 4},
-	{BLOAT_SHAPE, BLOAT_TEXTURE, 5},
-	{GURGLE_SHAPE, GURGLE_TEXTURE, 3},
-	{JENNY_SHAPE, JENNY_TEXTURE, 4},
-	{CHARLIE_SHAPE, CHARLIE_TEXTURE, 4},
-};
-
 // Caustics Constants
 constexpr int NUM_CAUSTICS = 32;
 
@@ -208,9 +190,57 @@ constexpr int NUM_PARTICLES = 100;
 constexpr float ORTHO_SIZE = 256.0f;
 constexpr float NEAR_PLANE = 0.1f;
 
+// Character Constants
+struct Character {
+	std::string shape;
+	std::string texture;
+	float size;
+};
+
+constexpr int NUM_CHARACTERS = 7;
+const Character CHARACTERS[]{
+	{MARLIN_SHAPE, MARLIN_TEXTURE, 4},
+	{NEMO_SHAPE, NEMO_TEXTURE, 2},
+	{SQUIRT_SHAPE, SQUIRT_TEXTURE, 4},
+	{BLOAT_SHAPE, BLOAT_TEXTURE, 5},
+	{GURGLE_SHAPE, GURGLE_TEXTURE, 3},
+	{JENNY_SHAPE, JENNY_TEXTURE, 4},
+	{CHARLIE_SHAPE, CHARLIE_TEXTURE, 4},
+};
+
 // Scene Texts
-const std::vector<std::string> SCENE1TEXT{
-	"Ugh!",
-	"Where am I?",
-	"I need to find my friends!"
+const std::vector<std::vector<std::string>> SCENETEXTS{ 
+	std::vector<std::string>{
+		"Ugh!",
+		"Where am I?",
+		"I need to find my friends!"
+	},
+	std::vector<std::string>{
+		"Marlin?",
+		"You found me!"
+	},
+	std::vector<std::string>{
+		"Oh! It's Nemo!"
+	},
+	std::vector<std::string>{
+		"Squirt!"
+	},
+	std::vector<std::string>{
+		"Who are you?",
+		"You're name's Bloat?",
+		"You have a friend named Gurgle?"
+	},
+	std::vector<std::string>{
+		"I found all my friends",
+		"Now to find my parents!"
+	},
+	std::vector<std::string>{
+		"It's you!",
+		"It's really you!",
+		"Where's Dad?"
+	},
+	std::vector<std::string>{
+		"Dad, you're here!",
+		"We found you!"
+	}
 };

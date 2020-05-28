@@ -10,9 +10,21 @@
 
 class CutSceneManager
 {
+	struct CutScene {
+		CutScene() : active(false), current(-1), text(0), amount(0), 
+			timer(SCENE_TEXT_DELAY), currentText(nullptr) {}
+		bool active;
+		int current, text, amount;
+		float timer;
+		std::string* currentText;
 
-	CutSceneManager() : active(false), 
-		current(-1), text(0), amount(0), timer(SCENE_TEXT_DELAY) {}
+		bool shouldDraw() const { return active || timer > 0; }
+		void update(float deltaTime, float gameTime);
+		void next() { active = true; current++; text = 0; }
+		std::string getText() const { return SCENETEXTS[current][text].substr(0, amount); }
+	};
+
+	CutSceneManager() : mainScene(), randomScene() {}
 
 public:
 	static CutSceneManager& getInstance();
@@ -24,13 +36,12 @@ public:
 
 	void update(float deltaTime, float gameTime);
 
-	bool shouldDraw() const { return active || timer > 0; }
-	std::string getText() const { return SCENE1TEXT[text].substr(0, amount); }
-	void nextCutScene() { active = true; current++; }
+	bool shouldDraw() const { return mainScene.shouldDraw() || randomScene.shouldDraw(); }
+	std::string getText() const { return mainScene.getText(); }
+	void nextCutScene() { mainScene.next(); }
 
 private:
-	bool active;
-	int current, text, amount;
-	float timer;
+	CutScene mainScene;
+	CutScene randomScene;
 };
 
