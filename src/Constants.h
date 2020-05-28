@@ -216,6 +216,8 @@ constexpr int BOOST_TEXTS = 2;
 constexpr int RANDOM_TEXTS = 3;
 constexpr int NUM_TEXTS = 4;
 
+const glm::vec2 RANDOM_TEXT_TIME_RANGE = glm::vec2(20, 50);
+
 const std::vector<std::vector<std::vector<std::string>>> CUTSCENETEXTS{
 	std::vector<std::vector<std::string>> { // Main
 		std::vector<std::string>{

@@ -1,4 +1,5 @@
 #include "CutSceneManager.h"
+#include "Random.h"
 
 #include <iostream>
 
@@ -12,6 +13,7 @@ CutSceneManager::CutSceneManager() : cutScenes(), randomTimer(0)
 		cutScenes[i].init(i);
 	}
 
+	randomTimer = Random::range(RANDOM_TEXT_TIME_RANGE);
 	cout << "CutSceneManager: Initialized" << endl;
 }
 
@@ -25,17 +27,21 @@ CutSceneManager& CutSceneManager::getInstance()
 
 void CutSceneManager::update(float deltaTime, float gameTime)
 {
+	bool updating = false;
 	for (int i = 0; i < NUM_TEXTS; i++)
 	{
-		cutScenes[i].update(deltaTime, gameTime);
+		updating = cutScenes[i].update(deltaTime, gameTime) || updating;
 	}
+
+	if (!updating)
+		randomUpdate(deltaTime);
 }
 
 
-void CutSceneManager::CutScene::update(float deltaTime, float gameTime)
+bool CutSceneManager::CutScene::update(float deltaTime, float gameTime)
 {
 	timer -= deltaTime;
-	if (!active || timer > 0) return;
+	if (!active || timer > 0) return shouldDraw();
 
 	if (amount >= CUTSCENETEXTS[sequence][current][text].size()) {
 		amount = 0;
@@ -43,7 +49,6 @@ void CutSceneManager::CutScene::update(float deltaTime, float gameTime)
 		timer = SCENE_TEXT_DELAY;
 		if (text >= CUTSCENETEXTS[sequence][current].size()) {
 			active = false;
-			return;
 		}
 	}
 	else {
@@ -51,7 +56,7 @@ void CutSceneManager::CutScene::update(float deltaTime, float gameTime)
 		timer = SCENE_CHAR_DELAY;
 		currentText = CUTSCENETEXTS[sequence][current][text].substr(0, amount);
 	}
-	cout << "CutSceneManager: update " <<  currentText << endl;
+	return true;
 }
 
 
@@ -70,9 +75,27 @@ const string& CutSceneManager::getText() const
 {
 	for (int i = 0; i < NUM_TEXTS; i++)
 	{
-		cout << "Text: " << cutScenes[i].timer << ", " << cutScenes[i].active << ", " << cutScenes[i].currentText << endl;
 		if (cutScenes[i].shouldDraw())
 			return cutScenes[i].currentText;
 	}
 	return "";
+}
+
+
+void CutSceneManager::priorityStop(int priority)
+{
+	for (int i = priority; i < NUM_TEXTS; i++)
+	{
+		cutScenes[i].stop();
+	}
+}
+
+void CutSceneManager::randomUpdate(float deltaTime)
+{
+	randomTimer -= deltaTime;
+	if (randomTimer <= 0)
+	{
+		cutScenes[RANDOM_TEXTS].start(0);
+		randomTimer = Random::range(RANDOM_TEXT_TIME_RANGE);
+	}
 }

@@ -21,8 +21,11 @@ class CutSceneManager
 
 		void init(int sequenceIndex) { sequence = sequenceIndex; }
 		bool shouldDraw() const { return active || timer > 0; }
-		void update(float deltaTime, float gameTime);
-		void next() { active = true; current++; text = 0; amount = 0; }
+		bool update(float deltaTime, float gameTime);
+
+		void start(int newCurrent) { active = true; current = newCurrent; text = amount = 0; }
+		void stop() { active = false; timer = 0; }
+		void next() { active = true; current++; text = amount = 0; }
 	};
 
 	CutSceneManager();
@@ -39,10 +42,13 @@ public:
 
 	bool shouldDraw() const;
 	const std::string& getText() const;
-	void nextCutScene() { cutScenes[MAIN_TEXTS].next(); }
+	void nextCutScene() { cutScenes[MAIN_TEXTS].next(); priorityStop(MAIN_TEXTS + 1); }
 
 private:
 	CutScene cutScenes[NUM_TEXTS];
 	float randomTimer;
+
+	void randomUpdate(float deltaTime);
+	void priorityStop(int priority);
 };
 
