@@ -165,8 +165,8 @@ void Behavior::FollowerBehavior::setPathVelocity(float deltaTime)
 	vec3 direction(normalize(difference));
 	float distance = length(difference) - offset;
 
-	transform.interpolateVelocity(direction * glm::max(distance, 0.0f), deltaTime * speed)
-		.syncFacing();
+	transform.setVelocity(distance * direction)
+		.setFacing(difference);
 }
 
 
