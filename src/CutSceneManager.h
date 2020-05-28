@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Constants.h"
+#include "Random.h"
 
 #include <string>
 
@@ -23,9 +24,11 @@ class CutSceneManager
 		bool shouldDraw() const { return active || timer > 0; }
 		bool update(float deltaTime, float gameTime);
 
-		void start(int newCurrent) { active = true; current = newCurrent; text = amount = 0; }
+		void start(int newCurrent) { active = newCurrent != getNumOptions(); current = newCurrent; text = amount = 0; }
 		void stop() { active = false; timer = 0; }
 		void next() { active = true; current++; text = amount = 0; }
+
+		int getNumOptions() { return CUTSCENETEXTS[sequence].size(); }
 	};
 
 	CutSceneManager();
@@ -42,13 +45,16 @@ public:
 
 	bool shouldDraw() const;
 	const std::string& getText() const;
-	void nextCutScene() { cutScenes[MAIN_TEXTS].next(); priorityStop(MAIN_TEXTS + 1); }
+	void nextCutScene() { cutScenes[MAIN_TEXTS].next(); }
+	void startEnemyScene() { cutScenes[ENEMY_TEXTS].start(randomOption(ENEMY_TEXTS)); }
+	void startBoostScene() { cutScenes[BOOST_TEXTS].start(randomOption(BOOST_TEXTS)); }
 
 private:
 	CutScene cutScenes[NUM_TEXTS];
 	float randomTimer;
 
 	void randomUpdate(float deltaTime);
-	void priorityStop(int priority);
+	int randomOption(int sequenceID) 
+		{ return Random::integer(cutScenes[sequenceID].getNumOptions() + 1); }
 };
 

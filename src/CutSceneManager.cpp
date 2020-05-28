@@ -1,5 +1,4 @@
 #include "CutSceneManager.h"
-#include "Random.h"
 
 #include <iostream>
 
@@ -30,7 +29,14 @@ void CutSceneManager::update(float deltaTime, float gameTime)
 	bool updating = false;
 	for (int i = 0; i < NUM_TEXTS; i++)
 	{
-		updating = cutScenes[i].update(deltaTime, gameTime) || updating;
+		if (updating)
+		{
+			cutScenes[i].stop();
+		}
+		else
+		{
+			updating = cutScenes[i].update(deltaTime, gameTime) || updating;
+		}
 	}
 
 	if (!updating)
@@ -79,15 +85,6 @@ const string& CutSceneManager::getText() const
 			return cutScenes[i].currentText;
 	}
 	return "";
-}
-
-
-void CutSceneManager::priorityStop(int priority)
-{
-	for (int i = priority; i < NUM_TEXTS; i++)
-	{
-		cutScenes[i].stop();
-	}
 }
 
 void CutSceneManager::randomUpdate(float deltaTime)
