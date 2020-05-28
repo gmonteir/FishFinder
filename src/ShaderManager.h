@@ -16,7 +16,7 @@ struct light {
 
 constexpr int NUM_LIGHTS = 3;
 static light POINT_LIGHTS[NUM_LIGHTS] = {
-	{ glm::vec3(0, 30, 0), 1.0, 0.007, 0.0002 },
+	{ glm::vec3(1, 90, 0), 1.0, 0.007, 0.0002 },
 	{ glm::vec3(100, 70, -100), 1.0, 0.007, 0.0002 },
 	{ glm::vec3(100, 50, 150), 1.0, 0.007, 0.0002 }
 };
@@ -29,6 +29,11 @@ struct uniforms {
 	glm::vec3 targetPos;
 	float time;
 	int remaining; // characters
+};
+
+struct lightUniforms {
+	glm::mat4 LP;
+	glm::mat4 LV;
 };
 
 class ShaderManager
@@ -52,6 +57,7 @@ class ShaderManager
 		std::shared_ptr<Program> initBlurProg();
 		std::shared_ptr<Program> initWaterFBOProg();
 		std::shared_ptr<Program> initParticleProg();
+		std::shared_ptr<Program> initLightDepthProg();
 
 		std::shared_ptr<Program> getShader(int i) const { return shaderProgs[i]; }
 	    void setData(const uniforms& common) { uniformData = common; }
@@ -59,6 +65,7 @@ class ShaderManager
 			const std::shared_ptr<Texture> blendTexture=nullptr);
 
 		uniforms uniformData;
+		lightUniforms luData;
 	private:
 		std::shared_ptr<Program> shaderProgs[NUM_SHADERS];
 

@@ -177,6 +177,33 @@ void FBOManager::createFBO(GLuint fb, GLuint tex)
 	}
 }
 
+void FBOManager::createDepthFBO(GLuint fb, GLuint tex)
+{
+	//initialize FBO (global memory)
+	int width, height;
+	glfwGetFramebufferSize(WindowManager::instance->getHandle(), &width, &height);
+
+	//set up framebuffer
+	glBindFramebuffer(GL_FRAMEBUFFER, fb);
+	//set up texture
+	glBindTexture(GL_TEXTURE_2D, tex);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, width, height,
+		0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, tex, 0);
+
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+		cout << "Error setting up frame buffer - exiting" << endl;
+		exit(0);
+	}
+}
+
+
 void FBOManager::processDrawTex(GLuint tex, int program)
 {
 	shared_ptr<Program> fboProg = ShaderManager::getInstance()->getShader(program);

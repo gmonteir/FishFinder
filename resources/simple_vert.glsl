@@ -6,10 +6,13 @@ uniform mat4 P;
 uniform mat4 V;
 uniform mat4 M;
 uniform vec3 eye;
+uniform mat4 LP;
+uniform mat4 LV;
 
 out vec3 fragPos;
 out vec3 fragNor;
 out vec3 viewer;
+out vec3 lightfPos;
 
 void main()
 {
@@ -18,4 +21,5 @@ void main()
 	fragPos = (M * vec4(vertPos, 1.0)).xyz;
 	fragNor = (M * vec4(vertNor, 0.0)).xyz;
 	viewer = (eye - (M * vec4(vertPos, 1.0)).xyz);
+	lightfPos = (LP * LV * M * vec4(vertPos, 1.0)).xyz;
 }

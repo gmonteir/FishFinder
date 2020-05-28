@@ -3,6 +3,7 @@ in vec3 fragPos;
 in vec3 fragNor;
 in vec2 vTexCoord;
 in vec3 light;
+in vec3 lightfPos;
 
 out vec4 color;
 
@@ -18,21 +19,27 @@ struct PointLight {
 uniform PointLight pointLights[NR_POINT_LIGHTS];
 uniform sampler2D Texture0;
 uniform sampler2D Texture1;
+uniform sampler2D shadowDepth;
 uniform vec3 targetPos;
 uniform vec3 eye;
 uniform float time;
 uniform int remaining;
 
 vec3 CalcPointLight(PointLight light, vec3 norm, vec3 pos);
-bool draw(float z_line);
+float TestShadow(vec3 lfPos);
 
 void main()
 {
 	vec3 normal = normalize(fragNor);
     vec3 result = vec3(0);
 
-    for (int i = 0; i < NR_POINT_LIGHTS; i++)
-        result += CalcPointLight(pointLights[i], normal, fragPos);    
+    result += CalcPointLight(pointLights[0], normal, fragPos);
+    result += CalcPointLight(pointLights[1], normal, fragPos);
+    result += CalcPointLight(pointLights[2], normal, fragPos);
+    
+    float shade = TestShadow(lightfPos);
+
+    result = (1.0 - shade) * result;
     
     color = vec4(result, 1.0);
     
@@ -76,4 +83,21 @@ vec3 CalcPointLight(PointLight light, vec3 norm, vec3 pos)
     diffuse *= attenuation;
 
     return (ambient + diffuse);
-} 
+}
+
+float TestShadow(vec3 lfPos)
+{
+    float bias = 0.005;
+	//1: shift the coordinates from -1, 1 to 0 ,1
+    vec3 shifted = 0.5 * (lfPos + vec3(1.0));
+	//2: read off the stored depth (.) from the ShadowDepth, using the shifted.xy 
+    vec4 Ld = texture(shadowDepth, shifted.xy);
+	//3: compare to the current depth (.z) of the projected depth
+
+	//4: return 1 if the point is shadowed
+    if (Ld.x < shifted.z - bias) {
+        return 1.0;
+    }
+
+	return 0.0;
+}

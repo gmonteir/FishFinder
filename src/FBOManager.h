@@ -15,7 +15,8 @@ class FBOManager
 		static constexpr int BLUR_BUFFER = 1;
 		static constexpr int FOG_BUFFER = 2;
 		static constexpr int DEPTH_BUFFER = 3;
-		static constexpr int NUM_BUFFERS = 4;
+		static constexpr int SHADOW_BUFFER = 4;
+		static constexpr int NUM_BUFFERS = 5;
 
 
 		static FBOManager& getInstance();
@@ -45,6 +46,8 @@ class FBOManager
 		/* code to write out the FBO (texture) - helpful for debugging*/
 		void writeTexture(const std::string filename, GLuint tex);
 
+		GLuint getTexBufId(int index) { return texBuf[index]; }
+
 	private:
 		GLuint frameBuf[NUM_BUFFERS];
 		GLuint texBuf[NUM_BUFFERS];
@@ -65,6 +68,8 @@ class FBOManager
 
 		/* Helper function to create the framebuffer object and associated texture to write to */
 		void createFBO(GLuint fb, GLuint tex);
+
+		void createDepthFBO(GLuint fb, GLuint tex);
 
 		/* Process Texture on the specificed texture  - could vary what it does based on
 			shader  - works on inTex - runs shaders and output to textured quad */

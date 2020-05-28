@@ -1,4 +1,5 @@
 #include "ShaderManager.h"
+#include "FBOManager.h"
 #include <iostream>
 
 using namespace std;
@@ -23,6 +24,10 @@ ShaderManager::ShaderManager()
 	shaderProgs[BLURFBOPROG] = initBlurProg();
 	shaderProgs[WATERFBOPROG] = initWaterFBOProg();
 	shaderProgs[PARTICLEPROG] = initParticleProg();
+	shaderProgs[LIGHTDEPTHPROG] = initLightDepthProg();
+
+	luData.LP = glm::ortho(-ORTHO_SIZE, ORTHO_SIZE, -ORTHO_SIZE, ORTHO_SIZE, 1.0f, 1000.0f);
+	luData.LV = glm::lookAt(POINT_LIGHTS[0].pos, vec3(0), vec3(0, 1, 0));
 
 	cout << "ShaderManager: Initialized" << endl;
 }
@@ -33,12 +38,15 @@ shared_ptr<Program> ShaderManager::initSimpleProg()
 	prog->addUniform("P");
 	prog->addUniform("M");
 	prog->addUniform("V");
+	prog->addUniform("LP");
+	prog->addUniform("LV");
 	prog->addUniform("MatAmb");
 	prog->addUniform("MatDif");
 	prog->addUniform("MatSpec");
 	prog->addUniform("shine");
 	addLightUniforms(prog);
 	prog->addUniform("eye");
+	prog->addUniform("shadowDepth");
 	prog->addAttribute("vertPos");
 	prog->addAttribute("vertNor");
 	prog->addAttribute("vertTex");
@@ -62,7 +70,10 @@ shared_ptr<Program> ShaderManager::initTextureProg()
 	texProg->addUniform("P");
 	texProg->addUniform("M");
 	texProg->addUniform("V");
+	texProg->addUniform("LP");
+	texProg->addUniform("LV");
 	addLightUniforms(texProg);
+	texProg->addUniform("shadowDepth");
 	texProg->addUniform("Texture0");
 	texProg->addAttribute("vertPos");
 	texProg->addAttribute("vertNor");
@@ -86,11 +97,14 @@ shared_ptr<Program> ShaderManager::initFloorProg()
 	texProg->addUniform("P");
 	texProg->addUniform("M");
 	texProg->addUniform("V");
+	texProg->addUniform("LP");
+	texProg->addUniform("LV");
 	addLightUniforms(texProg);
 	texProg->addUniform("targetPos");
 	texProg->addUniform("eye");
 	texProg->addUniform("time");
 	texProg->addUniform("remaining");
+	texProg->addUniform("shadowDepth");
 	texProg->addUniform("Texture0");
 	texProg->addUniform("Texture1");
 	texProg->addAttribute("vertPos");
@@ -169,6 +183,18 @@ shared_ptr<Program> ShaderManager::initParticleProg()
 	return prog;
 }
 
+shared_ptr<Program> ShaderManager::initLightDepthProg()
+{
+	std::shared_ptr<Program> prog = makeProgram("/depth_vert.glsl", "/depth_frag.glsl");
+	prog->addUniform("LP");
+	prog->addUniform("LV");
+	prog->addUniform("M");
+	prog->addAttribute("vertPos");
+	prog->addAttribute("vertNor");
+	prog->addAttribute("vertTex");
+	return prog;
+}
+
 void ShaderManager::sendUniforms(int progIndex, const shared_ptr<Texture> texture, const std::shared_ptr<Texture> blendTexture)
 {
 	shared_ptr<Program> prog = getShader(progIndex);
@@ -177,15 +203,27 @@ void ShaderManager::sendUniforms(int progIndex, const shared_ptr<Texture> textur
 	case SIMPLEPROG:
 		glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, value_ptr(uniformData.P));
 		glUniformMatrix4fv(prog->getUniform("V"), 1, GL_FALSE, value_ptr(uniformData.V));
+		glUniformMatrix4fv(prog->getUniform("LP"), 1, GL_FALSE, value_ptr(luData.LP));
+		glUniformMatrix4fv(prog->getUniform("LV"), 1, GL_FALSE, value_ptr(luData.LV));
 		sendLightUniforms(prog);
 		glUniform3f(prog->getUniform("eye"), uniformData.eye.x, uniformData.eye.y, uniformData.eye.z);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, FBOManager::getInstance().getTexBufId(int(FBOManager::SHADOW_BUFFER)));
+		glUniform1i(prog->getUniform("shadowDepth"), 0);
 		break;
 	case TEXTUREPROG:
 		glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, value_ptr(uniformData.P));
 		glUniformMatrix4fv(prog->getUniform("V"), 1, GL_FALSE, value_ptr(uniformData.V));
+		glUniformMatrix4fv(prog->getUniform("LP"), 1, GL_FALSE, value_ptr(luData.LP));
+		glUniformMatrix4fv(prog->getUniform("LV"), 1, GL_FALSE, value_ptr(luData.LV));
 		sendLightUniforms(prog);
 		// This probably should be updated in the future to work with different textures
-		texture->bind(prog->getUniform("Texture0"));
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, FBOManager::getInstance().getTexBufId(int(FBOManager::SHADOW_BUFFER)));
+		glUniform1i(prog->getUniform("shadowDepth"), 0);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, texture->getID());
+		glUniform1i(prog->getUniform("Texture0"), 1);
 		break;
 	case SKYBOXPROG:
 		glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, value_ptr(uniformData.P));
@@ -193,15 +231,21 @@ void ShaderManager::sendUniforms(int progIndex, const shared_ptr<Texture> textur
 		break;
 	case FLOORPROG:
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, texture->getID());
-		glUniform1i(prog->getUniform("Texture0"), 0);
-
+		glBindTexture(GL_TEXTURE_2D, FBOManager::getInstance().getTexBufId(int(FBOManager::SHADOW_BUFFER)));
+		glUniform1i(prog->getUniform("shadowDepth"), 0);
+		
 		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, texture->getID());
+		glUniform1i(prog->getUniform("Texture0"), 1);
+
+		glActiveTexture(GL_TEXTURE2);
 		glBindTexture(GL_TEXTURE_2D, blendTexture->getID());
-		glUniform1i(prog->getUniform("Texture1"), 1);
+		glUniform1i(prog->getUniform("Texture1"), 2);
 
 		glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, value_ptr(uniformData.P));
 		glUniformMatrix4fv(prog->getUniform("V"), 1, GL_FALSE, value_ptr(uniformData.V));
+		glUniformMatrix4fv(prog->getUniform("LP"), 1, GL_FALSE, value_ptr(luData.LP));
+		glUniformMatrix4fv(prog->getUniform("LV"), 1, GL_FALSE, value_ptr(luData.LV));
 		sendLightUniforms(prog);
 		glUniform3f(prog->getUniform("targetPos"), uniformData.targetPos.x, uniformData.targetPos.y, uniformData.targetPos.z);
 		glUniform3f(prog->getUniform("eye"), uniformData.eye.x, uniformData.eye.y, uniformData.eye.z);
@@ -228,6 +272,10 @@ void ShaderManager::sendUniforms(int progIndex, const shared_ptr<Texture> textur
 		glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, value_ptr(uniformData.P));
 		glUniformMatrix4fv(prog->getUniform("V"), 1, GL_FALSE, value_ptr(uniformData.V));
 		glUniform1f(prog->getUniform("time"), uniformData.time);
+		break;
+	case LIGHTDEPTHPROG:
+		glUniformMatrix4fv(prog->getUniform("LP"), 1, GL_FALSE, value_ptr(luData.LP));
+		glUniformMatrix4fv(prog->getUniform("LV"), 1, GL_FALSE, value_ptr(luData.LV));
 		break;
 	}
 }
