@@ -118,6 +118,17 @@ void FBOManager::initFBOs()
 
 	for (int i = 0; i < NUM_BUFFERS; i++)
 	{
+		if (i == SHADOW_BUFFER)
+		{
+			createDepthFBO(frameBuf[i], texBuf[i]);
+			//bind with framebuffer's depth buffer
+			glBindFramebuffer(GL_FRAMEBUFFER, frameBuf[i]);
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, texBuf[i], 0);
+			glDrawBuffer(GL_NONE);
+			glReadBuffer(GL_NONE);
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
+			continue;
+		}
 		//create another FBO so we can swap back and forth
 		createFBO(frameBuf[i], texBuf[i]);
 
