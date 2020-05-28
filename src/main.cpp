@@ -250,7 +250,7 @@ public:
 			prog = ShaderManager::getInstance()->getShader(LIGHTDEPTHPROG);
 			prog->bind();
 			ShaderManager::getInstance()->sendUniforms(LIGHTDEPTHPROG);
-			EntityCollection::getInstance()->draw(prog, Model);
+			EntityCollection::getInstance()->draw(prog, Model, planes);
 			Floor::getInstance()->draw(prog, Model);
 			prog->unbind();
 			//glCullFace(GL_BACK);
