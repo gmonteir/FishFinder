@@ -6,21 +6,6 @@
 
 #include <memory>
 
-// Light Constants
-struct light {
-	glm::vec3 pos;
-	float constant;
-	float linear;
-	float quadratic;
-};
-
-constexpr int NUM_LIGHTS = 3;
-static light POINT_LIGHTS[NUM_LIGHTS] = {
-	{ glm::vec3(1, 90, 0), 1.0, 0.007, 0.0002 },
-	{ glm::vec3(100, 70, -100), 1.0, 0.007, 0.0002 },
-	{ glm::vec3(100, 50, 150), 1.0, 0.007, 0.0002 }
-};
-
 // Shader variables
 struct uniforms {
 	glm::mat4 P;
@@ -31,13 +16,12 @@ struct uniforms {
 	int remaining; // characters
 };
 
-struct lightUniforms {
-	glm::mat4 LP;
-	glm::mat4 LV;
-};
-
 class ShaderManager
 {
+	struct LightUniforms {
+		glm::mat4 LP;
+		glm::mat4 LV;
+	};
 
 	public:
 		static std::shared_ptr<ShaderManager> getInstance();
@@ -65,7 +49,7 @@ class ShaderManager
 			const std::shared_ptr<Texture> blendTexture=nullptr);
 
 		uniforms uniformData;
-		lightUniforms luData;
+		LightUniforms luData;
 	private:
 		std::shared_ptr<Program> shaderProgs[NUM_SHADERS];
 
