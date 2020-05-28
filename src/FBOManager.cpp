@@ -118,6 +118,17 @@ void FBOManager::initFBOs()
 
 	for (int i = 0; i < NUM_BUFFERS; i++)
 	{
+		if (i == SHADOW_BUFFER)
+		{
+			createDepthFBO(frameBuf[i], texBuf[i]);
+			//bind with framebuffer's depth buffer
+			glBindFramebuffer(GL_FRAMEBUFFER, frameBuf[i]);
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, texBuf[i], 0);
+			glDrawBuffer(GL_NONE);
+			glReadBuffer(GL_NONE);
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
+			continue;
+		}
 		//create another FBO so we can swap back and forth
 		createFBO(frameBuf[i], texBuf[i]);
 
@@ -176,6 +187,33 @@ void FBOManager::createFBO(GLuint fb, GLuint tex)
 		exit(0);
 	}
 }
+
+void FBOManager::createDepthFBO(GLuint fb, GLuint tex)
+{
+	//initialize FBO (global memory)
+	int width, height;
+	glfwGetFramebufferSize(WindowManager::instance->getHandle(), &width, &height);
+
+	//set up framebuffer
+	glBindFramebuffer(GL_FRAMEBUFFER, fb);
+	//set up texture
+	glBindTexture(GL_TEXTURE_2D, tex);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, width, height,
+		0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, tex, 0);
+
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+		cout << "Error setting up frame buffer - exiting" << endl;
+		exit(0);
+	}
+}
+
 
 void FBOManager::processDrawTex(GLuint tex, int program)
 {

@@ -44,7 +44,6 @@ public:
 	WindowManager* windowManager = nullptr;
 
 	//example data that might be useful when trying to compute bounds on multi-shape
-	vec3 lightPos = vec3(0, 70, 0);
 	vec3 targetPos = vec3(0, 0, -10);
 
 	int drawMode = 0;
@@ -246,6 +245,16 @@ public:
 		// ---------------------- drawing depth buffer ----------------- //
 		if (FBOManager::getInstance().isEnabled())
 		{
+			//glCullFace(GL_FRONT);
+			FBOManager::getInstance().bindBuffer(int(FBOManager::SHADOW_BUFFER));
+			prog = ShaderManager::getInstance()->getShader(LIGHTDEPTHPROG);
+			prog->bind();
+			ShaderManager::getInstance()->sendUniforms(LIGHTDEPTHPROG);
+			EntityCollection::getInstance()->draw(prog, Model, planes);
+			Floor::getInstance()->draw(prog, Model);
+			prog->unbind();
+			//glCullFace(GL_BACK);
+			
 			FBOManager::getInstance().bindBuffer(int(FBOManager::DEPTH_BUFFER));
 			prog = ShaderManager::getInstance()->getShader(DEPTHPROG);
 			prog->bind();
