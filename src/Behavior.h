@@ -73,7 +73,7 @@ class Behavior::PlayerBehavior : public Behavior
 public:
 	PlayerBehavior(Transform& transform, Model& model)
 		: Behavior(PLAYER, transform, model), score(0), speed(PLAYER_SPEED), slow(0),
-		previousCharacter(&transform), target(nullptr), immuneTime(0) {}
+		previousCharacter(&transform), target(nullptr), immuneTime(0), speechTime(BOOST_TEXT_DELAY) {}
 
 	virtual ~PlayerBehavior() {}
 
@@ -91,7 +91,7 @@ public:
 private:
 	int score;
 	float speed, slow;
-	float immuneTime;
+	float immuneTime, speechTime;
 
 	Transform* previousCharacter;
 	Transform* target;

@@ -63,7 +63,10 @@ void Behavior::PlayerBehavior::update(float deltaTime)
 		boost = 30;
 		GameManager::getInstance()->decreaseStamina(deltaTime);
 		FBOManager::getInstance().increaseBlurAmount(deltaTime);
-		CutSceneManager::getInstance().startBoostScene();
+		if (speechTime <= 0) {
+			CutSceneManager::getInstance().startCutScene(BOOST_TEXTS);
+			speechTime = BOOST_TEXT_DELAY;
+		}
 	}
 
 	if (Keys::getInstance().keyPressed(Keys::LEFT))
@@ -79,8 +82,8 @@ void Behavior::PlayerBehavior::update(float deltaTime)
 	if (slow > 0)
 		slow = mix(slow, 0.0f, RECOVERY_SPEED * deltaTime);
 
-	if (immuneTime > 0)
-		immuneTime = glm::max(0.0f, immuneTime - deltaTime);
+	immuneTime -= deltaTime;
+	speechTime -= deltaTime;
 
 	model.getAnimator().setAnimationSpeed(boost > 0 ? 3 : 1);
 }
@@ -96,9 +99,7 @@ void Behavior::PlayerBehavior::onCollision(Behavior& collider)
 			return;
 		follower->setTarget(previousCharacter);
 		follower->followTarget();
-		if (GameManager::getInstance()->getCharRemaining() > 1) {
-			target = &Spawner::getInstance()->spawnFollower()->getTransform();
-		}
+		target = &Spawner::getInstance()->spawnFollower()->getTransform();
 		CutSceneManager::getInstance().nextCutScene();
 		previousCharacter = &collider.transform;
 		GameManager::getInstance()->decrementNumChar();
@@ -114,7 +115,7 @@ void Behavior::PlayerBehavior::onCollision(Behavior& collider)
 		transform.setVelocity(ORIGIN);
 		FBOManager::getInstance().increaseBlurAmount(BLUR_INCREMENT);
 		FBOManager::getInstance().triggerShake();
-		CutSceneManager::getInstance().startEnemyScene();
+		CutSceneManager::getInstance().startCutScene(ENEMY_TEXTS);
 		break;
 	}
 }

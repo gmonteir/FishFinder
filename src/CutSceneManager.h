@@ -52,15 +52,15 @@ public:
 	bool shouldDraw() const;
 	const std::string& getText() const;
 	void nextCutScene() { cutScenes[MAIN_TEXTS].next(); }
-	void startEnemyScene() { if (!cutScenes[ENEMY_TEXTS].shouldDraw()) cutScenes[ENEMY_TEXTS].start(randomOption(ENEMY_TEXTS)); }
-	void startBoostScene() { if (!cutScenes[BOOST_TEXTS].shouldDraw()) cutScenes[BOOST_TEXTS].start(randomOption(BOOST_TEXTS)); }
+	void startCutScene(int cutSceneID)
+		{ if (!cutScenes[cutSceneID].shouldDraw()) cutScenes[cutSceneID].start(randomOption(cutSceneID)); }
 
 private:
 	CutScene cutScenes[NUM_TEXTS];
 	float randomTimer;
 
 	void randomUpdate(float deltaTime);
-	int randomOption(int sequenceID) 
-		{ return Random::integer(cutScenes[sequenceID].getNumOptions()); }
+	int randomOption(int cutSceneID)
+		{ return Random::integer(cutScenes[cutSceneID].getNumOptions()); }
 };
 
