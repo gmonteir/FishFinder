@@ -230,26 +230,26 @@ public:
 		// Create the matrix stacks
 		auto P = make_shared<MatrixStack>();
 		auto Model = make_shared<MatrixStack>();
-		mat4 V = showTopCamera ? topView : camera.getView();
+
 		// Apply perspective projection.
 		P->pushMatrix();
 		P->perspective(45.0f, aspect, 0.01f, 10000.0f);
 
 		vec4 planes[6];
-		camera.extractVFPlanes(P->topMatrix(), V, planes);
+		camera.extractVFPlanes(P->topMatrix(), planes);
 
 		uniforms commonUniforms{
-			P->topMatrix(),
-			V,
-			camera.getEye(),
-			playerBehavior->getTargetPos(),
-			gameTime,
-			GameManager::getInstance()->getCharRemaining()
+			P->topMatrix(),									// P
+			showTopCamera ? topView : camera.getView(),		// V
+			camera.getEye(),								// Camera Position
+			playerBehavior->getTargetPos(),					// Goal/Target Position
+			gameTime,										// Game Time
+			GameManager::getInstance()->getCharRemaining()	// Characters Remaining
 		};
 		ShaderManager::getInstance()->setData(commonUniforms);
 		P->popMatrix();
 
-		// ---------------------- drawing depth buffer ----------------- //
+		// ---------------------- drawing ----------------- //
 		if (FBOManager::getInstance().isEnabled())
 		{
 			//glCullFace(GL_FRONT);

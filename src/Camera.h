@@ -31,7 +31,7 @@ public:
 	void interpolateRotation(float dx, float dy, float deltaTime);
 	void interpolatePosition(glm::vec3 pos, float deltaTime);
 
-	glm::vec4* extractVFPlanes(glm::mat4 P, glm::mat4 V, glm::vec4* planes);
+	glm::vec4* extractVFPlanes(glm::mat4 P, glm::vec4* planes);
 
 	static int viewFrustCull(glm::vec3 center, float radius, glm::vec4* planes);
 	
