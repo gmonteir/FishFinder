@@ -18,7 +18,7 @@ public:
 
 	void init();
 	void update(float deltaTime, float gameTime);
-	std::shared_ptr<Entity> spawnFollower();
+	Transform* spawnFollower();
 	void spawnPowerup();
 	void spawnCoral(int type);
 	void spawnEnemy();

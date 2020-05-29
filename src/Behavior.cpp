@@ -88,10 +88,10 @@ void Behavior::PlayerBehavior::onCollision(Behavior& collider)
 		if (follower->isFollowing())
 			return;
 		follower->setTarget(previousCharacter);
-		target = &Spawner::getInstance()->spawnFollower()->getTransform();
+		GameManager::getInstance()->decrementNumChar();
+		target = Spawner::getInstance()->spawnFollower();
 		CutSceneManager::getInstance().nextCutScene();
 		previousCharacter = &collider.transform;
-		GameManager::getInstance()->decrementNumChar();
 		break;
 	case POWERUP:
 		collider.remove();

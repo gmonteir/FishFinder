@@ -52,6 +52,7 @@ void Shapes::addShape(vector<float>& posBuf,
 
 shared_ptr<vector<shared_ptr<Shape>>> Shapes::getShape(const string& key)
 {
+	cout << "Get Shape: " << key << endl;
 	return allShapes[key];
 }
 
