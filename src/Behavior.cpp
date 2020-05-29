@@ -61,6 +61,7 @@ void Behavior::PlayerBehavior::update(float deltaTime)
 
 	if (Keys::getInstance().keyPressed(Keys::BOOST) 
 		&& GameManager::getInstance()->getStamina() > 0) {
+		speechTime -= deltaTime;
 		boost = 30;
 		GameManager::getInstance()->decreaseStamina(deltaTime);
 		FBOManager::getInstance().increaseBlurAmount(deltaTime);
@@ -85,7 +86,6 @@ void Behavior::PlayerBehavior::update(float deltaTime)
 		slow = mix(slow, 0.0f, RECOVERY_SPEED * deltaTime);
 
 	immuneTime -= deltaTime;
-	speechTime -= deltaTime;
 
 	model.getAnimator().setAnimationSpeed(boost > 0 ? 3 : 1);
 }
