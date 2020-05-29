@@ -268,7 +268,7 @@ const std::vector<std::vector<std::vector<std::string>>> CUTSCENETEXTS{
 	},
 	std::vector<std::vector<std::string>> { // Boost
 		std::vector<std::string>{
-			"Whooo!",
+			"Whooo!"
 		},
 		std::vector<std::string>{
 			"Wheeee!"

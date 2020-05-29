@@ -49,6 +49,7 @@ bool CutSceneManager::CutScene::update(float deltaTime, float gameTime)
 	timer -= deltaTime;
 	if (!active || timer > 0) return shouldDraw();
 
+	cout << "update " << sequence << ", " << current << ", " << text << ", " << getNumOptions() << ", " << currentText << endl;
 	if (amount >= CUTSCENETEXTS[sequence][current][text].size()) {
 		amount = 0;
 		text++;

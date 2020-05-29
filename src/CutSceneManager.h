@@ -4,6 +4,7 @@
 #include "Random.h"
 
 #include <string>
+#include <iostream>
 
 // value_ptr for glm
 #include <glm/gtc/type_ptr.hpp>
@@ -51,8 +52,8 @@ public:
 	bool shouldDraw() const;
 	const std::string& getText() const;
 	void nextCutScene() { cutScenes[MAIN_TEXTS].next(); }
-	void startEnemyScene() { cutScenes[ENEMY_TEXTS].start(randomOption(ENEMY_TEXTS)); }
-	void startBoostScene() { cutScenes[BOOST_TEXTS].start(randomOption(BOOST_TEXTS)); }
+	void startEnemyScene() { if (!cutScenes[ENEMY_TEXTS].shouldDraw()) cutScenes[ENEMY_TEXTS].start(randomOption(ENEMY_TEXTS)); }
+	void startBoostScene() { if (!cutScenes[BOOST_TEXTS].shouldDraw()) cutScenes[BOOST_TEXTS].start(randomOption(BOOST_TEXTS)); }
 
 private:
 	CutScene cutScenes[NUM_TEXTS];
@@ -60,6 +61,9 @@ private:
 
 	void randomUpdate(float deltaTime);
 	int randomOption(int sequenceID) 
-		{ return Random::integer(cutScenes[sequenceID].getNumOptions() + 1); }
+	{
+		int max = cutScenes[sequenceID].getNumOptions() + 1;
+		std::cout << "Max: " << max << std::endl;
+		return Random::integer(max); }
 };
 

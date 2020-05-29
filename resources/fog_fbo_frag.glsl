@@ -10,7 +10,8 @@ uniform sampler2D depthBuf;
 void main(){
 	vec3 texColor = texture( texBuf, texCoord ).rgb;
 	float depth = texture( depthBuf, texCoord ).r;
-	vec3 fogColor = vec3(0.1, 0.15, 0.2);
+	//vec3 fogColor = vec3(0.1, 0.15, 0.2);
+	vec4 fogColor = vec4(0.1, 0.15, 0.2, 0.0);
 
 
 	/*
@@ -26,7 +27,7 @@ void main(){
 	*/
 
 	//if (depth > 0.5)
-		color = vec4(mix(fogColor, texColor, depth), 1.0);
+		color = vec4(mix(fogColor, vec4(texColor, 1.0), depth));
 	//else
 	//	color = vec4(texColor, 1.0);
 	

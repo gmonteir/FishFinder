@@ -22,7 +22,7 @@ float Random::range(float min, float max)
 
 int Random::integer(int max)
 {
-	uniform_int_distribution<int> randInt(0, max);
+	uniform_int_distribution<int> randInt(0, max - 1); // range is inclusive, so we adjust to make it exclusive
 	return randInt(rd);
 }
 

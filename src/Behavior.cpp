@@ -63,7 +63,7 @@ void Behavior::PlayerBehavior::update(float deltaTime)
 		boost = 30;
 		GameManager::getInstance()->decreaseStamina(deltaTime);
 		FBOManager::getInstance().increaseBlurAmount(deltaTime);
-		//CutSceneManager::getInstance().startBoostScene();
+		CutSceneManager::getInstance().startBoostScene();
 	}
 
 	if (Keys::getInstance().keyPressed(Keys::LEFT))
