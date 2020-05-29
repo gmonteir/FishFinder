@@ -50,7 +50,6 @@ void Behavior::PlayerBehavior::update(float deltaTime)
 {
 	int forward = 0;
 	int right = 0;
-	float boost = 0;
 	vec3 deltas;
 
 	if (Keys::getInstance().keyPressed(Keys::FORWARD))
@@ -58,24 +57,12 @@ void Behavior::PlayerBehavior::update(float deltaTime)
 	if (Keys::getInstance().keyPressed(Keys::BACKWARD))
 		forward -= 1;
 
-	if (Keys::getInstance().keyPressed(Keys::BOOST) 
-		&& GameManager::getInstance()->getStamina() > 0) {
-		speechTime -= deltaTime;
-		boost = 30;
-		GameManager::getInstance()->decreaseStamina(deltaTime);
-		FBOManager::getInstance().increaseBlurAmount(deltaTime);
-		if (speechTime <= 0) {
-			CutSceneManager::getInstance().startCutScene(BOOST_TEXTS);
-			resetSpeechTime();
-		}
-	}
-	else
-		resetSpeechTime();
-
 	if (Keys::getInstance().keyPressed(Keys::LEFT))
 		right -= 1;
 	if (Keys::getInstance().keyPressed(Keys::RIGHT))
 		right += 1;
+
+	checkBoost(deltaTime);
 
 	deltas.x = forward * transform.getFacing().x + right * -transform.getFacing().z;
 	deltas.y = forward * transform.getFacing().y;
@@ -119,6 +106,24 @@ void Behavior::PlayerBehavior::onCollision(Behavior& collider)
 		FBOManager::getInstance().triggerShake();
 		CutSceneManager::getInstance().startCutScene(ENEMY_TEXTS);
 		break;
+	}
+}
+
+void Behavior::PlayerBehavior::checkBoost(float deltaTime)
+{
+	if (Keys::getInstance().keyPressed(Keys::BOOST)
+		&& GameManager::getInstance()->getStamina() > 0) {
+		speechTime -= deltaTime;
+		boost = BOOST_SPEED;
+		GameManager::getInstance()->decreaseStamina(deltaTime);
+		FBOManager::getInstance().increaseBlurAmount(deltaTime);
+		if (speechTime <= 0) {
+			CutSceneManager::getInstance().startCutScene(BOOST_TEXTS);
+			resetSpeechTime();
+		}
+	}
+	else {
+		resetSpeechTime();
 	}
 }
 

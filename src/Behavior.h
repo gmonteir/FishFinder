@@ -73,7 +73,7 @@ class Behavior::PlayerBehavior : public Behavior
 {
 public:
 	PlayerBehavior(Transform& transform, Model& model)
-		: Behavior(PLAYER, transform, model), score(0), slow(0),
+		: Behavior(PLAYER, transform, model), score(0), slow(0), boost(0),
 		previousCharacter(&transform), target(nullptr), immuneTime(0) {
 		resetSpeechTime();
 	}
@@ -93,12 +93,13 @@ public:
 
 private:
 	int score;
-	float slow;
+	float slow, boost;
 	float immuneTime, speechTime;
 
 	Transform* previousCharacter;
 	Transform* target;
 
+	void checkBoost(float deltaTime);
 	void resetSpeechTime() { speechTime = Random::range(BOOST_TEXT_TIME_RANGE); }
 };
 

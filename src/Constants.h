@@ -75,6 +75,7 @@ constexpr float SCENE_FONT_SIZE = 2.0f;
 constexpr float PLAYER_SPEED = 25;
 constexpr float PLAYER_SIZE = 4;
 constexpr int PLAYER_MATERIAL = 5;
+constexpr float BOOST_SPEED = 30;
 constexpr float INITIAL_STAMINA = 30;
 constexpr float MAX_STAMINA = 100;
 constexpr float RECOVERY_SPEED = 0.5f;
