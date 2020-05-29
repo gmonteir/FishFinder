@@ -55,7 +55,6 @@ shared_ptr<Entity> Spawner::spawnFollower()
 
 	totalSpawned++;
 	EntityCollection::getInstance()->addEntity(e);
-	EntityCollection::getInstance()->incrementNumActive();
 	i++;
 	return e;
 }
@@ -71,7 +70,6 @@ void Spawner::spawnPowerup()
 
 	totalSpawned++;
 	EntityCollection::getInstance()->addEntity(e);
-	EntityCollection::getInstance()->incrementNumActive();
 }
 
 void Spawner::spawnCoral(int type)
@@ -103,9 +101,9 @@ void Spawner::findSpawnPosition(shared_ptr<Entity>& entity, float offset)
 	entity->getTransform().setPosition(Random::spawnPos());
 	entity->bringToFloor(offset);
 
-	int entityI = EntityCollection::getInstance()->mapXtoI(entity->getTransform().getPosition().x);
-	int entityJ = EntityCollection::getInstance()->mapYtoJ(entity->getTransform().getPosition().y);
-	int entityK = EntityCollection::getInstance()->mapZtoK(entity->getTransform().getPosition().z);
+	int entityI = EntityCollection::mapXtoI(entity->getTransform().getPosition().x);
+	int entityJ = EntityCollection::mapYtoJ(entity->getTransform().getPosition().y);
+	int entityK = EntityCollection::mapZtoK(entity->getTransform().getPosition().z);
 
 	while (entity->hasCollided(EntityCollection::getInstance()->entities, entityI, entityJ, entityK))
 	{

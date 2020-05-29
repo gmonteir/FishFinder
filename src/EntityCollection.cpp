@@ -4,7 +4,7 @@
 using namespace std;
 using namespace glm;
 
-EntityCollection::EntityCollection() : numActive(0) {
+EntityCollection::EntityCollection() {
 	for (int i = 0; i < MAP_I; i++) {
 		for (int j = 0; j < MAP_J; j++) {
 			for (int k = 0; k < MAP_K; k++) {
