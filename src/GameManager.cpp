@@ -27,15 +27,10 @@ shared_ptr<GameManager> GameManager::getInstance()
 void GameManager::update(float deltaTime, float gameTime) 
 {
 	gameStats.timeRemaining -= deltaTime;
-	if (gameStats.timeRemaining <= 0 && gameStats.gameState == GAME_ACTIVE)
+	if (gameStats.timeRemaining <= 0)
 	{
 		lose();
 		gameStats.timeRemaining = 0;
-	}
-
-	if (gameStats.timeRemaining > 0 && gameStats.charRemaining == 0)
-	{
-		win();
 	}
 
 	fpsCounter.accumulator += deltaTime;

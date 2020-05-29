@@ -44,9 +44,7 @@ Transform* Spawner::spawnFollower()
 		cout << "Spawner: No more Characters" << endl;
 		return nullptr;
 	}
-	cout << "follower: " << NUM_CHARACTERS << ", " << GameManager::getInstance()->getCharRemaining() << ", " << NUM_CHARACTERS - GameManager::getInstance()->getCharRemaining() << endl;
 	const Character& c = CHARACTERS[NUM_CHARACTERS - GameManager::getInstance()->getCharRemaining()];
-	cout << "character: " << c.shape << ", " << c.size << endl;
 	shared_ptr<Entity> e = make_shared<Entity>(c.shape, Behavior::FOLLOWER);
 	findSpawnPosition(e, FOLLOWER_FLOOR_OFFSET);
 	e->getTransform()

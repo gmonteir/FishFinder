@@ -173,7 +173,7 @@ public:
 		//EntityCollection::getInstance()->addEntity(testChar);
 
 		Spawner::getInstance()->init();
-		playerBehavior->setTarget(&Spawner::getInstance()->spawnFollower()->getTransform());
+		playerBehavior->setTarget(Spawner::getInstance()->spawnFollower());
 		CutSceneManager::getInstance().nextCutScene();
 
 		/*for (int i = 0; i < 85; i++)

@@ -89,8 +89,13 @@ void Behavior::PlayerBehavior::onCollision(Behavior& collider)
 			return;
 		follower->setTarget(previousCharacter);
 		GameManager::getInstance()->decrementNumChar();
-		target = Spawner::getInstance()->spawnFollower();
 		CutSceneManager::getInstance().nextCutScene();
+		if (GameManager::getInstance()->getCharRemaining() > 0) {
+			target = Spawner::getInstance()->spawnFollower();
+		}
+		else {
+			GameManager::getInstance()->win();
+		}
 		previousCharacter = &collider.transform;
 		break;
 	case POWERUP:

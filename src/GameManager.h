@@ -36,8 +36,8 @@ public:
 
 	void update(float deltaTime, float gameTime);
 	void draw();
-	void lose() { gameStats.gameState = GAME_LOST; }
-	void win() { gameStats.gameState = GAME_WON; }
+	void lose() { if (gameStats.gameState == GAME_ACTIVE) gameStats.gameState = GAME_LOST; }
+	void win() { if (gameStats.gameState == GAME_ACTIVE) gameStats.gameState = GAME_WON; }
 
 	int getCharRemaining() { return gameStats.charRemaining; }
 

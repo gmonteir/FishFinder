@@ -233,7 +233,7 @@ const std::vector<std::vector<std::vector<std::string>>> CUTSCENETEXTS{
 		},
 		std::vector<std::string>{
 			"Oh! It's Chico!",
-			"I mean Nemo"
+			"I mean Nemo."
 		},
 		std::vector<std::string>{
 			"Squirt!"
@@ -269,7 +269,7 @@ const std::vector<std::vector<std::vector<std::string>>> CUTSCENETEXTS{
 			"Bad Squishy!"
 		},
 		std::vector<std::string>{
-			"Careful"
+			"Careful."
 		}
 	},
 	std::vector<std::vector<std::string>> { // Boost
@@ -293,7 +293,9 @@ const std::vector<std::vector<std::vector<std::string>>> CUTSCENETEXTS{
 		std::vector<std::string>{
 			"Just keep swimming,",
 			"Just keep swimming,",
-			"swimming, swimming, swimming.",
+			"swimming, swimming, swimming."
+		},
+		std::vector<std::string>{
 			"What do we do?",
 			"We swim, swim."
 		},
@@ -305,11 +307,11 @@ const std::vector<std::vector<std::vector<std::string>>> CUTSCENETEXTS{
 			"La la la la la!"
 		},
 		std::vector<std::string>{
-			"I'm a natural blue"
+			"I'm a natural blue."
 		},
 		std::vector<std::string>{
 			"I'm gonna get you,",
-			"I'm gonna get you"
+			"I'm gonna get you."
 		}
 	}
 };
