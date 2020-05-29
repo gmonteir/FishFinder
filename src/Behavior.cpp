@@ -98,7 +98,6 @@ void Behavior::PlayerBehavior::onCollision(Behavior& collider)
 		if (follower->isFollowing())
 			return;
 		follower->setTarget(previousCharacter);
-		follower->followTarget();
 		target = &Spawner::getInstance()->spawnFollower()->getTransform();
 		CutSceneManager::getInstance().nextCutScene();
 		previousCharacter = &collider.transform;

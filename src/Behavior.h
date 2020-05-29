@@ -114,8 +114,7 @@ public:
 
 	void setTarget(Transform* newTarget) { target = newTarget; }
 
-	bool isFollowing() { return following; }
-	void followTarget() { following = true; }
+	bool isFollowing() const { return target != nullptr; }
 
 private:
 	Transform* target;
@@ -147,7 +146,7 @@ class Behavior::EnemyBehavior : public Behavior
 {
 public:
 	EnemyBehavior(Transform& transform, Model& model)
-		: Behavior(ENEMY, transform, model) {}
+		: Behavior(ENEMY, transform, model), timer(0) {}
 	virtual ~EnemyBehavior() {}
 
 	void start() override;
