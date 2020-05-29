@@ -4,7 +4,13 @@
 using namespace std;
 using namespace glm;
 
-EntityCollection::EntityCollection() {
+std::shared_ptr<EntityCollection> EntityCollection::getInstance()
+{
+	static shared_ptr<EntityCollection> instance(new EntityCollection);
+	return instance;
+}
+
+void EntityCollection::reset() {
 	for (int i = 0; i < MAP_I; i++) {
 		for (int j = 0; j < MAP_J; j++) {
 			for (int k = 0; k < MAP_K; k++) {
@@ -12,12 +18,6 @@ EntityCollection::EntityCollection() {
 			}
 		}
 	}
-}
-
-std::shared_ptr<EntityCollection> EntityCollection::getInstance()
-{
-	static shared_ptr<EntityCollection> instance(new EntityCollection);
-	return instance;
 }
 
 void EntityCollection::update(float deltaTime)

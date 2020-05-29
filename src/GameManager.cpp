@@ -24,6 +24,12 @@ shared_ptr<GameManager> GameManager::getInstance()
 }
 
 
+void GameManager::reset()
+{
+	gameStats = GameStats();
+}
+
+
 void GameManager::update(float deltaTime, float gameTime) 
 {
 	gameStats.timeRemaining -= deltaTime;

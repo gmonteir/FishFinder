@@ -50,12 +50,6 @@ void Shapes::addShape(vector<float>& posBuf,
 	allShapes[key] = shapes;
 }
 
-shared_ptr<vector<shared_ptr<Shape>>> Shapes::getShape(const string& key)
-{
-	cout << "Get Shape: " << key << endl;
-	return allShapes[key];
-}
-
 float Shapes::getRotationOffset(const string& key) const
 {
 	if (key == DORY_SHAPE)

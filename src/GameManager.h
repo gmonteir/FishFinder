@@ -34,6 +34,8 @@ public:
 
 	~GameManager() {}
 
+	void reset();
+
 	void update(float deltaTime, float gameTime);
 	void draw();
 	void lose() { if (gameStats.gameState == GAME_ACTIVE) gameStats.gameState = GAME_LOST; }

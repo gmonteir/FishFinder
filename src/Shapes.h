@@ -10,7 +10,9 @@
 #include <memory>
 #include <glm/glm.hpp>
 
-class Shapes {
+class Shapes
+{
+	typedef std::shared_ptr<std::vector<std::shared_ptr<Shape>>> Value;
 
 	Shapes();
 
@@ -19,12 +21,15 @@ public:
 
 	~Shapes() {}
 
-	std::unordered_map<std::string, std::shared_ptr<std::vector<std::shared_ptr<Shape>>>> allShapes;
 	void addShape(const std::string& filename, const std::string& key);
 	void addShape(std::vector<float>& posBuf, std::vector<float>& texBuf, 
 		std::vector<unsigned int>& eleBuf, const std::string& key);
-	std::shared_ptr<std::vector<std::shared_ptr<Shape>>> getShape(const std::string& key);
+	Value getShape(const std::string& key)
+		{ return allShapes[key]; }
 	float getRotationOffset(const std::string& key) const;
+
+private:
+	std::unordered_map<std::string, Value> allShapes;
 };
 
 #endif

@@ -8,12 +8,14 @@
 
 class EntityCollection
 {
-	EntityCollection();
+	EntityCollection() { reset(); }
 
 public:
 	static std::shared_ptr<EntityCollection> getInstance();
 
 	~EntityCollection() {}
+
+	void reset();
 
 	void update(float deltaTime);
 	void draw(std::shared_ptr<MatrixStack>& M, glm::vec4* planes) const;
