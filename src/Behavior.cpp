@@ -123,6 +123,7 @@ void Behavior::PlayerBehavior::checkBoost(float deltaTime)
 		}
 	}
 	else {
+		boost = 0;
 		resetSpeechTime();
 	}
 }
