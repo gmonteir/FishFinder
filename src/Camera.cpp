@@ -76,7 +76,7 @@ void Camera::interpolatePosition(vec3 pos, float deltaTime)
 //}
 
 /* VFC code starts here */
-vec4* Camera::ExtractVFPlanes(mat4 P, mat4 V, vec4* planes) 
+vec4* Camera::extractVFPlanes(mat4 P, mat4 V, vec4* planes) 
 {
 	vec4 Left, Right, Bottom, Top, Near, Far;
 
@@ -141,7 +141,7 @@ float DistToPlane(float A, float B, float C, float D, vec3 point) {
 	return A * point.x + B * point.y + C * point.z + D;
 }
 
-int Camera::ViewFrustCull(vec3 center, float radius, vec4* planes) {
+int Camera::viewFrustCull(vec3 center, float radius, vec4* planes) {
 
 	float dist;
 

@@ -52,7 +52,7 @@ void EntityCollection::draw(std::shared_ptr<MatrixStack>& M, vec4* planes) const
 
 					float entitySize = length(entity->getMaxBoundCoordinate() - entity->getTransform().getPosition());
 					
-					if (!Camera::ViewFrustCull(entity->getTransform().getPosition(), entitySize, planes)) {
+					if (!Camera::viewFrustCull(entity->getTransform().getPosition(), entitySize, planes)) {
 						entity->draw(M);
 					}
 													
@@ -72,7 +72,7 @@ void EntityCollection::draw(shared_ptr<Program>& prog, shared_ptr<MatrixStack>& 
 
 					float entitySize = length(entity->getMaxBoundCoordinate() - entity->getTransform().getPosition());
 
-					if (!Camera::ViewFrustCull(entity->getTransform().getPosition(), entitySize, planes)) {
+					if (!Camera::viewFrustCull(entity->getTransform().getPosition(), entitySize, planes)) {
 						entity->draw(prog, M);
 					}
 				}

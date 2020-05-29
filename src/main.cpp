@@ -52,9 +52,8 @@ public:
 	shared_ptr<Behavior::PlayerBehavior> playerBehavior;
 	shared_ptr<Entity> testChar;
 	Camera camera;
-	Camera topCamera;
 
-	bool TOP_CAM = false;
+	bool topCamera = false;
 
 	void keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods) override
 	{
@@ -121,7 +120,7 @@ public:
 		Keys::getInstance().update(key, action);
 		if (key == GLFW_KEY_P && action == GLFW_PRESS)
 		{
-			TOP_CAM = !TOP_CAM;
+			topCamera = !topCamera;
 		}
 	}
 
@@ -222,10 +221,8 @@ public:
 		prog->unbind();
 	}
 
-	void render()
+	void render(float deltaTime, float gameTime)
 	{
-		Camera* Cam;
-
 		// Get current frame buffer size.
 		int width, height;
 		glfwGetFramebufferSize(WindowManager::instance->getHandle(), &width, &height);
@@ -237,23 +234,22 @@ public:
 		// Create the matrix stacks
 		auto P = make_shared<MatrixStack>();
 		auto Model = make_shared<MatrixStack>();
+		mat4 V = topCamera ? lookAt(vec3(0, 100, 0), vec3(0, 99, 1), YAXIS) : camera.getView();
 		// Apply perspective projection.
 		P->pushMatrix();
 		P->perspective(45.0f, aspect, 0.01f, 10000.0f);
-		mat4 V = camera.getView();
 
 		vec4 planes[6];
-		
-		camera.ExtractVFPlanes(P->topMatrix(), V, planes);
+		camera.extractVFPlanes(P->topMatrix(), V, planes);
 
-		if (TOP_CAM) {
-			V = lookAt(vec3(0, 100, 0), vec3(0, 99, 1), YAXIS);
-		}
-
-		targetPos = playerBehavior->getTargetPos();
-		float time = glfwGetTime();
-		int remaining = GameManager::getInstance()->getCharRemaining();
-		uniforms commonUniforms{P->topMatrix(), V, camera.getEye(), targetPos, time, remaining};
+		uniforms commonUniforms{
+			P->topMatrix(),
+			V,
+			camera.getEye(),
+			playerBehavior->getTargetPos(),
+			gameTime,
+			GameManager::getInstance()->getCharRemaining()
+		};
 		ShaderManager::getInstance()->setData(commonUniforms);
 		P->popMatrix();
 
@@ -312,7 +308,7 @@ int main(int argc, char **argv)
 
 		application->update(deltaTime, gameTime);
 		// Render scene.
-		application->render();
+		application->render(deltaTime, gameTime);
 
 
 		// Swap front and back buffers.

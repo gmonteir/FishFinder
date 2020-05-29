@@ -272,6 +272,9 @@ const std::vector<std::vector<std::vector<std::string>>> CUTSCENETEXTS{
 		},
 		std::vector<std::string>{
 			"Wheeee!"
+		},
+		std::vector<std::string>{
+			"This is fun!"
 		}
 	},
 	std::vector<std::vector<std::string>> { // Random

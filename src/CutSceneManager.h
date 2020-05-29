@@ -26,7 +26,7 @@ class CutSceneManager
 		bool update(float deltaTime, float gameTime);
 
 		void start(int newCurrent) {
-			if (newCurrent == getNumOptions()) return;
+			if (newCurrent >= getNumOptions()) return;
 			active = true; 
 			current = newCurrent; 
 			text = amount = 0; 
@@ -61,9 +61,6 @@ private:
 
 	void randomUpdate(float deltaTime);
 	int randomOption(int sequenceID) 
-	{
-		int max = cutScenes[sequenceID].getNumOptions() + 1;
-		std::cout << "Max: " << max << std::endl;
-		return Random::integer(max); }
+		{ return Random::integer(cutScenes[sequenceID].getNumOptions()); }
 };
 
