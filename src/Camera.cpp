@@ -16,7 +16,7 @@ void Camera::update(float deltaTime, Transform& transform)
 		interpolateRotation(-1, 0, 1);
 
 	interpolatePosition(transform.getPosition(), deltaTime);
-	transform.setFacing(getDirection());
+	transform.interpolateFacing(getDirection(), deltaTime);
 	
 	floorHeight = Floor::getInstance()->getHeight(eye.x, eye.z);
 	if (eye.y < floorHeight)

@@ -72,7 +72,7 @@ class Behavior::PlayerBehavior : public Behavior
 {
 public:
 	PlayerBehavior(Transform& transform, Model& model)
-		: Behavior(PLAYER, transform, model), score(0), speed(PLAYER_SPEED), slow(0),
+		: Behavior(PLAYER, transform, model), score(0), slow(0),
 		previousCharacter(&transform), target(nullptr), immuneTime(0), speechTime(BOOST_TEXT_DELAY) {}
 
 	virtual ~PlayerBehavior() {}
@@ -90,7 +90,7 @@ public:
 
 private:
 	int score;
-	float speed, slow;
+	float slow;
 	float immuneTime, speechTime;
 
 	Transform* previousCharacter;
@@ -102,7 +102,7 @@ class Behavior::FollowerBehavior : public Behavior
 public:
 	FollowerBehavior(Transform& transform, Model& model)
 		: Behavior(FOLLOWER, transform, model), target(nullptr), 
-		speed(FOLLOWER_SPEED), offset(FOLLOWER_OFFSET), following(false) {}
+		offset(FOLLOWER_OFFSET), following(false) {}
 	virtual ~FollowerBehavior() {}
 
 	void start() override;
@@ -118,7 +118,7 @@ public:
 
 private:
 	Transform* target;
-	float speed, offset;
+	float offset;
 
 	bool following;
 

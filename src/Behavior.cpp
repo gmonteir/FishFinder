@@ -40,7 +40,8 @@ void Behavior::bringToFloor(float offset) {
 // ----------------------------- PLAYER ----------------------------- //
 void Behavior::PlayerBehavior::start()
 {
-	transform.setSize(glm::vec3(PLAYER_SIZE));
+	transform.setSize(glm::vec3(PLAYER_SIZE))
+		.setSpeed(PLAYER_SPEED);
 	bringToFloor(FOLLOWER_FLOOR_OFFSET);
 	model.setTexture(DORY_TEXTURE);
 	model.setProgram(TEXTUREPROG);
@@ -77,7 +78,8 @@ void Behavior::PlayerBehavior::update(float deltaTime)
 	deltas.x = forward * transform.getFacing().x + right * -transform.getFacing().z;
 	deltas.y = forward * transform.getFacing().y;
 	deltas.z = forward * transform.getFacing().z + right * transform.getFacing().x;
-	transform.interpolateVelocity(right == 0 && forward == 0 ? ORIGIN : normalize(deltas) * (speed - slow + boost), deltaTime);
+	transform.interpolateVelocity(right == 0 && forward == 0 
+		? ORIGIN : normalize(deltas) * (transform.getSpeed() - slow + boost), deltaTime);
 
 	if (slow > 0)
 		slow = mix(slow, 0.0f, RECOVERY_SPEED * deltaTime);
@@ -122,6 +124,7 @@ void Behavior::PlayerBehavior::onCollision(Behavior& collider)
 // ----------------------------- FOLLOWER ----------------------------- //
 void Behavior::FollowerBehavior::start()
 {
+	transform.setSpeed(FOLLOWER_SPEED);
 	model.setProgram(TEXTUREPROG);
 }
 
