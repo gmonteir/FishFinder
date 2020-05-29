@@ -1,6 +1,7 @@
 #include "Spawner.h"
 #include "Random.h"
 #include "EntityCollection.h"
+#include "GameManager.h"
 
 using namespace std;
 using namespace glm;
@@ -38,13 +39,12 @@ void Spawner::update(float deltaTime, float gameTime)
 
 shared_ptr<Entity> Spawner::spawnFollower()
 {
-	static int i = 0;
-	if (i >= NUM_CHARACTERS)
+	if (GameManager::getInstance()->getCharRemaining() <= 0)
 	{
 		cout << "Spawner: No more Characters" << endl;
 		return nullptr;
 	}
-	const Character& c = CHARACTERS[i];
+	const Character& c = CHARACTERS[NUM_CHARACTERS - GameManager::getInstance()->getCharRemaining()];
 	shared_ptr<Entity> e = make_shared<Entity>(c.shape, Behavior::FOLLOWER);
 	findSpawnPosition(e, FOLLOWER_FLOOR_OFFSET);
 	e->getTransform()
@@ -53,9 +53,7 @@ shared_ptr<Entity> Spawner::spawnFollower()
 		.syncFacing();
 	e->getModel().setTexture(c.texture);
 
-	totalSpawned++;
 	EntityCollection::getInstance()->addEntity(e);
-	i++;
 	return e;
 }
 
@@ -68,7 +66,6 @@ void Spawner::spawnPowerup()
 		.setFacing(Random::facingXZ());
 	e->getModel().setMaterial(POWERUP_MATERIAL);
 
-	totalSpawned++;
 	EntityCollection::getInstance()->addEntity(e);
 }
 

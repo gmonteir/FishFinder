@@ -7,7 +7,7 @@
 
 class Spawner
 {
-	Spawner() : lastFrameTime(0), totalSpawned(0) {}
+	Spawner() : lastFrameTime(0) {}
 
 public:
 	static constexpr float SPAWN_DELAY = 5; // seconds
@@ -25,10 +25,7 @@ public:
 
 	void findSpawnPosition(std::shared_ptr<Entity>& entity, float offset);
 
-	int getSpawned() const { return totalSpawned; }
-
 private:
 	float lastFrameTime;
-	int totalSpawned;
 };
 

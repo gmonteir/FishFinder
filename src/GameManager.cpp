@@ -11,6 +11,7 @@ using namespace glm;
 GameManager::GameManager() : fpsCounter(), gameStats() {
 	FT_Library ft;
 	textRenderer = new RenderText(&ft, ShaderManager::getInstance()->getShader(GLYPHPROG));
+	glfwGetFramebufferSize(WindowManager::instance->getHandle(), &width, &height);
 
 	cout << "GameManager: Initialized" << endl;
 }
@@ -26,7 +27,7 @@ shared_ptr<GameManager> GameManager::getInstance()
 void GameManager::update(float deltaTime, float gameTime) 
 {
 	gameStats.timeRemaining -= deltaTime;
-	if (gameStats.timeRemaining <= 0)
+	if (gameStats.timeRemaining <= 0 && gameStats.gameState == GAME_ACTIVE)
 	{
 		lose();
 		gameStats.timeRemaining = 0;
