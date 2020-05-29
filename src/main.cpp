@@ -46,82 +46,73 @@ public:
 	//example data that might be useful when trying to compute bounds on multi-shape
 	vec3 targetPos = vec3(0, 0, -10);
 
-	int drawMode = 0;
-
 	shared_ptr<Entity> player;
 	shared_ptr<Behavior::PlayerBehavior> playerBehavior;
 	shared_ptr<Entity> testChar;
 	Camera camera;
 
-	bool topCamera = false;
+	bool showTopCamera = false;
+	mat4 topView = lookAt(vec3(0, 100, 0), vec3(0, 99, 1), YAXIS);
 
 	void keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods) override
 	{
 		if (key == GLFW_KEY_Z && action == GLFW_PRESS) {
  			glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
-			drawMode = 1;
  		}
  		if (key == GLFW_KEY_Z && action == GLFW_RELEASE) {
  			glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
-			drawMode = 0;
  		}
-		if(key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-		{
-			glfwSetWindowShouldClose(window, GL_TRUE);
-		}
-		if (key == GLFW_KEY_1 && action == GLFW_PRESS)
-		{
-			camera.firstPerson();
-		}
-		if (key == GLFW_KEY_2 && action == GLFW_PRESS)
-		{
-			camera.secondPerson();
-		}
-		if (key == GLFW_KEY_3 && action == GLFW_PRESS)
-		{
-			camera.thirdPerson();
-		}
-		if (key == GLFW_KEY_COMMA && action == GLFW_PRESS)
-		{
-			GameManager::getInstance()->increaseStamina(STAMINA_INCREMENT);
-		}
-		if (key == GLFW_KEY_B && action == GLFW_PRESS)
-		{
-			FBOManager::getInstance().increaseBlurAmount(BLUR_INCREMENT);
-		}
-		if (key == GLFW_KEY_F && action == GLFW_PRESS)
-		{
-			FBOManager::getInstance().toggleEnabled();
-		}
-		if (key == GLFW_KEY_T && action == GLFW_PRESS)
-		{
-			FBOManager::getInstance().writeNextTexture();
-		}
-		if (key == GLFW_KEY_Y && action == GLFW_PRESS)
-		{
-			FBOManager::getInstance().toggleTexture();
-		}
-		if (key == GLFW_KEY_X && action == GLFW_PRESS)
-		{
-			FBOManager::getInstance().triggerConfuse();
-		}
-		if (key == GLFW_KEY_C && action == GLFW_PRESS)
-		{
-			FBOManager::getInstance().toggleChaos();
-		}
-		if (key == GLFW_KEY_V && action == GLFW_PRESS)
-		{
-			FBOManager::getInstance().triggerShake();
-		}
-		if (key == GLFW_KEY_N && action == GLFW_PRESS)
-		{
-			FBOManager::getInstance().toggleWater();
+		if (action == GLFW_PRESS) {
+			switch (key)
+			{
+			case GLFW_KEY_ESCAPE:
+				glfwSetWindowShouldClose(window, GL_TRUE);
+				break;
+			case GLFW_KEY_1: // 1st person
+				camera.firstPerson();
+				break;
+			case GLFW_KEY_2: // 2nd person
+				camera.secondPerson();
+				break;
+			case GLFW_KEY_3: // 3rd person
+				camera.thirdPerson();
+				break;
+			case GLFW_KEY_COMMA: // cheat stamina
+				GameManager::getInstance()->increaseStamina(STAMINA_INCREMENT);
+				break;
+			case GLFW_KEY_B: // Blur screen
+				FBOManager::getInstance().increaseBlurAmount(BLUR_INCREMENT);
+				break;
+			case GLFW_KEY_F: // FBO toggle
+				FBOManager::getInstance().toggleEnabled();
+				break;
+			case GLFW_KEY_T: // write texture
+				FBOManager::getInstance().writeNextTexture();
+				break;
+			case GLFW_KEY_Y: // draw next Effect
+				FBOManager::getInstance().toggleTexture();
+				break;
+			case GLFW_KEY_X: // Confusion Effect
+				FBOManager::getInstance().triggerConfuse();
+				break;
+			case GLFW_KEY_C: // Chaos Effect
+				FBOManager::getInstance().toggleChaos();
+				break;
+			case GLFW_KEY_V: // Shake Effect
+				FBOManager::getInstance().triggerShake();
+				break;
+			case GLFW_KEY_N: // Water Effect
+				FBOManager::getInstance().toggleWater();
+				break;
+			case GLFW_KEY_P: // top Camera
+				showTopCamera = !showTopCamera;
+				break;
+			case GLFW_KEY_R: // Reset Game
+				reset();
+				break;
+			}
 		}
 		Keys::getInstance().update(key, action);
-		if (key == GLFW_KEY_P && action == GLFW_PRESS)
-		{
-			topCamera = !topCamera;
-		}
 	}
 
 	void mouseCallback(GLFWwindow* window, int button, int action, int mods) override
@@ -191,6 +182,11 @@ public:
 		Skybox::getInstance(); // initialize skybox
 	}
 
+	void reset()
+	{
+
+	}
+
 	void update(float deltaTime, float gameTime)
 	{
 		Spawner::getInstance()->update(deltaTime, gameTime);
@@ -234,7 +230,7 @@ public:
 		// Create the matrix stacks
 		auto P = make_shared<MatrixStack>();
 		auto Model = make_shared<MatrixStack>();
-		mat4 V = topCamera ? lookAt(vec3(0, 100, 0), vec3(0, 99, 1), YAXIS) : camera.getView();
+		mat4 V = showTopCamera ? topView : camera.getView();
 		// Apply perspective projection.
 		P->pushMatrix();
 		P->perspective(45.0f, aspect, 0.01f, 10000.0f);
