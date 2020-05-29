@@ -6,6 +6,7 @@
 #include "Transform.h"
 #include "Model.h"
 #include "Constants.h"
+#include "Random.h"
 
 #include <memory>
 
@@ -73,7 +74,9 @@ class Behavior::PlayerBehavior : public Behavior
 public:
 	PlayerBehavior(Transform& transform, Model& model)
 		: Behavior(PLAYER, transform, model), score(0), slow(0),
-		previousCharacter(&transform), target(nullptr), immuneTime(0), speechTime(BOOST_TEXT_DELAY) {}
+		previousCharacter(&transform), target(nullptr), immuneTime(0) {
+		resetSpeechTime();
+	}
 
 	virtual ~PlayerBehavior() {}
 
@@ -95,6 +98,8 @@ private:
 
 	Transform* previousCharacter;
 	Transform* target;
+
+	void resetSpeechTime() { speechTime = Random::range(BOOST_TEXT_TIME_RANGE); }
 };
 
 class Behavior::FollowerBehavior : public Behavior

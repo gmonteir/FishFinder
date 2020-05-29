@@ -4,7 +4,6 @@
 #include "GameManager.h"
 #include "FBOManager.h"
 #include "CutSceneManager.h"
-#include "Random.h"
 
 #include <iostream>
 
@@ -67,9 +66,11 @@ void Behavior::PlayerBehavior::update(float deltaTime)
 		FBOManager::getInstance().increaseBlurAmount(deltaTime);
 		if (speechTime <= 0) {
 			CutSceneManager::getInstance().startCutScene(BOOST_TEXTS);
-			speechTime = BOOST_TEXT_DELAY;
+			resetSpeechTime();
 		}
 	}
+	else
+		resetSpeechTime();
 
 	if (Keys::getInstance().keyPressed(Keys::LEFT))
 		right -= 1;

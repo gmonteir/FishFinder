@@ -216,10 +216,8 @@ constexpr int BOOST_TEXTS = 2;
 constexpr int RANDOM_TEXTS = 3;
 constexpr int NUM_TEXTS = 4;
 
-// amount of time before Boost text can be displayed again
-constexpr float BOOST_TEXT_DELAY = 10.0f;
-
 const glm::vec2 RANDOM_TEXT_TIME_RANGE = glm::vec2(20, 50);
+const glm::vec2 BOOST_TEXT_TIME_RANGE = glm::vec2(5, 15);
 
 const std::vector<std::vector<std::vector<std::string>>> CUTSCENETEXTS{
 	std::vector<std::vector<std::string>> { // Main
@@ -233,7 +231,8 @@ const std::vector<std::vector<std::vector<std::string>>> CUTSCENETEXTS{
 			"You found me!"
 		},
 		std::vector<std::string>{
-			"Oh! It's Nemo!"
+			"Oh! It's Chico!",
+			"I mean Nemo"
 		},
 		std::vector<std::string>{
 			"Squirt!"
@@ -267,24 +266,49 @@ const std::vector<std::vector<std::vector<std::string>>> CUTSCENETEXTS{
 		std::vector<std::string>{
 			"Bad Squishy,",
 			"Bad Squishy!"
+		},
+		std::vector<std::string>{
+			"Careful"
 		}
 	},
 	std::vector<std::vector<std::string>> { // Boost
 		std::vector<std::string>{
-			"Whooo!"
+			"Whoo-hoo!"
 		},
 		std::vector<std::string>{
-			"Wheeee!"
+			"Whee!"
 		},
 		std::vector<std::string>{
 			"This is fun!"
+		},
+		std::vector<std::string>{
+			"Gotta go faster!"
+		},
+		std::vector<std::string>{
+			"I was built for speed!"
 		}
 	},
 	std::vector<std::vector<std::string>> { // Random
 		std::vector<std::string>{
-			"Just keep swimming",
-			"Just keep swimming",
-			"Just keep swimming"
+			"Just keep swimming,",
+			"Just keep swimming,",
+			"swimming, swimming, swimming.",
+			"What do we do?",
+			"We swim, swim."
+		},
+		std::vector<std::string>{
+			"I love to swim!",
+			"When you want to swim!"
+		},
+		std::vector<std::string>{
+			"La la la la la!"
+		},
+		std::vector<std::string>{
+			"I'm a natural blue"
+		},
+		std::vector<std::string>{
+			"I'm gonna get you,",
+			"I'm gonna get you"
 		}
 	}
 };
