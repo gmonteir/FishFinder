@@ -1,6 +1,9 @@
 #include "Shapes.h"
 #include "Constants.h"
 
+#include <iostream>
+
+using namespace std;
 using namespace glm;
 
 Shapes::Shapes()

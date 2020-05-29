@@ -23,7 +23,7 @@ public:
 	void spawnCoral(int type);
 	void spawnEnemy();
 
-	void findSpawnPosition(shared_ptr<Entity>& entity, float offset);
+	void findSpawnPosition(std::shared_ptr<Entity>& entity, float offset);
 
 	int getSpawned() const { return totalSpawned; }
 

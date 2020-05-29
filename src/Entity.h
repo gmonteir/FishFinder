@@ -24,7 +24,7 @@
 class Entity
 {
 public:
-	Entity(const std::string shapeName, int behavior=Behavior::NONE)
+	Entity(const std::string& shapeName, int behavior=Behavior::NONE)
 		: transform(), model(shapeName), 
 		behavior(Behavior::createBehavior(behavior, transform, model))
 	{
@@ -38,15 +38,15 @@ public:
 	void draw(std::shared_ptr<Program>& prog, std::shared_ptr<MatrixStack>& M) const;
 
 	bool hasCollided(Entity &entity) const;
-	bool hasCollided(shared_ptr<vector<shared_ptr<Entity>>>(&entities)[MAP_I][MAP_J][MAP_K],
+	bool hasCollided(std::shared_ptr<std::vector<std::shared_ptr<Entity>>>(&entities)[MAP_I][MAP_J][MAP_K],
 		int i, int j, int k);
-	bool hasCollided(vector<shared_ptr<Entity>>& collectionEntities);
+	bool hasCollided(std::vector<std::shared_ptr<Entity>>& collectionEntities);
 
 
 	// Getters
 	Transform& getTransform() { return transform; }
 	Model& getModel() { return model; }
-	shared_ptr<Behavior> &getBehavior() { return behavior; }
+	std::shared_ptr<Behavior> &getBehavior() { return behavior; }
 
 	float getRadius() const { return glm::length(model.getScaledMax() * transform.getSize()); }
 	/* max shifted by transform and model */
@@ -74,7 +74,7 @@ public:
 protected:
 	Transform transform;
 	Model model;
-	shared_ptr<Behavior> behavior;
+	std::shared_ptr<Behavior> behavior;
 };
 
 #endif
