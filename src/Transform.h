@@ -17,6 +17,7 @@ public:
 	glm::vec3 getSize() const { return size; }
 	glm::vec3 getFacing() const { return facing; }
 	float getXZAngle() const { return atan2(facing.x, facing.z); }
+	float getYAngle() const { return atan2(facing.y, length(glm::vec2(facing.x, facing.z))); }
 
 	Transform& syncFacing() { if (velocity != ORIGIN) setFacing(velocity); return *this; }
 	Transform& move(const glm::vec3& change) { position += change; return *this; }
