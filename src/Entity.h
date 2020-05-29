@@ -30,9 +30,9 @@ public:
 	{
 		this->behavior->start();
 	}
-	virtual ~Entity() {}
+	~Entity() {}
 
-	void update(float deltaTime, shared_ptr<vector<shared_ptr<Entity>>> (&entities)[MAP_I][MAP_J][MAP_K],
+	void update(float deltaTime, std::shared_ptr<std::vector<std::shared_ptr<Entity>>> (&entities)[MAP_I][MAP_J][MAP_K],
 		int i, int j, int k);
 	void draw(std::shared_ptr<MatrixStack> &M) const;
 	void draw(std::shared_ptr<Program>& prog, std::shared_ptr<MatrixStack>& M) const;
@@ -48,6 +48,7 @@ public:
 	Model& getModel() { return model; }
 	shared_ptr<Behavior> &getBehavior() { return behavior; }
 
+	float getRadius() const { return glm::length(model.getScaledMax() * transform.getSize()); }
 	/* max shifted by transform and model */
 	glm::vec3 getMaxBoundCoordinate() const { return model.getScaledMax() * transform.getSize() + transform.getPosition(); }
 	/* min shifted by transform and model */
