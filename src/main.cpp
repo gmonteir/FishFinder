@@ -187,11 +187,8 @@ public:
 	void reset()
 	{
 		EntityCollection::getInstance()->reset();
-		cout << "GameManager resetting....." << endl;
 		GameManager::getInstance().reset();
-		cout << "GameManager reseted???????" << endl;
-		player->getTransform().setPosition(ORIGIN);
-		player->bringToFloor(FOLLOWER_FLOOR_OFFSET);
+		playerBehavior->reset();
 		EntityCollection::getInstance()->addEntity(player);
 		Spawner::getInstance()->init();
 		playerBehavior->setTarget(Spawner::getInstance()->spawnFollower());
@@ -200,6 +197,7 @@ public:
 		CutSceneManager::getInstance().nextCutScene();
 		FBOManager::getInstance().increaseBlurAmount(BLUR_INCREMENT);
 		FBOManager::getInstance().triggerConfuse();
+		cout << "Resetted!" << endl;
 	}
 
 	void update(float deltaTime, float gameTime)
