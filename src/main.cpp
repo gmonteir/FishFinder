@@ -184,7 +184,16 @@ public:
 
 	void reset()
 	{
+		EntityCollection::getInstance()->reset();
+		GameManager::getInstance().reset();
+		player->getTransform().setPosition(ORIGIN);
+		player->bringToFloor(FOLLOWER_FLOOR_OFFSET);
+		EntityCollection::getInstance()->addEntity(player);
+		Spawner::getInstance()->init();
+		playerBehavior->setTarget(Spawner::getInstance()->spawnFollower());
 
+		CutSceneManager::getInstance().reset();
+		CutSceneManager::getInstance().nextCutScene();
 	}
 
 	void update(float deltaTime, float gameTime)

@@ -47,6 +47,7 @@ public:
 	CutSceneManager(const CutSceneManager&) = delete;
 	CutSceneManager& operator= (const CutSceneManager&) = delete;
 
+	void reset() { cutScenes[MAIN_TEXTS].stop(); cutScenes[MAIN_TEXTS].current = -1; }
 	void update(float deltaTime, float gameTime);
 
 	bool shouldDraw() const;
