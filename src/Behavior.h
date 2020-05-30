@@ -6,6 +6,7 @@
 #include "Transform.h"
 #include "Model.h"
 #include "Constants.h"
+#include "Random.h"
 
 #include <memory>
 
@@ -46,7 +47,6 @@ public:
 	void remove() { toRemove = true; }
 
 	void bringToFloor(float offset = 0);
-	string pickCharacterTexture(int i);
 
 protected:
 	Transform& transform;
@@ -73,8 +73,10 @@ class Behavior::PlayerBehavior : public Behavior
 {
 public:
 	PlayerBehavior(Transform& transform, Model& model)
-		: Behavior(PLAYER, transform, model), score(0), speed(PLAYER_SPEED), slow(0),
-		previousCharacter(&transform), target(nullptr), immuneTime(0) {}
+		: Behavior(PLAYER, transform, model), score(0), slow(0), boost(0),
+		previousCharacter(&transform), target(nullptr), immuneTime(0) {
+		resetSpeechTime();
+	}
 
 	virtual ~PlayerBehavior() {}
 
@@ -91,11 +93,14 @@ public:
 
 private:
 	int score;
-	float speed, slow;
-	float immuneTime;
+	float slow, boost;
+	float immuneTime, speechTime;
 
 	Transform* previousCharacter;
 	Transform* target;
+
+	void checkBoost(float deltaTime);
+	void resetSpeechTime() { speechTime = Random::range(BOOST_TEXT_TIME_RANGE); }
 };
 
 class Behavior::FollowerBehavior : public Behavior
@@ -103,7 +108,7 @@ class Behavior::FollowerBehavior : public Behavior
 public:
 	FollowerBehavior(Transform& transform, Model& model)
 		: Behavior(FOLLOWER, transform, model), target(nullptr), 
-		speed(FOLLOWER_SPEED), offset(FOLLOWING_OFFSET), following(false) {}
+		offset(FOLLOWER_OFFSET), following(false) {}
 	virtual ~FollowerBehavior() {}
 
 	void start() override;
@@ -115,12 +120,11 @@ public:
 
 	void setTarget(Transform* newTarget) { target = newTarget; }
 
-	bool isFollowing() { return following; }
-	void followTarget() { following = true; }
+	bool isFollowing() const { return target != nullptr; }
 
 private:
 	Transform* target;
-	float speed, offset;
+	float offset;
 
 	bool following;
 
@@ -148,17 +152,17 @@ class Behavior::EnemyBehavior : public Behavior
 {
 public:
 	EnemyBehavior(Transform& transform, Model& model)
-		: Behavior(ENEMY, transform, model) {}
+		: Behavior(ENEMY, transform, model), timer(0) {}
 	virtual ~EnemyBehavior() {}
 
-	void start() override {}
-	void update(float deltaTime) override {}
+	void start() override;
+	void update(float deltaTime) override;
 
 	void onOutOfBounds(float deltaTime) override {}
 	void onCollision(Behavior& collider) override {}
 
 private:
-	
+	float timer;
 };
 
 #endif

@@ -4,27 +4,24 @@
 #ifndef TEXTURES_INCLUDED
 #define TEXTURES_INCLUDED
 
-#include <iostream>
+#include "Texture.h"
+
 #include <unordered_map>
 #include <vector>
 #include <memory>
-#include <glm/glm.hpp>
-#include "Texture.h"
-
-using namespace std;
 
 class Textures {
 
 	Textures();
 
 public:
-	static shared_ptr<Textures> getInstance();
+	static std::shared_ptr<Textures> getInstance();
 
 	~Textures() {}
 
-	unordered_map<string, shared_ptr<Texture>> allTextures;
-	void addTexture(const string& filename, const string& key, int mode);
-	shared_ptr<Texture> getTexture(const string& key);
+	std::unordered_map<std::string, std::shared_ptr<Texture>> allTextures;
+	void addTexture(const std::string& filename, const std::string& key, int mode);
+	std::shared_ptr<Texture> getTexture(const std::string& key);
 
 private:
 	int currentUnit = 0;

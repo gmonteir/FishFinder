@@ -14,10 +14,16 @@ vec3 Random::facingXZ()
 	return vec3(cos(direction), 0, sin(direction));
 }
 
-float Random::range(const float min, const float max)
+float Random::range(float min, float max)
 {
-	uniform_real_distribution<float> randPos(min, max);
-	return randPos(rd);
+	uniform_real_distribution<float> randFloat(min, max);
+	return randFloat(rd);
+}
+
+int Random::integer(int max)
+{
+	uniform_int_distribution<int> randInt(0, max - 1); // range is inclusive, so we adjust to make it exclusive
+	return randInt(rd);
 }
 
 /* same xyz */

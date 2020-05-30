@@ -8,8 +8,7 @@
 using namespace std;
 using namespace glm;
 
-FBOManager::FBOManager() : blurAmount(0), enabled(true), write(false), texture(0),
-	chaos(false), confuse(false), shake(false), water(true)
+FBOManager::FBOManager() : data(), debug()
 {
 	initFBOs();
 	initQuad();
@@ -39,7 +38,7 @@ void FBOManager::bindBuffer(int bufferIndex) const
 
 void FBOManager::processFog()
 {
-	if (!enabled) return;
+	if (!debug.enabled) return;
 
 	glDisable(GL_DEPTH_TEST);
 	bindBuffer(FOG_BUFFER);
@@ -51,10 +50,10 @@ void FBOManager::processFog()
 
 void FBOManager::processBlur()
 {
-	if (!enabled) return;
+	if (!debug.enabled) return;
 
 	glDisable(GL_DEPTH_TEST);
-	for (size_t i = 0; i < round(blurAmount); i++)
+	for (size_t i = 0; i < round(data.blurAmount); i++)
 	{
 		bindBuffer((i + 1) % 2);
 		processDrawTex(texBuf[i % 2], BLURFBOPROG);
@@ -64,15 +63,15 @@ void FBOManager::processBlur()
 
 void FBOManager::drawBuffer()
 {
-	if (!enabled) return;
+	if (!debug.enabled) return;
 
 	/* code to write out the FBO (texture) just once  - this is for debugging*/
-	if (write) {
+	if (debug.write) {
 		for (int i = 0; i < NUM_BUFFERS; i++)
 		{
 			writeTexture("texture" + to_string(i) + ".png", texBuf[i]);
 		}
-		write = false;
+		debug.write = false;
 	}
 
 	bindScreen();
@@ -80,19 +79,21 @@ void FBOManager::drawBuffer()
 	glDisable(GL_DEPTH_TEST);
 	shared_ptr<Program> fboProg = ShaderManager::getInstance()->getShader(WATERFBOPROG);
 	fboProg->bind();
-	glUniform1f(fboProg->getUniform("chaos"), chaos);
-	glUniform1f(fboProg->getUniform("confuse"), confuse);
-	glUniform1f(fboProg->getUniform("shake"), shake);
-	glUniform1f(fboProg->getUniform("water"), water);
+	glUniform1f(fboProg->getUniform("chaos"), data.chaos);
+	glUniform1f(fboProg->getUniform("confuse"), data.confuseTimer > 0);
+	glUniform1f(fboProg->getUniform("shake"), data.shakeTimer > 0);
+	glUniform1f(fboProg->getUniform("water"), data.water);
 	ShaderManager::getInstance()->sendUniforms(WATERFBOPROG);
-	drawTex(texBuf[texture]);
+	drawTex(texBuf[debug.texture]);
 	fboProg->unbind();
 	glEnable(GL_DEPTH_TEST);
 }
 
 void FBOManager::update(float deltaTime, float gameTime)
 {
-	blurAmount = mix(blurAmount, 0.0f, deltaTime * RECOVERY_SPEED);
+	data.blurAmount = mix(data.blurAmount, 0.0f, deltaTime * RECOVERY_SPEED);
+	if (data.shakeTimer > 0) { data.shakeTimer -= deltaTime; }
+	if (data.confuseTimer > 0) { data.confuseTimer -= deltaTime; }
 }
 
 void FBOManager::writeTexture(const std::string filename, GLuint tex)

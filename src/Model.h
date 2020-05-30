@@ -21,7 +21,7 @@ class Model
 {
 public:
 	/* shape, position, velocity, size, facing, material */
-	Model(const std::string shapeName)
+	Model(const std::string& shapeName)
 		: shapes(*Shapes::getInstance()->getShape(shapeName)), 
 		animator(Animator::createAnimator(shapeName)),
 		rotationOffset(Shapes::getInstance()->getRotationOffset(shapeName)),
@@ -45,14 +45,14 @@ public:
 	Animator& getAnimator() { return *animator; }
 
 	void setMaterial(int material) { this->material = material; }
-	void setTexture(const std::string textureName) 
+	void setTexture(const std::string& textureName) 
 		{ texture = Textures::getInstance()->getTexture(textureName); }
 	void setProgram(int prog) { program = prog; }
 
 private:
 	const std::vector<std::shared_ptr<Shape>>& shapes;
 	std::shared_ptr<Texture> texture;
-	const unique_ptr<Animator> animator;
+	const std::unique_ptr<Animator> animator;
 	float rotationOffset;
 
 	int material, program;

@@ -3,6 +3,7 @@
 #include "Keys.h"
 #include "GameManager.h"
 #include "FBOManager.h"
+#include "CutSceneManager.h"
 
 #include <iostream>
 
@@ -38,8 +39,9 @@ void Behavior::bringToFloor(float offset) {
 // ----------------------------- PLAYER ----------------------------- //
 void Behavior::PlayerBehavior::start()
 {
-	transform.setSize(glm::vec3(PLAYER_SIZE));
-	bringToFloor(FOLLOWER_OFFSET);
+	transform.setSize(glm::vec3(PLAYER_SIZE))
+		.setSpeed(PLAYER_SPEED);
+	bringToFloor(FOLLOWER_FLOOR_OFFSET);
 	model.setTexture(DORY_TEXTURE);
 	model.setProgram(TEXTUREPROG);
 }
@@ -48,7 +50,6 @@ void Behavior::PlayerBehavior::update(float deltaTime)
 {
 	int forward = 0;
 	int right = 0;
-	float boost = 0;
 	vec3 deltas;
 
 	if (Keys::getInstance().keyPressed(Keys::FORWARD))
@@ -56,28 +57,23 @@ void Behavior::PlayerBehavior::update(float deltaTime)
 	if (Keys::getInstance().keyPressed(Keys::BACKWARD))
 		forward -= 1;
 
-	if (Keys::getInstance().keyPressed(Keys::BOOST) 
-		&& GameManager::getInstance()->getStamina() > 0) {
-		boost = 30;
-		GameManager::getInstance()->decreaseStamina(deltaTime);
-		FBOManager::getInstance().increaseBlurAmount(deltaTime);
-	}
-
 	if (Keys::getInstance().keyPressed(Keys::LEFT))
 		right -= 1;
 	if (Keys::getInstance().keyPressed(Keys::RIGHT))
 		right += 1;
 
+	checkBoost(deltaTime);
+
 	deltas.x = forward * transform.getFacing().x + right * -transform.getFacing().z;
 	deltas.y = forward * transform.getFacing().y;
 	deltas.z = forward * transform.getFacing().z + right * transform.getFacing().x;
-	transform.interpolateVelocity(right == 0 && forward == 0 ? ORIGIN : normalize(deltas) * (speed - slow + boost), deltaTime);
+	transform.interpolateVelocity(right == 0 && forward == 0 
+		? ORIGIN : normalize(deltas) * (transform.getSpeed() - slow + boost), deltaTime);
 
 	if (slow > 0)
 		slow = mix(slow, 0.0f, RECOVERY_SPEED * deltaTime);
 
-	if (immuneTime > 0)
-		immuneTime = glm::max(0.0f, immuneTime - deltaTime);
+	immuneTime -= deltaTime;
 
 	model.getAnimator().setAnimationSpeed(boost > 0 ? 3 : 1);
 }
@@ -92,16 +88,19 @@ void Behavior::PlayerBehavior::onCollision(Behavior& collider)
 		if (follower->isFollowing())
 			return;
 		follower->setTarget(previousCharacter);
-		follower->followTarget();
-		if (GameManager::getInstance()->getGameStats().charRemaining > 1) {
-			target = &Spawner::getInstance()->spawnFollower()->getTransform();
+		GameManager::getInstance().decrementNumChar();
+		CutSceneManager::getInstance().nextCutScene();
+		if (GameManager::getInstance().getCharRemaining() > 0) {
+			target = Spawner::getInstance()->spawnFollower();
+		}
+		else {
+			GameManager::getInstance().win();
 		}
 		previousCharacter = &collider.transform;
-		GameManager::getInstance()->decrementNumChar();
 		break;
 	case POWERUP:
 		collider.remove();
-		GameManager::getInstance()->increaseStamina(STAMINA_INCREMENT);
+		GameManager::getInstance().increaseStamina(STAMINA_INCREMENT);
 		break;
 	case ENEMY:
 		if (immuneTime > 0) break;
@@ -109,38 +108,36 @@ void Behavior::PlayerBehavior::onCollision(Behavior& collider)
 		immuneTime = IMMUNITY_TIME;
 		transform.setVelocity(ORIGIN);
 		FBOManager::getInstance().increaseBlurAmount(BLUR_INCREMENT);
+		FBOManager::getInstance().triggerShake();
+		CutSceneManager::getInstance().startCutScene(ENEMY_TEXTS);
 		break;
+	}
+}
+
+void Behavior::PlayerBehavior::checkBoost(float deltaTime)
+{
+	if (Keys::getInstance().keyPressed(Keys::BOOST)
+		&& GameManager::getInstance().getStamina() > 0) {
+		speechTime -= deltaTime;
+		boost = BOOST_SPEED;
+		GameManager::getInstance().decreaseStamina(deltaTime);
+		FBOManager::getInstance().increaseBlurAmount(deltaTime);
+		if (speechTime <= 0) {
+			CutSceneManager::getInstance().startCutScene(BOOST_TEXTS);
+			resetSpeechTime();
+		}
+	}
+	else {
+		boost = 0;
+		resetSpeechTime();
 	}
 }
 
 // ----------------------------- FOLLOWER ----------------------------- //
 void Behavior::FollowerBehavior::start()
 {
-	static int i = 0; // Need to abstract textures from behavior
-	model.setTexture(pickCharacterTexture(i % NUM_CHARACTERS));
+	transform.setSpeed(FOLLOWER_SPEED);
 	model.setProgram(TEXTUREPROG);
-	i++;
-}
-
-string Behavior::pickCharacterTexture(int i)
-{
-	switch(i)
-	{
-		case 0:
-			return MARLIN_TEXTURE;
-		case 1:
-			return NEMO_TEXTURE;
-		case 2:
-			return SQUIRT_TEXTURE;
-		case 3:
-			return BLOAT_TEXTURE;
-		case 4:
-			return GURGLE_TEXTURE;
-		case 5:
-			return JENNY_TEXTURE;
-		case 6:
-			return CHARLIE_TEXTURE;
-	}
 }
 
 void Behavior::FollowerBehavior::update(float deltaTime)
@@ -166,6 +163,7 @@ void Behavior::FollowerBehavior::setPathVelocity(float deltaTime)
 	float distance = length(difference) - offset;
 
 	transform.setVelocity(distance * direction)
+	//transform.interpolateVelocity(distance > offset / 4 ? distance * direction : ORIGIN, deltaTime * speed)
 		.setFacing(difference);
 }
 
@@ -173,7 +171,6 @@ void Behavior::FollowerBehavior::setPathVelocity(float deltaTime)
 // ----------------------------- POWERUP ----------------------------- //
 void Behavior::PowerupBehavior::start()
 {
-	//model.setTexture(DORY_TEXTURE);
 	model.setProgram(REFLECTPROG);
 }
 
@@ -190,3 +187,20 @@ void Behavior::PowerupBehavior::update(float deltaTime)
 }
 
 // ----------------------------- ENEMY ----------------------------- //
+
+void Behavior::EnemyBehavior::start()
+{
+	timer = Random::range(ENEMY_TIMER_RANGE);
+}
+
+void Behavior::EnemyBehavior::update(float deltaTime)
+{
+	timer -= deltaTime;
+
+	if (timer <= 0)
+	{
+		transform.setVelocity(Random::facingXZ());
+		timer = Random::range(ENEMY_TIMER_RANGE);
+	}
+}
+

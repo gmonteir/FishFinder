@@ -14,7 +14,7 @@ class Shape
 {
 public:
 	Shape();
-	virtual ~Shape();
+	~Shape();
 	void createShape(tinyobj::shape_t & shape);
 	void loadMesh(const std::string &meshName);
 	void loadSingleShapeMesh(const std::string &meshName);

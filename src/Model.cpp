@@ -24,7 +24,9 @@ void Model::draw(std::shared_ptr<Program>& prog,
 {
 	M->pushMatrix();
 	M->translate(transform.getPosition());
-	M->rotate(transform.getXZAngle() + rotationOffset, YAXIS);
+	M->rotate(transform.getXZAngle(), YAXIS);
+	M->rotate(transform.getYAngle(), -XAXIS);
+	M->rotate(rotationOffset, YAXIS);
 	M->scale(scale * transform.getSize());
 	M->translate(-shift);
 	animator->drawModel(M, prog, shapes);

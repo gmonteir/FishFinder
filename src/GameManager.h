@@ -12,32 +12,48 @@
 class GameManager
 {
 	struct FPSCounter {
+		FPSCounter() : fps(0), frameCount(0), accumulator(0) {}
 		int fps;
 		int frameCount;
 		float accumulator;
 	};
 
 	struct GameStats {
+		GameStats() : timeRemaining(INITIAL_TIME_LIMIT), charRemaining(NUM_CHARACTERS), 
+			gameState(GAME_ACTIVE), stamina(INITIAL_STAMINA) {}
 		float timeRemaining;
 		int charRemaining;
-		bool inGame;
-		bool wonGame;
+		int gameState;
 		float stamina;
+	};
+
+	struct BlinkText {
+		BlinkText(const std::string& text) : text(text), active(false), blinkTimer(0), shouldDraw(false) {}
+		std::string text;
+		bool active;
+		float blinkTimer;
+		bool shouldDraw;
+
+		void update(float deltaTime);
+
+		void toggleDrawing() { shouldDraw = !shouldDraw; }
 	};
 
 	GameManager();
 
 public:
-	static std::shared_ptr<GameManager> getInstance();
+	static GameManager& getInstance();
 
 	~GameManager() {}
 
+	void reset();
+
 	void update(float deltaTime, float gameTime);
 	void draw();
-	void lose() { gameStats.inGame = false; }
-	void win() { gameStats.wonGame = true; }
+	void lose();
+	void win();
 
-	struct GameStats getGameStats() { return gameStats; }
+	int getCharRemaining() { return gameStats.charRemaining; }
 
 	float getStamina() { return gameStats.stamina; }
 	void increaseStamina(float delta) { gameStats.stamina = glm::min(gameStats.stamina + delta, MAX_STAMINA); }
@@ -49,11 +65,14 @@ public:
 	void drawTextWithFloat(int alignment, const char* format, float num,
 		float x, float y, float scale = UI_FONT_SIZE, glm::vec3 color = UI_COLOR);
 
+	void drawCutSceneText();
+
 private:
 	RenderText* textRenderer;
 	FPSCounter fpsCounter;
 	GameStats gameStats;
 
+	BlinkText restartText;
 	int width, height;
 };
 

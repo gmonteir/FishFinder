@@ -1,6 +1,10 @@
 #include "Textures.h"
 #include "Constants.h"
 
+#include <iostream>
+
+using namespace std;
+
 Textures::Textures()
 {
 	addTexture(RESOURCE_DIR + "/dory.jpg", DORY_TEXTURE, GL_CLAMP_TO_EDGE);

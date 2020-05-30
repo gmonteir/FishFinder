@@ -6,6 +6,7 @@ out vec2 texCoord;
 uniform bool chaos;
 uniform bool confuse;
 uniform bool shake;
+
 uniform float time;
 
 void main()
@@ -16,18 +17,25 @@ void main()
     // from https://learnopengl.com/In-Practice/2D-Game/Postprocessing
 	if (chaos)
     {
-        float strength = 0.3;
-        texCoord = vec2(texCoord.x + sin(time) * strength, texCoord.y + cos(time) * strength);
+        texCoord = vec2(0.2 * sin((time + texCoord.x) * 5) + texCoord.x, 
+                        0.2 * cos((time + texCoord.y) * 5) + texCoord.y);
     }
-    else if (confuse)
+    if (confuse)
     {
-        texCoord = vec2(1.0 - texCoord.x, 1.0 - texCoord.y);
+        float speed = 5;
+        float stretch = 10;
+        float rotation = 0.1; // also affects the stretch
+        texCoord = (texCoord - vec2(0.5)) * 0.9 + vec2(0.5);
+        float x = rotation * sin(time * speed + texCoord.x * stretch) + texCoord.x;
+        float y = rotation * cos(time * speed + texCoord.y * stretch) + texCoord.y;
+        texCoord = vec2(x, y);
     }
 
     if (shake)
     {
-        float strength = 0.01;
-        gl_Position.x += cos(time * 10) * strength;        
-        gl_Position.y += cos(time * 15) * strength;        
+        float speed = 50;
+        float strength = 0.05;
+        gl_Position.x += cos(time * speed) * strength;        
+        gl_Position.y += cos(time * speed / 2) * strength;        
     }
 }

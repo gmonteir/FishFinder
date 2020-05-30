@@ -1,6 +1,9 @@
 #include "Shapes.h"
 #include "Constants.h"
 
+#include <iostream>
+
+using namespace std;
 using namespace glm;
 
 Shapes::Shapes()
@@ -45,11 +48,6 @@ void Shapes::addShape(vector<float>& posBuf,
 	shared_ptr<vector<shared_ptr<Shape>>> shapes(new vector<shared_ptr<Shape>>);
 	Shape::setBuffers(shapes, posBuf, texBuf, eleBuf);
 	allShapes[key] = shapes;
-}
-
-shared_ptr<vector<shared_ptr<Shape>>> Shapes::getShape(const string& key)
-{
-	return allShapes[key];
 }
 
 float Shapes::getRotationOffset(const string& key) const

@@ -1,9 +1,24 @@
 #include "EntityCollection.h"
+#include "Camera.h"
+
+using namespace std;
+using namespace glm;
 
 std::shared_ptr<EntityCollection> EntityCollection::getInstance()
 {
 	static shared_ptr<EntityCollection> instance(new EntityCollection);
 	return instance;
+}
+
+void EntityCollection::reset() {
+	for (int i = 0; i < MAP_I; i++) {
+		for (int j = 0; j < MAP_J; j++) {
+			for (int k = 0; k < MAP_K; k++) {
+				entities[i][j][k] = make_shared<vector<shared_ptr<Entity>>>();
+			}
+		}
+	}
+	cout << "EntityCollection reset" << endl;
 }
 
 void EntityCollection::update(float deltaTime)
@@ -50,9 +65,7 @@ void EntityCollection::draw(std::shared_ptr<MatrixStack>& M, vec4* planes) const
 				for (int l = 0; l < entities[i][j][k]->size(); l++) {
 					shared_ptr<Entity> entity = entities[i][j][k]->at(l);
 
-					float entitySize = length(entity->getMaxBoundCoordinate() - entity->getTransform().getPosition());
-					
-					if (!Camera::ViewFrustCull(entity->getTransform().getPosition(), entitySize, planes)) {
+					if (!Camera::viewFrustCull(entity->getTransform().getPosition(), entity->getRadius(), planes)) {
 						entity->draw(M);
 					}
 													
@@ -70,9 +83,7 @@ void EntityCollection::draw(shared_ptr<Program>& prog, shared_ptr<MatrixStack>& 
 				for (int l = 0; l < entities[i][j][k]->size(); l++) {
 					shared_ptr<Entity> entity = entities[i][j][k]->at(l);
 
-					float entitySize = length(entity->getMaxBoundCoordinate() - entity->getTransform().getPosition());
-
-					if (!Camera::ViewFrustCull(entity->getTransform().getPosition(), entitySize, planes)) {
+					if (!Camera::viewFrustCull(entity->getTransform().getPosition(), entity->getRadius(), planes)) {
 						entity->draw(prog, M);
 					}
 				}
@@ -90,32 +101,27 @@ void EntityCollection::addEntity(shared_ptr<Entity>& entity) {
 	entities[collectionX][collectionY][collectionZ]->push_back(entity);
 }
 
-shared_ptr<vector<shared_ptr<Entity>>> EntityCollection::getEntitiesFromCollectionPos(int i, 
-	int j, int k) {
-	return entities[i][j][k];
-}
-
 int EntityCollection::mapXtoI(float x) {
-	return (x - -1 * MAP_X) * (MAP_I / (float)(MAP_X * 2));
+	return (x + MAP_X) * (MAP_I / (MAP_X * 2.0f));
 }
 
 int EntityCollection::mapYtoJ(float y) {
-	return (y - -1 * MAP_Y) * (MAP_J / (float)(MAP_Y * 2));
+	return (y + MAP_Y) * (MAP_J / (MAP_Y * 2.0f));
 }
 
 int EntityCollection::mapZtoK(float z) {
-	return (z - -1 * MAP_Z) * (MAP_K / (float)(MAP_Z * 2));
+	return (z + MAP_Z) * (MAP_K / (MAP_Z * 2.0f));
 }
 
 float EntityCollection::mapItoX(int i) {
-	return i * (MAP_X * 2 / (float)MAP_I) - MAP_X;
+	return i * (MAP_X * 2.0f / MAP_I) - MAP_X;
 }
 
 float EntityCollection::mapJtoY(int j) {
-	return j * (MAP_Y * 2 / (float)MAP_J) - MAP_Y;
+	return j * (MAP_Y * 2.0f / MAP_J) - MAP_Y;
 }
 
 float EntityCollection::mapKtoZ(int k) {
-	return k * (MAP_Z * 2 / (float)MAP_K) - MAP_Z;
+	return k * (MAP_Z * 2.0f / MAP_K) - MAP_Z;
 }
 
