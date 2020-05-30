@@ -26,9 +26,8 @@ GameManager& GameManager::getInstance()
 
 void GameManager::reset()
 {
-	cout << "GameManager reset" << endl;
 	gameStats = GameStats();
-	cout << "GameManager " << gameStats.timeRemaining << ", " << gameStats.gameState << ", " << gameStats.charRemaining << endl;
+	cout << "GameManager reset" << endl;
 }
 
 
@@ -67,10 +66,14 @@ void GameManager::draw()
 
 	// ------------------- Drawing -------------------- //
 
-	if (gameStats.gameState == GAME_LOST)
+	if (gameStats.gameState == GAME_LOST) {
 		drawText(CENTER, "Game Over", width / 2, height / 2, TITLE_FONT_SIZE, UI_RED_COLOR);
-	else if (gameStats.gameState == GAME_WON)
+		drawText(CENTER, "Press 'R' to restart", width / 2, height / 4, TITLE_FONT_SIZE / 2, UI_RED_COLOR);
+	}
+	else if (gameStats.gameState == GAME_WON) {
 		drawText(CENTER, "You won!", width / 2, height / 2, TITLE_FONT_SIZE, UI_GREEN_COLOR);
+		drawText(CENTER, "Press 'R' to restart", width / 2, height / 4, TITLE_FONT_SIZE / 2, UI_GREEN_COLOR);
+	}
 
 	drawText(LEFT, "Characters Remaining: " + to_string(gameStats.charRemaining), UI_LEFT_MARGIN, height - UI_LINE_OFFSET);
 	drawTextWithFloat(LEFT, "Stamina: %.1f %%", 100 * gameStats.stamina / MAX_STAMINA, UI_LEFT_MARGIN, height - 2 * UI_LINE_OFFSET);
