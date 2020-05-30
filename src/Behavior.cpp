@@ -37,6 +37,13 @@ void Behavior::bringToFloor(float offset) {
 }
 
 // ----------------------------- PLAYER ----------------------------- //
+void Behavior::PlayerBehavior::reset()
+{
+	previousCharacter = &transform;
+	transform.setPosition(ORIGIN);
+	bringToFloor(FOLLOWER_FLOOR_OFFSET);
+}
+
 void Behavior::PlayerBehavior::start()
 {
 	transform.setSize(glm::vec3(PLAYER_SIZE))

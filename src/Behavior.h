@@ -79,6 +79,8 @@ public:
 	}
 
 	virtual ~PlayerBehavior() {}
+	
+	void reset();
 
 	void start() override;
 	void update(float deltaTime) override;
