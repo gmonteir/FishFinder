@@ -27,6 +27,18 @@ class GameManager
 		float stamina;
 	};
 
+	struct BlinkText {
+		BlinkText(const std::string& text) : text(text), active(false), blinkTimer(0), shouldDraw(false) {}
+		std::string text;
+		bool active;
+		float blinkTimer;
+		bool shouldDraw;
+
+		void update(float deltaTime);
+
+		void toggleDrawing() { shouldDraw = !shouldDraw; }
+	};
+
 	GameManager();
 
 public:
@@ -38,8 +50,8 @@ public:
 
 	void update(float deltaTime, float gameTime);
 	void draw();
-	void lose() { if (gameStats.gameState == GAME_ACTIVE) gameStats.gameState = GAME_LOST; }
-	void win() { if (gameStats.gameState == GAME_ACTIVE) gameStats.gameState = GAME_WON; }
+	void lose();
+	void win();
 
 	int getCharRemaining() { return gameStats.charRemaining; }
 
@@ -60,6 +72,7 @@ private:
 	FPSCounter fpsCounter;
 	GameStats gameStats;
 
+	BlinkText restartText;
 	int width, height;
 };
 

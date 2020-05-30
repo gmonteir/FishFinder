@@ -8,7 +8,23 @@
 using namespace std;
 using namespace glm;
 
-GameManager::GameManager() : fpsCounter(), gameStats() {
+// -------------------------- BlinkText --------------------- //
+
+void GameManager::BlinkText::update(float deltaTime)
+{
+	if (!active) return;
+	blinkTimer -= deltaTime;
+	if (blinkTimer <= 0)
+	{
+		toggleDrawing();
+		blinkTimer = TEXT_BLINK_DELAY;
+	}
+}
+
+
+// -------------------------- GameManager --------------------- //
+
+GameManager::GameManager() : fpsCounter(), gameStats(), restartText(BLINK_TEXT) {
 	FT_Library ft;
 	textRenderer = new RenderText(&ft, ShaderManager::getInstance()->getShader(GLYPHPROG));
 	glfwGetFramebufferSize(WindowManager::instance->getHandle(), &width, &height);
@@ -27,6 +43,7 @@ GameManager& GameManager::getInstance()
 void GameManager::reset()
 {
 	gameStats = GameStats();
+	restartText = BlinkText(BLINK_TEXT);
 	cout << "GameManager reset" << endl;
 }
 
@@ -48,6 +65,8 @@ void GameManager::update(float deltaTime, float gameTime)
 		fpsCounter.accumulator = 0;
 		fpsCounter.frameCount = 0;
 	}
+
+	restartText.update(deltaTime);
 }
 
 /* FreeType */
@@ -68,11 +87,13 @@ void GameManager::draw()
 
 	if (gameStats.gameState == GAME_LOST) {
 		drawText(CENTER, "Game Over", width / 2, height / 2, TITLE_FONT_SIZE, UI_RED_COLOR);
-		drawText(CENTER, "Press 'R' to restart", width / 2, height / 4, TITLE_FONT_SIZE / 2, UI_RED_COLOR);
+		if (restartText.shouldDraw)
+			drawText(CENTER, restartText.text, width / 2, height / 4, TITLE_FONT_SIZE / 2, UI_RED_COLOR);
 	}
 	else if (gameStats.gameState == GAME_WON) {
 		drawText(CENTER, "You won!", width / 2, height / 2, TITLE_FONT_SIZE, UI_GREEN_COLOR);
-		drawText(CENTER, "Press 'R' to restart", width / 2, height / 4, TITLE_FONT_SIZE / 2, UI_GREEN_COLOR);
+		if (restartText.shouldDraw)
+			drawText(CENTER, restartText.text, width / 2, height / 4, TITLE_FONT_SIZE / 2, UI_GREEN_COLOR);
 	}
 
 	drawText(LEFT, "Characters Remaining: " + to_string(gameStats.charRemaining), UI_LEFT_MARGIN, height - UI_LINE_OFFSET);
@@ -89,6 +110,22 @@ void GameManager::draw()
 	// ------------------- End Drawing -------------------- //
 	prog->unbind();
 	glDisable(GL_BLEND);
+}
+
+void GameManager::lose()
+{
+	if (gameStats.gameState == GAME_ACTIVE) {
+		gameStats.gameState = GAME_LOST;
+		restartText.active = true;
+	}
+}
+
+void GameManager::win()
+{
+	if (gameStats.gameState == GAME_ACTIVE) {
+		gameStats.gameState = GAME_WON;
+		restartText.active = true;
+	}
 }
 
 void GameManager::drawText(int alignment, const std::string& text, float x, float y, float scale, glm::vec3 color)

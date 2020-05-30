@@ -217,6 +217,9 @@ constexpr int NUM_TEXTS = 4;
 
 constexpr float SCENE_CHAR_DELAY = 0.07f;
 constexpr float SCENE_TEXT_DELAY = 1.0f;
+constexpr float TEXT_BLINK_DELAY = 0.5f;
+
+const std::string BLINK_TEXT = "Press 'R' to restart";
 
 const glm::vec2 RANDOM_TEXT_TIME_RANGE = glm::vec2(20, 50);
 const glm::vec2 BOOST_TEXT_TIME_RANGE = glm::vec2(5, 15);

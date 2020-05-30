@@ -157,6 +157,7 @@ public:
 
 	void initEntities()
 	{
+		Skybox::getInstance(); // initialize skybox
 		player = make_shared<Entity>(DORY_SHAPE, int(Behavior::PLAYER));
 		playerBehavior = dynamic_pointer_cast<Behavior::PlayerBehavior>(player->getBehavior());
 
@@ -179,7 +180,8 @@ public:
 		/*for (int i = 0; i < 85; i++)
 			Spawner::getInstance()->spawnFollower();*/
 
-		Skybox::getInstance(); // initialize skybox
+		FBOManager::getInstance().increaseBlurAmount(BLUR_INCREMENT);
+		FBOManager::getInstance().triggerConfuse();
 	}
 
 	void reset()
