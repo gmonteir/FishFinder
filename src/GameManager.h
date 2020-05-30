@@ -30,7 +30,7 @@ class GameManager
 	GameManager();
 
 public:
-	static std::shared_ptr<GameManager> getInstance();
+	static GameManager& getInstance();
 
 	~GameManager() {}
 

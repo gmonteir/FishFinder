@@ -26,6 +26,7 @@ void Spawner::init()
 	{
 		spawnEnemy();
 	}
+	cout << "Spawner init" << endl;
 }
 
 void Spawner::update(float deltaTime, float gameTime)
@@ -39,12 +40,12 @@ void Spawner::update(float deltaTime, float gameTime)
 
 Transform* Spawner::spawnFollower()
 {
-	if (GameManager::getInstance()->getCharRemaining() <= 0)
+	if (GameManager::getInstance().getCharRemaining() <= 0)
 	{
 		cout << "Spawner: No more Characters" << endl;
 		return nullptr;
 	}
-	const Character& c = CHARACTERS[NUM_CHARACTERS - GameManager::getInstance()->getCharRemaining()];
+	const Character& c = CHARACTERS[NUM_CHARACTERS - GameManager::getInstance().getCharRemaining()];
 	shared_ptr<Entity> e = make_shared<Entity>(c.shape, Behavior::FOLLOWER);
 	findSpawnPosition(e, FOLLOWER_FLOOR_OFFSET);
 	e->getTransform()

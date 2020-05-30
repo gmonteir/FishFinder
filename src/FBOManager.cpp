@@ -12,8 +12,6 @@ FBOManager::FBOManager() : data(), debug()
 {
 	initFBOs();
 	initQuad();
-	increaseBlurAmount(BLUR_INCREMENT);
-	triggerConfuse();
 	cout << "FBOManager: Initialized" << endl;
 }
 

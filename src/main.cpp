@@ -78,7 +78,7 @@ public:
 				camera.thirdPerson();
 				break;
 			case GLFW_KEY_COMMA: // cheat stamina
-				GameManager::getInstance()->increaseStamina(STAMINA_INCREMENT);
+				GameManager::getInstance().increaseStamina(STAMINA_INCREMENT);
 				break;
 			case GLFW_KEY_B: // Blur screen
 				FBOManager::getInstance().increaseBlurAmount(BLUR_INCREMENT);
@@ -185,7 +185,9 @@ public:
 	void reset()
 	{
 		EntityCollection::getInstance()->reset();
+		cout << "GameManager resetting....." << endl;
 		GameManager::getInstance().reset();
+		cout << "GameManager reseted???????" << endl;
 		player->getTransform().setPosition(ORIGIN);
 		player->bringToFloor(FOLLOWER_FLOOR_OFFSET);
 		EntityCollection::getInstance()->addEntity(player);
@@ -194,13 +196,15 @@ public:
 
 		CutSceneManager::getInstance().reset();
 		CutSceneManager::getInstance().nextCutScene();
+		FBOManager::getInstance().increaseBlurAmount(BLUR_INCREMENT);
+		FBOManager::getInstance().triggerConfuse();
 	}
 
 	void update(float deltaTime, float gameTime)
 	{
 		Spawner::getInstance()->update(deltaTime, gameTime);
 		CutSceneManager::getInstance().update(deltaTime, gameTime);
-		GameManager::getInstance()->update(deltaTime, gameTime);
+		GameManager::getInstance().update(deltaTime, gameTime);
 		EntityCollection::getInstance()->update(deltaTime);
 		camera.update(deltaTime, player->getTransform());
 
@@ -253,7 +257,7 @@ public:
 			camera.getEye(),								// Camera Position
 			playerBehavior->getTargetPos(),					// Goal/Target Position
 			gameTime,										// Game Time
-			GameManager::getInstance()->getCharRemaining()	// Characters Remaining
+			GameManager::getInstance().getCharRemaining()	// Characters Remaining
 		};
 		ShaderManager::getInstance()->setData(commonUniforms);
 		P->popMatrix();
@@ -280,7 +284,7 @@ public:
 			renderScene(Model, planes);
 		}
 
-		GameManager::getInstance()->draw();
+		GameManager::getInstance().draw();
 	}	
 };
 

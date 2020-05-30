@@ -24,6 +24,14 @@ CutSceneManager& CutSceneManager::getInstance()
 }
 
 
+void CutSceneManager::reset()
+{ 
+	cutScenes[MAIN_TEXTS].stop();
+	cutScenes[MAIN_TEXTS].current = -1;
+	cout << "CutSceneManager reset" << endl;
+}
+
+
 void CutSceneManager::update(float deltaTime, float gameTime)
 {
 	bool updating = false;

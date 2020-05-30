@@ -17,16 +17,18 @@ GameManager::GameManager() : fpsCounter(), gameStats() {
 }
 
 
-shared_ptr<GameManager> GameManager::getInstance() 
+GameManager& GameManager::getInstance() 
 {
-	static shared_ptr<GameManager> instance(new GameManager);
+	static GameManager instance;
 	return instance;
 }
 
 
 void GameManager::reset()
 {
+	cout << "GameManager reset" << endl;
 	gameStats = GameStats();
+	cout << "GameManager " << gameStats.timeRemaining << ", " << gameStats.gameState << ", " << gameStats.charRemaining << endl;
 }
 
 

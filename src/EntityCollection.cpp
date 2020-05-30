@@ -18,6 +18,7 @@ void EntityCollection::reset() {
 			}
 		}
 	}
+	cout << "EntityCollection reset" << endl;
 }
 
 void EntityCollection::update(float deltaTime)

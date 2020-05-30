@@ -88,19 +88,19 @@ void Behavior::PlayerBehavior::onCollision(Behavior& collider)
 		if (follower->isFollowing())
 			return;
 		follower->setTarget(previousCharacter);
-		GameManager::getInstance()->decrementNumChar();
+		GameManager::getInstance().decrementNumChar();
 		CutSceneManager::getInstance().nextCutScene();
-		if (GameManager::getInstance()->getCharRemaining() > 0) {
+		if (GameManager::getInstance().getCharRemaining() > 0) {
 			target = Spawner::getInstance()->spawnFollower();
 		}
 		else {
-			GameManager::getInstance()->win();
+			GameManager::getInstance().win();
 		}
 		previousCharacter = &collider.transform;
 		break;
 	case POWERUP:
 		collider.remove();
-		GameManager::getInstance()->increaseStamina(STAMINA_INCREMENT);
+		GameManager::getInstance().increaseStamina(STAMINA_INCREMENT);
 		break;
 	case ENEMY:
 		if (immuneTime > 0) break;
@@ -117,10 +117,10 @@ void Behavior::PlayerBehavior::onCollision(Behavior& collider)
 void Behavior::PlayerBehavior::checkBoost(float deltaTime)
 {
 	if (Keys::getInstance().keyPressed(Keys::BOOST)
-		&& GameManager::getInstance()->getStamina() > 0) {
+		&& GameManager::getInstance().getStamina() > 0) {
 		speechTime -= deltaTime;
 		boost = BOOST_SPEED;
-		GameManager::getInstance()->decreaseStamina(deltaTime);
+		GameManager::getInstance().decreaseStamina(deltaTime);
 		FBOManager::getInstance().increaseBlurAmount(deltaTime);
 		if (speechTime <= 0) {
 			CutSceneManager::getInstance().startCutScene(BOOST_TEXTS);

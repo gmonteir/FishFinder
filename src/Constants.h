@@ -50,8 +50,6 @@ constexpr int GAME_LOST = -1;
 constexpr int GAME_ACTIVE = 0;
 constexpr int GAME_WON = 1;
 constexpr float WARNING_TIME = 15.0f;
-constexpr float SCENE_CHAR_DELAY = 0.1f;
-constexpr float SCENE_TEXT_DELAY = 1.0f;
 
 // UI Constants
 constexpr float WINDOW_WIDTH = 2048;
@@ -217,6 +215,9 @@ constexpr int BOOST_TEXTS = 2;
 constexpr int RANDOM_TEXTS = 3;
 constexpr int NUM_TEXTS = 4;
 
+constexpr float SCENE_CHAR_DELAY = 0.07f;
+constexpr float SCENE_TEXT_DELAY = 1.0f;
+
 const glm::vec2 RANDOM_TEXT_TIME_RANGE = glm::vec2(20, 50);
 const glm::vec2 BOOST_TEXT_TIME_RANGE = glm::vec2(5, 15);
 
@@ -225,7 +226,8 @@ const std::vector<std::vector<std::vector<std::string>>> CUTSCENETEXTS{
 		std::vector<std::string>{
 			"Ugh!",
 			"Where am I?",
-			"I need to find my friends!"
+			"I need to find my friends,",
+			"before I forget again."
 		},
 		std::vector<std::string>{
 			"Marlin?",
