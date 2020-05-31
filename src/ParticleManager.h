@@ -5,6 +5,7 @@
 
 #include "Program.h"
 #include "Constants.h"
+#include "Transform.h"
 
 class ParticleManager
 {
@@ -18,7 +19,7 @@ class ParticleManager
 		/******* draws the particles ******/
 		void processParticles(glm::vec3 translate, float deltaTime);
 
-		void setCaptured(glm::vec3 target) { captureMode = true; targetPos = target; }
+		void setCaptured(Transform *target) { captureMode = true; this->target = target; }
 		void resetCaptured() { captureMode = false; }
 
 	private:
@@ -33,7 +34,7 @@ class ParticleManager
 
 		bool captureMode;
 		float elapsedTime;
-		glm::vec3 targetPos;
+		Transform *target;
 
 		void init();
 

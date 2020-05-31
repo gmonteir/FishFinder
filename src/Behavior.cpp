@@ -98,7 +98,7 @@ void Behavior::PlayerBehavior::onCollision(Behavior& collider)
 		follower->setTarget(previousCharacter);
 		GameManager::getInstance().decrementNumChar();
 		CutSceneManager::getInstance().nextCutScene();
-		ParticleManager::getInstance().setCaptured(target->getPosition());
+		ParticleManager::getInstance().setCaptured(target);
 		if (GameManager::getInstance().getCharRemaining() > 0) {
 			target = Spawner::getInstance()->spawnFollower();
 		}

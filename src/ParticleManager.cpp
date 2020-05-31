@@ -103,7 +103,7 @@ void ParticleManager::processParticles(vec3 playerTranslate, float deltaTime)
 		// Character Particles
 		Model->pushMatrix();
 			Model->loadIdentity();
-			Model->translate(targetPos);
+			Model->translate(target->getPosition());
 			glUniformMatrix4fv(particleProg->getUniform("M"), 1, GL_FALSE, value_ptr(Model->topMatrix()));
 			glBindVertexArray(VertexArrayID2);
 			glDrawArrays(GL_POINTS, 0, NUM_PARTICLES);
