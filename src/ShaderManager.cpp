@@ -42,6 +42,7 @@ shared_ptr<Program> ShaderManager::initSimpleProg()
 	prog->addUniform("V");
 	prog->addUniform("LP");
 	prog->addUniform("LV");
+	prog->addUniform("time");
 	prog->addUniform("MatAmb");
 	prog->addUniform("MatDif");
 	prog->addUniform("MatSpec");
@@ -218,6 +219,7 @@ void ShaderManager::sendUniforms(int progIndex, const shared_ptr<Texture> textur
 		glUniformMatrix4fv(prog->getUniform("V"), 1, GL_FALSE, value_ptr(uniformData.V));
 		glUniformMatrix4fv(prog->getUniform("LP"), 1, GL_FALSE, value_ptr(luData.LP));
 		glUniformMatrix4fv(prog->getUniform("LV"), 1, GL_FALSE, value_ptr(luData.LV));
+		glUniform1f(prog->getUniform("time"), uniformData.time);
 		sendLightUniforms(prog);
 		glUniform3f(prog->getUniform("eye"), uniformData.eye.x, uniformData.eye.y, uniformData.eye.z);
 		glActiveTexture(GL_TEXTURE0);
