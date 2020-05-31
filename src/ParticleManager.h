@@ -16,16 +16,28 @@ class ParticleManager
 		~ParticleManager() {}
 
 		/******* draws the particles ******/
-		void processParticles();
+		void processParticles(glm::vec3 translate, float deltaTime);
+
+		void setCaptured(glm::vec3 target) { captureMode = true; targetPos = target; }
+		void resetCaptured() { captureMode = false; }
 
 	private:
 		GLuint VertexArrayID;
 		GLuint VertexBufferID;
-		std::vector<float> buf;
+
+		GLuint VertexArrayID2;
+		GLuint VertexBufferID2;
+		
+		std::vector<float> bubbleBuf;
+		std::vector<float> charBuf;
+
+		bool captureMode;
+		float elapsedTime;
+		glm::vec3 targetPos;
 
 		void init();
 
 		/******* initializes the positions of the particles to render ********/
-		void initParticleBuff(std::vector<float> *points);
+		void initParticleBuff(std::vector<float> *points, float scale, float shift);
 
 };

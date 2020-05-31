@@ -25,6 +25,7 @@ ShaderManager::ShaderManager()
 	shaderProgs[WATERFBOPROG] = initWaterFBOProg();
 	shaderProgs[PARTICLEPROG] = initParticleProg();
 	shaderProgs[LIGHTDEPTHPROG] = initLightDepthProg();
+	shaderProgs[CHARPARTICLEPROG] = initCharParticleProg();
 
 	//luData.LP = glm::ortho(-ORTHO_SIZE, ORTHO_SIZE, -ORTHO_SIZE, ORTHO_SIZE, 1.0f, 1000.0f);
 	luData.LP = glm::ortho(-ORTHO_SIZE, ORTHO_SIZE, -ORTHO_SIZE, ORTHO_SIZE, NEAR_PLANE, 2 * ORTHO_SIZE);
@@ -196,6 +197,17 @@ shared_ptr<Program> ShaderManager::initLightDepthProg()
 	return prog;
 }
 
+shared_ptr<Program> ShaderManager::initCharParticleProg()
+{
+	std::shared_ptr<Program> prog = makeProgram("/char_particle_vert.glsl", "/char_particle_frag.glsl");
+	prog->addUniform("P");
+	prog->addUniform("V");
+	prog->addUniform("M");
+	prog->addUniform("time");
+	prog->addAttribute("vertPos");
+	return prog;
+}
+
 void ShaderManager::sendUniforms(int progIndex, const shared_ptr<Texture> texture, const std::shared_ptr<Texture> blendTexture)
 {
 	shared_ptr<Program> prog = getShader(progIndex);
@@ -277,6 +289,11 @@ void ShaderManager::sendUniforms(int progIndex, const shared_ptr<Texture> textur
 	case LIGHTDEPTHPROG:
 		glUniformMatrix4fv(prog->getUniform("LP"), 1, GL_FALSE, value_ptr(luData.LP));
 		glUniformMatrix4fv(prog->getUniform("LV"), 1, GL_FALSE, value_ptr(luData.LV));
+		break;
+	case CHARPARTICLEPROG:
+		glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, value_ptr(uniformData.P));
+		glUniformMatrix4fv(prog->getUniform("V"), 1, GL_FALSE, value_ptr(uniformData.V));
+		glUniform1f(prog->getUniform("time"), uniformData.time);
 		break;
 	}
 }

@@ -149,7 +149,7 @@ constexpr int NUM_ENEMIES = 10;
 constexpr int NUM_CAUSTICS = 32;
 
 // Shader Constants
-constexpr int NUM_SHADERS = 12;
+constexpr int NUM_SHADERS = 13;
 constexpr int SIMPLEPROG = 0;
 constexpr int SKYBOXPROG = 1;
 constexpr int TEXTUREPROG = 2;
@@ -162,6 +162,7 @@ constexpr int BLURFBOPROG = 8;
 constexpr int WATERFBOPROG = 9;
 constexpr int PARTICLEPROG = 10;
 constexpr int LIGHTDEPTHPROG = 11;
+constexpr int CHARPARTICLEPROG = 12;
 
 // Light Constants
 struct Light {
