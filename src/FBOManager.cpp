@@ -42,7 +42,7 @@ void FBOManager::processFog()
 
 	glDisable(GL_DEPTH_TEST);
 	bindBuffer(FOG_BUFFER);
-	glActiveTexture(GL_TEXTURE0 + 1);
+	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, texBuf[DEPTH_BUFFER]);
 	processDrawTex(texBuf[MAIN_BUFFER], FOGFBOPROG);
 	glEnable(GL_DEPTH_TEST);

@@ -42,6 +42,13 @@ class GameManager
 	GameManager();
 
 public:
+	struct TitleTexts {
+		std::string title;
+		BlinkText startText;
+
+		void draw();
+	};
+
 	static GameManager& getInstance();
 
 	~GameManager() {}
@@ -74,5 +81,7 @@ private:
 
 	BlinkText restartText;
 	int width, height;
+
+	static const TitleTexts titleTexts;
 };
 

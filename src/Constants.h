@@ -47,8 +47,9 @@ const std::string ENEMY_SHAPE = "ENEMY";
 // Game Constants
 constexpr float INITIAL_TIME_LIMIT = 100.0f; // seconds
 constexpr int GAME_LOST = -1;
-constexpr int GAME_ACTIVE = 0;
-constexpr int GAME_WON = 1;
+constexpr int GAME_TITLE = 0;
+constexpr int GAME_ACTIVE = 1;
+constexpr int GAME_WON = 2;
 constexpr float WARNING_TIME = 15.0f;
 
 // UI Constants

@@ -8,6 +8,11 @@
 using namespace std;
 using namespace glm;
 
+static const GameManager::TitleTexts titleTexts{
+	"Finding Dory",
+	"Press Spacebar to begin"
+};
+
 // -------------------------- BlinkText --------------------- //
 
 void GameManager::BlinkText::update(float deltaTime)
@@ -94,6 +99,9 @@ void GameManager::draw()
 		drawText(CENTER, "You won!", width / 2, height / 2, TITLE_FONT_SIZE, UI_GREEN_COLOR);
 		if (restartText.shouldDraw)
 			drawText(CENTER, restartText.text, width / 2, height / 4, TITLE_FONT_SIZE / 2, UI_GREEN_COLOR);
+	}
+	else if (gameStats.gameState == GAME_TITLE) {
+
 	}
 
 	drawText(LEFT, "Characters Remaining: " + to_string(gameStats.charRemaining), UI_LEFT_MARGIN, height - UI_LINE_OFFSET);
