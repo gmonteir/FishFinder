@@ -11,12 +11,12 @@ file(GLOB_RECURSE SOURCES "src/*.cpp" "ext/glad/src/*.c")
 file(GLOB_RECURSE HEADERS "src/*.h" "ext/glad/*/*.h")
 file(GLOB_RECURSE GLSL "resources/*.glsl")
 
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake-module")
+
 include_directories("ext/glad/include")
 
 # Set the executable.
 add_executable(${CMAKE_PROJECT_NAME} ${SOURCES} ${HEADERS} ${GLSL})
-
-
 
 # Add GLFW
 # Get the GLFW environment variable.
