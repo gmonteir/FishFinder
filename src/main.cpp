@@ -166,7 +166,7 @@ public:
 		testChar->getModel().setTexture(SHARK_TEXTURE);
 		testChar->getModel().setProgram(TEXTUREPROG);
 		testChar->getTransform().setSize(vec3(3*PLAYER_SIZE));
-		testChar->getTransform().setPosition(vec3(5, 0, -10));
+		testChar->getTransform().setPosition(vec3(5, 0, 20));
 		testChar->bringToFloor();
 		//
 
