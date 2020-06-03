@@ -85,21 +85,24 @@ function(findIrrklang target)
 endfunction(findIrrklang)
 ### findIrrklang(${CMAKE_PROJECT_NAME})
 
-add_subdirectory("ext/irrKlang-64bit-1.6.0")
-target_link_libraries(${CMAKE_PROJECT_NAME} "./irrKlang")
-target_include_directories(${CMAKE_PROJECT_NAME} PUBLIC "ext/irrKlang-64bit-1.6.0/include")
-
 # OS specific options and libraries
 if(WIN32)
   # c++0x is enabled by default.
   # -Wall produces way too many warnings.
   # -pedantic is not supported.
+  add_subdirectory("ext/irrKlang-64bit-1.6.0")
+  target_link_libraries(${CMAKE_PROJECT_NAME} "./irrKlang")
+  target_include_directories(${CMAKE_PROJECT_NAME} PUBLIC "ext/irrKlang-64bit-1.6.0/include")
   target_link_libraries(${CMAKE_PROJECT_NAME} opengl32.lib)
 else()
   # Enable all pedantic warnings.
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x -Wall -pedantic")
-
   if(APPLE)
+    # irrKlang
+    set(IRRKLANG_DIR "${CMAKE_SOURCE_DIR}/ext/irrKlang-64bit-1.6.0")
+    include_directories(${IRRKLANG_DIR}/include/)
+    include_directories(${IRRKLANG_DIR}/plugins/)
+    target_link_libraries(${CMAKE_PROJECT_NAME} ${IRRKLANG_DIR}/bin/macosx-gcc/libirrklang.dylib)
     # Add required frameworks for GLFW.
     target_link_libraries(${CMAKE_PROJECT_NAME} "-framework OpenGL -framework Cocoa -framework IOKit -framework CoreVideo")
   else()
