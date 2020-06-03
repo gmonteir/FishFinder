@@ -71,6 +71,21 @@ add_subdirectory("ext/freetype-2.10.0")
 target_link_libraries(${CMAKE_PROJECT_NAME} freetype)
 include_directories("ext/freetype-2.10.0/include")
 
+#find and add irrKlang dir using environment variable
+function(findIrrklang target)
+    find_package(irrKlang QUIET)
+    if(DEFINED ENV{IRRKLANG_DIR})
+        set(IRRKLANG_DIR "$ENV{IRRKLANG_DIR}")
+        message(STATUS "IRRKLANG_DIR environment variable found. Attempting use...")
+        target_include_directories(${target} PUBLIC "${IRRKLANG_DIR}/include")
+        target_link_libraries(${target} "./irrKlang")
+    else()
+        message(FATAL_ERROR "IRRKLANG_DIR could not be found through find_package or environment varaible 'IRRKLANG_DIR'! irrKlang must be installed!")
+    endif()
+endfunction(findIrrklang)
+
+findIrrklang(${CMAKE_PROJECT_NAME})
+
 # OS specific options and libraries
 if(WIN32)
   # c++0x is enabled by default.
