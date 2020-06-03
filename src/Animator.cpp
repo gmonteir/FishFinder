@@ -17,6 +17,8 @@ unique_ptr<Animator> Animator::createAnimator(const string& modelName)
 		return unique_ptr<Animator>(new CharlieAnimator);
 	else if (modelName == BLOAT_SHAPE)
 		return unique_ptr<Animator>(new BloatAnimator);
+	else if (modelName == SHARK_SHAPE)
+		return unique_ptr<Animator>(new SharkAnimator);
 	return unique_ptr<Animator>(new NoAnimator);
 }
 
@@ -310,6 +312,34 @@ void Animator::BloatAnimator::drawModel(shared_ptr<MatrixStack>& M,
 		glUniformMatrix4fv(prog->getUniform("M"), 1, GL_FALSE, value_ptr(M->topMatrix()));
 		shapes[i]->draw(prog);
 		if (i == 2 || i == 3 || i == 4)
+			M->popMatrix();
+	}
+}
+
+void Animator::SharkAnimator::animate(float deltaTime)
+{
+	animatePart(deltaTime/2, &tail.y, &tailRight, -0.4, 0.4);
+	body.y = -tail.y/2;
+}
+
+void Animator::SharkAnimator::drawModel(shared_ptr<MatrixStack>& M,
+	shared_ptr<Program> prog, const vector<shared_ptr<Shape>>& shapes) const
+{
+	/* Bloat Parts by Index
+	0 - Body
+	1 - Tail Joint
+	2 - Tail
+	*/
+	int shapeSize = shapes.size();
+	for (int i = 0; i < shapeSize; ++i)
+	{
+		if (i == 2) // tail
+			setupPart(shapes, M, i, 1, tail);
+		else if (i == 0)
+			setupPart(shapes, M, i, 1, body);
+		glUniformMatrix4fv(prog->getUniform("M"), 1, GL_FALSE, value_ptr(M->topMatrix()));
+		shapes[i]->draw(prog);
+		if (i == 0 || i == 2)
 			M->popMatrix();
 	}
 }
