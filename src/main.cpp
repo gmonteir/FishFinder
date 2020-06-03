@@ -20,6 +20,7 @@
 #include "ParticleManager.h"
 #include "Textures.h"
 #include "Floor.h"
+#include "AudioManager.h"
 
 #define _USE_MATH_DEFINES
 #include <math.h>
@@ -303,6 +304,7 @@ int main(int argc, char **argv)
 	// may need to initialize or set up different data and state
 	application->init();
 	application->initEntities();
+	AudioManager::getInstance().startMusicLoop();
 
 	double gameTime = 0; // keep track of how long we have been in the game.
 	double currentTime = glfwGetTime();

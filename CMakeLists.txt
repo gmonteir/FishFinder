@@ -11,12 +11,12 @@ file(GLOB_RECURSE SOURCES "src/*.cpp" "ext/glad/src/*.c")
 file(GLOB_RECURSE HEADERS "src/*.h" "ext/glad/*/*.h")
 file(GLOB_RECURSE GLSL "resources/*.glsl")
 
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake-module")
+
 include_directories("ext/glad/include")
 
 # Set the executable.
 add_executable(${CMAKE_PROJECT_NAME} ${SOURCES} ${HEADERS} ${GLSL})
-
-
 
 # Add GLFW
 # Get the GLFW environment variable.
@@ -71,17 +71,38 @@ add_subdirectory("ext/freetype-2.10.0")
 target_link_libraries(${CMAKE_PROJECT_NAME} freetype)
 include_directories("ext/freetype-2.10.0/include")
 
+#find and add irrKlang dir using environment variable
+function(findIrrklang target)
+    find_package(irrKlang QUIET)
+    if(DEFINED ENV{IRRKLANG_DIR})
+        set(IRRKLANG_DIR "$ENV{IRRKLANG_DIR}")
+        message(STATUS "IRRKLANG_DIR environment variable found. Attempting use...")
+        target_include_directories(${target} PUBLIC "${IRRKLANG_DIR}/include")
+        target_link_libraries(${target} "./irrKlang")
+    else()
+        message(FATAL_ERROR "IRRKLANG_DIR could not be found through find_package or environment varaible 'IRRKLANG_DIR'! irrKlang must be installed!")
+    endif()
+endfunction(findIrrklang)
+### findIrrklang(${CMAKE_PROJECT_NAME})
+
 # OS specific options and libraries
 if(WIN32)
   # c++0x is enabled by default.
   # -Wall produces way too many warnings.
   # -pedantic is not supported.
+  add_subdirectory("ext/irrKlang-64bit-1.6.0")
+  target_link_libraries(${CMAKE_PROJECT_NAME} "./irrKlang")
+  target_include_directories(${CMAKE_PROJECT_NAME} PUBLIC "ext/irrKlang-64bit-1.6.0/include")
   target_link_libraries(${CMAKE_PROJECT_NAME} opengl32.lib)
 else()
   # Enable all pedantic warnings.
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x -Wall -pedantic")
-
   if(APPLE)
+    # irrKlang
+    set(IRRKLANG_DIR "${CMAKE_SOURCE_DIR}/ext/irrKlang-64bit-1.6.0")
+    include_directories(${IRRKLANG_DIR}/include/)
+    include_directories(${IRRKLANG_DIR}/plugins/)
+    target_link_libraries(${CMAKE_PROJECT_NAME} ${IRRKLANG_DIR}/bin/macosx-gcc/libirrklang.dylib)
     # Add required frameworks for GLFW.
     target_link_libraries(${CMAKE_PROJECT_NAME} "-framework OpenGL -framework Cocoa -framework IOKit -framework CoreVideo")
   else()
