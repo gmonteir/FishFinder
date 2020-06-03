@@ -83,8 +83,11 @@ function(findIrrklang target)
         message(FATAL_ERROR "IRRKLANG_DIR could not be found through find_package or environment varaible 'IRRKLANG_DIR'! irrKlang must be installed!")
     endif()
 endfunction(findIrrklang)
+### findIrrklang(${CMAKE_PROJECT_NAME})
 
-findIrrklang(${CMAKE_PROJECT_NAME})
+add_subdirectory("ext/irrKlang-64bit-1.6.0")
+target_link_libraries(${CMAKE_PROJECT_NAME} "./irrKlang")
+target_include_directories(${CMAKE_PROJECT_NAME} PUBLIC "ext/irrKlang-64bit-1.6.0/include")
 
 # OS specific options and libraries
 if(WIN32)

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Constants.h"
-#include "Irrklang.h"
+#include "irrKlang.h"
 
 using namespace irrklang;
 
