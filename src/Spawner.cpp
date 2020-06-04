@@ -105,7 +105,7 @@ void Spawner::spawnStaticEnemy()
 void Spawner::spawnMovingEnemy()
 {
 	shared_ptr<Entity> e = make_shared<Entity>(MOVING_ENEMY_SHAPE, int(Behavior::MOVINGENEMY));
-	findSpawnPosition(e, Random::range(ENEMY_FLOOR_OFFSET_RANGE));
+	findSpawnPosition(e, Random::range(SHARK_FLOOR_OFFSET_RANGE));
 	e->getTransform()
 		.setSize(vec3(SHARK_SIZE))
 		.setSpeed(SHARK_SPEED)

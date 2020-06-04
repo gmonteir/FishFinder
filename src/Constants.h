@@ -149,9 +149,10 @@ constexpr float SHARK_SIZE = 3 * PLAYER_SIZE;
 constexpr float SHARK_SPEED = 15;
 constexpr int ENEMY_MATERIAL = 7;
 const glm::vec2 ENEMY_FLOOR_OFFSET_RANGE = glm::vec2(8, 15);
+const glm::vec2 SHARK_FLOOR_OFFSET_RANGE = glm::vec2(15, 20);
 const glm::vec2 ENEMY_TIMER_RANGE = glm::vec2(5, 10);
 constexpr int NUM_STATIC_ENEMIES = 10;
-constexpr int NUM_MOVING_ENEMIES = 5;
+constexpr int NUM_MOVING_ENEMIES = 8;
 
 // Caustics Constants
 constexpr int NUM_CAUSTICS = 32;

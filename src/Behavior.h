@@ -173,7 +173,7 @@ class Behavior::MovingEnemyBehavior : public Behavior
 {
 public:
 	MovingEnemyBehavior(Transform& transform, Model& model)
-		: Behavior(MOVINGENEMY, transform, model), timer(0) {}
+		: Behavior(MOVINGENEMY, transform, model), timer(0), newVelocity(ORIGIN) {}
 	virtual ~MovingEnemyBehavior() {}
 
 	void start() override;
@@ -184,6 +184,7 @@ public:
 
 private:
 	float timer;
+	glm::vec3 newVelocity;
 };
 
 #endif

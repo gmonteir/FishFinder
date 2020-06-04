@@ -77,7 +77,7 @@ void Behavior::PlayerBehavior::update(float deltaTime)
 	deltas.x = forward * transform.getFacing().x + right * -transform.getFacing().z;
 	deltas.y = forward * transform.getFacing().y;
 	deltas.z = forward * transform.getFacing().z + right * transform.getFacing().x;
-	transform.interpolateVelocity(right == 0 && forward == 0 
+	transform.interpolateVelocityBySpeed(right == 0 && forward == 0
 		? ORIGIN : normalize(deltas) * (transform.getSpeed() - slow + boost), deltaTime);
 
 	if (slow > 0)
@@ -216,8 +216,10 @@ void Behavior::MovingEnemyBehavior::update(float deltaTime)
 
 	if (timer <= 0)
 	{
-		transform.setVelocity(Random::facingXZ() * transform.getSpeed());
+		newVelocity = Random::facingXZ() * transform.getSpeed();
 		timer = Random::range(ENEMY_TIMER_RANGE);
 	}
+	transform.interpolateVelocity(newVelocity, deltaTime)
+		.syncFacing();
 }
 
