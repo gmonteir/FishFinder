@@ -212,9 +212,13 @@ void Behavior::MovingEnemyBehavior::start()
 
 void Behavior::MovingEnemyBehavior::update(float deltaTime)
 {
+	vec3 difference(target->getPosition() - transform.getPosition());
 	timer -= deltaTime;
-
-	if (timer <= 0)
+	if (length(difference) < SHARK_ATTACK_DISTANCE)
+	{
+		newVelocity = normalize(difference) * transform.getSpeed();
+	}
+	else if (timer <= 0)
 	{
 		newVelocity = Random::facingXZ() * transform.getSpeed();
 		timer = Random::range(ENEMY_TIMER_RANGE);

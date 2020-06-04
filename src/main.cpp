@@ -174,7 +174,7 @@ public:
 		EntityCollection::getInstance()->addEntity(player);
 		EntityCollection::getInstance()->addEntity(testChar);
 
-		Spawner::getInstance()->init();
+		Spawner::getInstance()->init(player);
 		playerBehavior->setTarget(Spawner::getInstance()->spawnFollower());
 		CutSceneManager::getInstance().nextCutScene();
 
@@ -191,7 +191,7 @@ public:
 		GameManager::getInstance().reset();
 		playerBehavior->reset();
 		EntityCollection::getInstance()->addEntity(player);
-		Spawner::getInstance()->init();
+		Spawner::getInstance()->init(player);
 		playerBehavior->setTarget(Spawner::getInstance()->spawnFollower());
 
 		CutSceneManager::getInstance().reset();

@@ -12,7 +12,7 @@ shared_ptr<Spawner> Spawner::getInstance() {
 }
 
 // must be done after player is in Entities
-void Spawner::init()
+void Spawner::init(shared_ptr<Entity> player)
 {
 	// spawnFollower(); moved to main so we can save the first target position
 	spawnPowerup();
@@ -29,7 +29,7 @@ void Spawner::init()
 
 	for (size_t i = 0; i < NUM_MOVING_ENEMIES; i++)
 	{
-		spawnMovingEnemy();
+		spawnMovingEnemy(player);
 	}
 	cout << "Spawner init" << endl;
 }
@@ -102,7 +102,7 @@ void Spawner::spawnStaticEnemy()
 	EntityCollection::getInstance()->addEntity(e);
 }
 
-void Spawner::spawnMovingEnemy()
+void Spawner::spawnMovingEnemy(shared_ptr<Entity> player)
 {
 	shared_ptr<Entity> e = make_shared<Entity>(MOVING_ENEMY_SHAPE, int(Behavior::MOVINGENEMY));
 	findSpawnPosition(e, Random::range(SHARK_FLOOR_OFFSET_RANGE));
@@ -112,6 +112,8 @@ void Spawner::spawnMovingEnemy()
 		.setFacing(Random::facingXZ());
 	e->getModel().setTexture(SHARK_TEXTURE)
 		.setProgram(TEXTUREPROG);
+
+	dynamic_pointer_cast<Behavior::MovingEnemyBehavior>(e->getBehavior())->setTarget(&player->getTransform());
 
 	EntityCollection::getInstance()->addEntity(e);
 }

@@ -3,6 +3,7 @@
 #include "Shape.h"
 #include "Entity.h"
 
+#include <memory>
 #include <vector>
 
 class Spawner
@@ -16,13 +17,13 @@ public:
 
 	~Spawner() {}
 
-	void init();
+	void init(std::shared_ptr<Entity> player);
 	void update(float deltaTime, float gameTime);
 	Transform* spawnFollower();
 	void spawnPowerup();
 	void spawnCoral(int type);
 	void spawnStaticEnemy();
-	void spawnMovingEnemy();
+	void spawnMovingEnemy(std::shared_ptr<Entity> player);
 
 	void findSpawnPosition(std::shared_ptr<Entity>& entity, float offset);
 

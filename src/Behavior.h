@@ -173,7 +173,7 @@ class Behavior::MovingEnemyBehavior : public Behavior
 {
 public:
 	MovingEnemyBehavior(Transform& transform, Model& model)
-		: Behavior(MOVINGENEMY, transform, model), timer(0), newVelocity(ORIGIN) {}
+		: Behavior(MOVINGENEMY, transform, model), timer(0), newVelocity(ORIGIN), target(nullptr) {}
 	virtual ~MovingEnemyBehavior() {}
 
 	void start() override;
@@ -182,9 +182,12 @@ public:
 	void onOutOfBounds(float deltaTime) override {}
 	void onCollision(Behavior& collider) override {}
 
+	void setTarget(Transform* target) { this->target = target; }
+
 private:
 	float timer;
 	glm::vec3 newVelocity;
+	Transform *target;
 };
 
 #endif
