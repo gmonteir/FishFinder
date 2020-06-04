@@ -46,7 +46,7 @@ const std::string ELKHORN_CORAL_SHAPE = "ELKHORN_CORAL";
 const std::string FLOOR_SHAPE = "FLOOR_SHAPE";
 const std::string ENEMY_SHAPE = "ENEMY";
 
-const std::string MUSIC_LOOP = "loop.mp3";
+const std::string MUSIC_LOOP = "loop.wav";
 
 // Game Constants
 constexpr float INITIAL_TIME_LIMIT = 100.0f; // seconds
