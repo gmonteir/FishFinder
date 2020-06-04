@@ -21,8 +21,10 @@ unique_ptr<Behavior> Behavior::createBehavior(int behavior, Transform& transform
 		return unique_ptr<Behavior>(new FollowerBehavior(transform, model));
 	case POWERUP:
 		return unique_ptr<Behavior>(new PowerupBehavior(transform, model));
-	case ENEMY:
-		return unique_ptr<Behavior>(new EnemyBehavior(transform, model));
+	case STATICENEMY:
+		return unique_ptr<Behavior>(new StaticEnemyBehavior(transform, model));
+	case MOVINGENEMY:
+		return unique_ptr<Behavior>(new MovingEnemyBehavior(transform, model));
 	default:
 		return unique_ptr<Behavior>(new NoBehavior(transform, model));
 	}
@@ -111,7 +113,8 @@ void Behavior::PlayerBehavior::onCollision(Behavior& collider)
 		collider.remove();
 		GameManager::getInstance().increaseStamina(STAMINA_INCREMENT);
 		break;
-	case ENEMY:
+	case STATICENEMY:
+	case MOVINGENEMY:
 		if (immuneTime > 0) break;
 		slow = PLAYER_SPEED;
 		immuneTime = IMMUNITY_TIME;
@@ -195,14 +198,32 @@ void Behavior::PowerupBehavior::update(float deltaTime)
 	}
 }
 
-// ----------------------------- ENEMY ----------------------------- //
+// ----------------------------- STATIC ENEMY ----------------------------- //
 
-void Behavior::EnemyBehavior::start()
+void Behavior::StaticEnemyBehavior::start()
 {
 	timer = Random::range(ENEMY_TIMER_RANGE);
 }
 
-void Behavior::EnemyBehavior::update(float deltaTime)
+void Behavior::StaticEnemyBehavior::update(float deltaTime)
+{
+	timer -= deltaTime;
+
+	if (timer <= 0)
+	{
+		transform.setVelocity(Random::facingXZ());
+		timer = Random::range(ENEMY_TIMER_RANGE);
+	}
+}
+
+// ----------------------------- MOVING ENEMY ----------------------------- //
+
+void Behavior::MovingEnemyBehavior::start()
+{
+	timer = Random::range(ENEMY_TIMER_RANGE);
+}
+
+void Behavior::MovingEnemyBehavior::update(float deltaTime)
 {
 	timer -= deltaTime;
 
