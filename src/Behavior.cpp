@@ -146,12 +146,6 @@ void Behavior::PlayerBehavior::checkBoost(float deltaTime)
 }
 
 // ----------------------------- FOLLOWER ----------------------------- //
-void Behavior::FollowerBehavior::start()
-{
-	transform.setSpeed(FOLLOWER_SPEED);
-	model.setProgram(TEXTUREPROG);
-}
-
 void Behavior::FollowerBehavior::update(float deltaTime)
 {
 	if (target)
@@ -181,11 +175,6 @@ void Behavior::FollowerBehavior::setPathVelocity(float deltaTime)
 
 
 // ----------------------------- POWERUP ----------------------------- //
-void Behavior::PowerupBehavior::start()
-{
-	model.setProgram(REFLECTPROG);
-}
-
 void Behavior::PowerupBehavior::update(float deltaTime)
 {
 	transform.move(vec3(0, sin(timer) * deltaTime, 0));
@@ -199,7 +188,6 @@ void Behavior::PowerupBehavior::update(float deltaTime)
 }
 
 // ----------------------------- STATIC ENEMY ----------------------------- //
-
 void Behavior::StaticEnemyBehavior::start()
 {
 	timer = Random::range(ENEMY_TIMER_RANGE);
@@ -211,13 +199,12 @@ void Behavior::StaticEnemyBehavior::update(float deltaTime)
 
 	if (timer <= 0)
 	{
-		transform.setVelocity(Random::facingXZ());
+		transform.setVelocity(Random::facingXZ() * transform.getSpeed());
 		timer = Random::range(ENEMY_TIMER_RANGE);
 	}
 }
 
 // ----------------------------- MOVING ENEMY ----------------------------- //
-
 void Behavior::MovingEnemyBehavior::start()
 {
 	timer = Random::range(ENEMY_TIMER_RANGE);
@@ -229,7 +216,7 @@ void Behavior::MovingEnemyBehavior::update(float deltaTime)
 
 	if (timer <= 0)
 	{
-		transform.setVelocity(Random::facingXZ());
+		transform.setVelocity(Random::facingXZ() * transform.getSpeed());
 		timer = Random::range(ENEMY_TIMER_RANGE);
 	}
 }

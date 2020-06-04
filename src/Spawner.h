@@ -21,7 +21,8 @@ public:
 	Transform* spawnFollower();
 	void spawnPowerup();
 	void spawnCoral(int type);
-	void spawnEnemy();
+	void spawnStaticEnemy();
+	void spawnMovingEnemy();
 
 	void findSpawnPosition(std::shared_ptr<Entity>& entity, float offset);
 

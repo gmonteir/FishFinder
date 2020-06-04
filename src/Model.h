@@ -44,10 +44,10 @@ public:
 	const std::vector<std::shared_ptr<Shape>>& getShapes() const { return shapes; }
 	Animator& getAnimator() { return *animator; }
 
-	void setMaterial(int material) { this->material = material; }
-	void setTexture(const std::string& textureName) 
-		{ texture = Textures::getInstance()->getTexture(textureName); }
-	void setProgram(int prog) { program = prog; }
+	Model& setMaterial(int material) { this->material = material; return *this; }
+	Model& setTexture(const std::string& textureName)
+		{ texture = Textures::getInstance()->getTexture(textureName); return *this; }
+	Model& setProgram(int prog) { program = prog; return *this; }
 
 private:
 	const std::vector<std::shared_ptr<Shape>>& shapes;

@@ -44,7 +44,8 @@ const std::string TREE_CORAL_SHAPE = "TREE_CORAL";
 const std::string SOFT_CORAL_SHAPE = "SOFT_CORAL";
 const std::string ELKHORN_CORAL_SHAPE = "ELKHORN_CORAL";
 const std::string FLOOR_SHAPE = "FLOOR_SHAPE";
-const std::string ENEMY_SHAPE = "ENEMY";
+const std::string STATIC_ENEMY_SHAPE = "STATIC_ENEMY";
+const std::string MOVING_ENEMY_SHAPE = SHARK_SHAPE;
 
 const std::string MUSIC_LOOP = "loop.wav";
 
@@ -144,10 +145,13 @@ const int CORAL_MATERIALS[]{
 
 // Enemy Constants
 constexpr float ENEMY_SIZE = 3;
+constexpr float SHARK_SIZE = 3 * PLAYER_SIZE;
+constexpr float SHARK_SPEED = 15;
 constexpr int ENEMY_MATERIAL = 7;
 const glm::vec2 ENEMY_FLOOR_OFFSET_RANGE = glm::vec2(8, 15);
 const glm::vec2 ENEMY_TIMER_RANGE = glm::vec2(5, 10);
-constexpr int NUM_ENEMIES = 10;
+constexpr int NUM_STATIC_ENEMIES = 10;
+constexpr int NUM_MOVING_ENEMIES = 5;
 
 // Caustics Constants
 constexpr int NUM_CAUSTICS = 32;
