@@ -28,6 +28,7 @@ const std::string GURGLE_TEXTURE = "GURGLE_TXT";
 const std::string SHARK_TEXTURE = "SHARK_TXT";
 const std::string CAUSTIC_TEXTURE = "CAUSTIC_TXT";
 const std::string FLOOR_TEXTURE = "FLOOR_TXT";
+const std::string CORAL_TEXTURE = "CORAL_TXT";
 
 const std::string CUBE_SHAPE = "CUBE";
 const std::string SPHERE_SHAPE = "SPHERE";
@@ -111,7 +112,7 @@ constexpr float MAX_SPAWN_DISTANCE = 200;
 constexpr float MAX_SPAWN_VELOCITY = 15;
 constexpr float MIN_SPAWN_SIZE = 3;
 constexpr float MAX_SPAWN_SIZE = 6;
-constexpr int DEFAULT_MATERIAL = 3;
+constexpr int NO_MATERIAL = -1; // no material
 constexpr float FOLLOWER_SPEED = 40;
 constexpr float FOLLOWER_OFFSET = 10.0f;
 constexpr float FOLLOWER_FLOOR_OFFSET = 10.0f;
@@ -119,7 +120,6 @@ constexpr float POWERUP_OFFSET = 7.0;
 
 // Powerup Constants
 constexpr float POWERUP_SIZE = 1.7;
-constexpr int POWERUP_MATERIAL = 5;
 constexpr float POWERUP_DESPAWN_TIME = 50;
 constexpr float STAMINA_INCREMENT = 10;
 
@@ -153,7 +153,7 @@ constexpr int NUM_ENEMIES = 10;
 constexpr int NUM_CAUSTICS = 32;
 
 // Shader Constants
-constexpr int NUM_SHADERS = 13;
+constexpr int NUM_SHADERS = 14;
 constexpr int SIMPLEPROG = 0;
 constexpr int SKYBOXPROG = 1;
 constexpr int TEXTUREPROG = 2;
@@ -167,6 +167,7 @@ constexpr int WATERFBOPROG = 9;
 constexpr int PARTICLEPROG = 10;
 constexpr int LIGHTDEPTHPROG = 11;
 constexpr int CHARPARTICLEPROG = 12;
+constexpr int CORALPROG = 13;
 
 // Light Constants
 struct Light {

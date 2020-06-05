@@ -25,7 +25,7 @@ public:
 		: shapes(*Shapes::getInstance()->getShape(shapeName)), 
 		animator(Animator::createAnimator(shapeName)),
 		rotationOffset(Shapes::getInstance()->getRotationOffset(shapeName)),
-		material(DEFAULT_MATERIAL), program(SIMPLEPROG), texture(nullptr)
+		material(NO_MATERIAL), program(SIMPLEPROG), texture(nullptr)
 	{
 		extractMinMax();
 		extractShiftScale();

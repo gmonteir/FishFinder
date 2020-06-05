@@ -43,6 +43,7 @@ class ShaderManager
 		std::shared_ptr<Program> initParticleProg();
 		std::shared_ptr<Program> initLightDepthProg();
 		std::shared_ptr<Program> initCharParticleProg();
+		std::shared_ptr<Program> initCoralProg();
 
 		std::shared_ptr<Program> getShader(int i) const { return shaderProgs[i]; }
 	    void setData(const uniforms& common) { uniformData = common; }
