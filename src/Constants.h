@@ -153,7 +153,7 @@ constexpr int NUM_STATIC_ENEMIES = 10;
 // Shark Constants
 constexpr float SHARK_SIZE = 3 * PLAYER_SIZE;
 constexpr float SHARK_SPEED = 15;
-constexpr float SHARK_ATTACK_DISTANCE = 5;
+constexpr float SHARK_ATTACK_DISTANCE = 40;
 const glm::vec2 SHARK_FLOOR_OFFSET_RANGE = glm::vec2(15, 20);
 constexpr int NUM_MOVING_ENEMIES = 8;
 
