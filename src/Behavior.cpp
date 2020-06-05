@@ -4,6 +4,7 @@
 #include "GameManager.h"
 #include "FBOManager.h"
 #include "CutSceneManager.h"
+#include "ParticleManager.h"
 
 #include <iostream>
 
@@ -97,6 +98,7 @@ void Behavior::PlayerBehavior::onCollision(Behavior& collider)
 		follower->setTarget(previousCharacter);
 		GameManager::getInstance().decrementNumChar();
 		CutSceneManager::getInstance().nextCutScene();
+		ParticleManager::getInstance().setCaptured(target);
 		if (GameManager::getInstance().getCharRemaining() > 0) {
 			target = Spawner::getInstance()->spawnFollower();
 		}

@@ -87,17 +87,20 @@ vec3 CalcPointLight(PointLight light, vec3 norm, vec3 pos)
 
 float TestShadow(vec3 lfPos)
 {
+    float shadow = 0.0;
     float bias = 0.005;
-	//1: shift the coordinates from -1, 1 to 0 ,1
     vec3 shifted = 0.5 * (lfPos + vec3(1.0));
-	//2: read off the stored depth (.) from the ShadowDepth, using the shifted.xy 
-    vec4 Ld = texture(shadowDepth, shifted.xy);
-	//3: compare to the current depth (.z) of the projected depth
 
-	//4: return 1 if the point is shadowed
-    if (Ld.x < shifted.z - bias) {
-        return 1.0;
+    vec2 texelSize = 1.0 / textureSize(shadowDepth, 0);
+    for (int x = -1; x <= 1; ++x)
+    {
+        for (int y = -1; y <= 1; ++y)
+        {
+            float pcfDepth = texture(shadowDepth, shifted.xy + vec2(x, y) * texelSize).r; 
+            shadow += shifted.z - bias > pcfDepth ? 1.0 : 0.0;        
+        }    
     }
+    shadow /= 9.0;
 
-	return 0.0;
+    return shadow;
 }

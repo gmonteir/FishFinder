@@ -8,7 +8,7 @@ uniform float time;
 
 void main()
 {
-	gl_PointSize = 6.0;
+	gl_PointSize = 15.0;
 	float inc = mod(floor(50*time), 100)/20.f;
 
 	vec3 s = vertPos + vec3(0.5*sin(time), inc, 0);

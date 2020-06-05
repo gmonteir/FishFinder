@@ -46,7 +46,7 @@ Transform* Spawner::spawnFollower()
 		return nullptr;
 	}
 	const Character& c = CHARACTERS[NUM_CHARACTERS - GameManager::getInstance().getCharRemaining()];
-	shared_ptr<Entity> e = make_shared<Entity>(c.shape, Behavior::FOLLOWER);
+	shared_ptr<Entity> e = make_shared<Entity>(c.shape, int(Behavior::FOLLOWER));
 	findSpawnPosition(e, FOLLOWER_FLOOR_OFFSET);
 	e->getTransform()
 		.setVelocity(Random::spawnVel())
@@ -60,7 +60,7 @@ Transform* Spawner::spawnFollower()
 
 void Spawner::spawnPowerup()
 {
-	shared_ptr<Entity> e = make_shared<Entity>(SPHERE_SHAPE, Behavior::POWERUP);
+	shared_ptr<Entity> e = make_shared<Entity>(SPHERE_SHAPE, int(Behavior::POWERUP));
 	findSpawnPosition(e, POWERUP_OFFSET);
 	e->getTransform()
 		.setSize(vec3(POWERUP_SIZE))
@@ -72,7 +72,7 @@ void Spawner::spawnPowerup()
 
 void Spawner::spawnCoral(int type)
 {
-	shared_ptr<Entity> e = make_shared<Entity>(CORAL_SHAPES[type], Behavior::NONE);
+	shared_ptr<Entity> e = make_shared<Entity>(CORAL_SHAPES[type], int(Behavior::NONE));
 	findSpawnPosition(e, CORAL_FLOOR_OFFSET);
 	e->getTransform()
 		.setSize(Random::spawnSize())
@@ -84,7 +84,7 @@ void Spawner::spawnCoral(int type)
 
 void Spawner::spawnEnemy()
 {
-	shared_ptr<Entity> e = make_shared<Entity>(ENEMY_SHAPE, Behavior::ENEMY);
+	shared_ptr<Entity> e = make_shared<Entity>(ENEMY_SHAPE, int(Behavior::ENEMY));
 	findSpawnPosition(e, Random::range(ENEMY_FLOOR_OFFSET_RANGE));
 	e->getTransform()
 		.setSize(vec3(ENEMY_SIZE))

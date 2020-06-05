@@ -20,6 +20,7 @@
 #include "ParticleManager.h"
 #include "Textures.h"
 #include "Floor.h"
+#include "AudioManager.h"
 
 #define _USE_MATH_DEFINES
 #include <math.h>
@@ -161,17 +162,17 @@ public:
 		player = make_shared<Entity>(DORY_SHAPE, int(Behavior::PLAYER));
 		playerBehavior = dynamic_pointer_cast<Behavior::PlayerBehavior>(player->getBehavior());
 
-		/*
-		testChar = make_shared<Entity>(MARLIN_SHAPE, int(Behavior::NONE));
-		testChar->getModel().setTexture(MARLIN_TEXTURE);
+		//
+		testChar = make_shared<Entity>(SHARK_SHAPE, int(Behavior::NONE));
+		testChar->getModel().setTexture(SHARK_TEXTURE);
 		testChar->getModel().setProgram(TEXTUREPROG);
-		testChar->getTransform().setSize(vec3(PARENT_SIZE));
-		testChar->getTransform().setPosition(vec3(5, 0, -10));
+		testChar->getTransform().setSize(vec3(3*PLAYER_SIZE));
+		testChar->getTransform().setPosition(vec3(5, 0, 20));
 		testChar->bringToFloor();
-		*/
+		//
 
 		EntityCollection::getInstance()->addEntity(player);
-		//EntityCollection::getInstance()->addEntity(testChar);
+		EntityCollection::getInstance()->addEntity(testChar);
 
 		Spawner::getInstance()->init();
 		playerBehavior->setTarget(Spawner::getInstance()->spawnFollower());
@@ -211,12 +212,12 @@ public:
 		FBOManager::getInstance().update(deltaTime, gameTime);
 	}
 
-	void renderScene(shared_ptr<MatrixStack> Model, vec4* planes)
+	void renderScene(shared_ptr<MatrixStack> Model, vec4* planes, float deltaTime)
 	{
 		EntityCollection::getInstance()->draw(Model, planes);
 		Floor::getInstance()->draw(Model);
 		Skybox::getInstance().draw(Model, camera.getEye());
-		ParticleManager::getInstance().processParticles();
+		ParticleManager::getInstance().processParticles(player->getTransform().getPosition(), deltaTime);
 	}
 
 	void renderSceneToFBO(int fbo, int progIndex, shared_ptr<MatrixStack> Model, vec4* planes)
@@ -271,7 +272,7 @@ public:
 			renderSceneToFBO(int(FBOManager::DEPTH_BUFFER), DEPTHPROG, Model, planes);
 
 			FBOManager::getInstance().bindBuffer(int(FBOManager::MAIN_BUFFER));
-			renderScene(Model, planes);
+			renderScene(Model, planes, deltaTime);
 
 			FBOManager::getInstance().processFog();
 			FBOManager::getInstance().processBlur();
@@ -281,7 +282,7 @@ public:
 		else
 		{
 			FBOManager::getInstance().bindScreen();
-			renderScene(Model, planes);
+			renderScene(Model, planes, deltaTime);
 		}
 
 		GameManager::getInstance().draw();
@@ -303,6 +304,7 @@ int main(int argc, char **argv)
 	// may need to initialize or set up different data and state
 	application->init();
 	application->initEntities();
+	AudioManager::getInstance().startMusicLoop();
 
 	double gameTime = 0; // keep track of how long we have been in the game.
 	double currentTime = glfwGetTime();
