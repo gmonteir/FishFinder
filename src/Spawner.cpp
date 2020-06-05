@@ -58,8 +58,7 @@ Transform* Spawner::spawnFollower()
 		.setSize(c.size)
 		.setSpeed(FOLLOWER_SPEED)
 		.syncFacing();
-	e->getModel().setTexture(c.texture)
-		.setProgram(TEXTUREPROG);
+	e->getModel().setTexture(c.texture);
 
 	EntityCollection::getInstance()->addEntity(e);
 	return &e->getTransform();
@@ -73,7 +72,8 @@ void Spawner::spawnPowerup()
 		.setSize(vec3(POWERUP_SIZE))
 		.setFacing(Random::facingXZ());
 	e->getModel().setMaterial(POWERUP_MATERIAL)
-		.setProgram(REFLECTPROG);
+		.setTextureProgram(REFLECTPROG)
+		.enableTexture();
 
 	EntityCollection::getInstance()->addEntity(e);
 }
@@ -111,7 +111,7 @@ void Spawner::spawnMovingEnemy(shared_ptr<Entity> player)
 		.setSpeed(SHARK_SPEED)
 		.setFacing(Random::facingXZ());
 	e->getModel().setTexture(SHARK_TEXTURE)
-		.setProgram(TEXTUREPROG);
+		.setMaterial(SHARK_MATERIAL);
 
 	dynamic_pointer_cast<Behavior::MovingEnemyBehavior>(e->getBehavior())->setTarget(&player->getTransform());
 

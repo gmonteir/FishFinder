@@ -162,14 +162,13 @@ public:
 		player = make_shared<Entity>(DORY_SHAPE, int(Behavior::PLAYER));
 		playerBehavior = dynamic_pointer_cast<Behavior::PlayerBehavior>(player->getBehavior());
 
-		//
+		/*
 		testChar = make_shared<Entity>(SHARK_SHAPE, int(Behavior::NONE));
 		testChar->getModel().setTexture(SHARK_TEXTURE);
-		testChar->getModel().setProgram(TEXTUREPROG);
 		testChar->getTransform().setSize(vec3(3*PLAYER_SIZE));
 		testChar->getTransform().setPosition(vec3(5, 0, 20));
 		testChar->bringToFloor();
-		//
+		*/
 
 		EntityCollection::getInstance()->addEntity(player);
 		EntityCollection::getInstance()->addEntity(testChar);

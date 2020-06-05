@@ -53,7 +53,6 @@ void Behavior::PlayerBehavior::start()
 		.setSpeed(PLAYER_SPEED);
 	bringToFloor(FOLLOWER_FLOOR_OFFSET);
 	model.setTexture(DORY_TEXTURE);
-	model.setProgram(TEXTUREPROG);
 }
 
 void Behavior::PlayerBehavior::update(float deltaTime)
@@ -217,11 +216,16 @@ void Behavior::MovingEnemyBehavior::update(float deltaTime)
 	if (length(difference) < SHARK_ATTACK_DISTANCE)
 	{
 		newVelocity = normalize(difference) * transform.getSpeed();
+		model.disableTexture();
 	}
-	else if (timer <= 0)
+	else 
 	{
-		newVelocity = Random::facingXZ() * transform.getSpeed();
-		timer = Random::range(ENEMY_TIMER_RANGE);
+		model.enableTexture();
+		if (timer <= 0)
+		{
+			newVelocity = Random::facingXZ() * transform.getSpeed();
+			timer = Random::range(ENEMY_TIMER_RANGE);
+		}
 	}
 	transform.interpolateVelocity(newVelocity, deltaTime)
 		.syncFacing();
