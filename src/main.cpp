@@ -84,6 +84,9 @@ public:
 			case GLFW_KEY_3: // 3rd person
 				camera.thirdPerson();
 				break;
+			case GLFW_KEY_4: // Side person
+				camera.sidePerson();
+				break;
 			case GLFW_KEY_COMMA: // cheat stamina
 				GameManager::getInstance().increaseStamina(STAMINA_INCREMENT);
 				break;
@@ -227,9 +230,9 @@ public:
 
 	void renderScene(shared_ptr<MatrixStack> Model, vec4* planes, float deltaTime)
 	{
-		EntityCollection::getInstance()->draw(Model, planes);
-		Floor::getInstance()->draw(Model);
 		Skybox::getInstance().draw(Model, camera.getEye());
+		Floor::getInstance()->draw(Model);
+		EntityCollection::getInstance()->draw(Model, planes);
 		ParticleManager::getInstance().processParticles(player->getTransform().getPosition(), deltaTime);
 	}
 
@@ -317,7 +320,7 @@ int main(int argc, char **argv)
 	// may need to initialize or set up different data and state
 	application->init();
 	application->initEntities();
-	AudioManager::getInstance().startMusicLoop();
+	//AudioManager::getInstance().startMusicLoop();
 
 	double gameTime = 0; // keep track of how long we have been in the game.
 	double currentTime = glfwGetTime();

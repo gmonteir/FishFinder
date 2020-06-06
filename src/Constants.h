@@ -89,9 +89,10 @@ constexpr float IMMUNITY_TIME = 6.0f; // seconds
 // Camera
 constexpr float CAMERA_SPEED = 3;
 constexpr float MOUSE_SENSITIVITY = 0.03;
-const glm::vec2 FIRST_PERSON_OFFSET = glm::vec2(PLAYER_SIZE * 1.5, 0);
-const glm::vec2 SECOND_PERSON_OFFSET = glm::vec2(PLAYER_SIZE + 10, PLAYER_SIZE + 0.3);
-const glm::vec2 THIRD_PERSON_OFFSET = glm::vec2(-SECOND_PERSON_OFFSET.x, SECOND_PERSON_OFFSET.y);
+const glm::vec3 FIRST_PERSON_OFFSET  = glm::vec3(0, 0, PLAYER_SIZE * 1.5);
+const glm::vec3 SECOND_PERSON_OFFSET = glm::vec3(0, PLAYER_SIZE + 0.3, PLAYER_SIZE + 10);
+const glm::vec3 THIRD_PERSON_OFFSET  = glm::vec3(0, SECOND_PERSON_OFFSET.y, -SECOND_PERSON_OFFSET.z);
+const glm::vec3 SIDE_PERSON_OFFSET   = glm::vec3(0, 0, 0);
 constexpr float CAMERA_FLOOR_OFFSET = 1.0f;
 
 constexpr float MAX_VIEW = 80.0 / 180 * M_PI;

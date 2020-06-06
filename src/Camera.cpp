@@ -21,7 +21,7 @@ void Camera::update(float deltaTime, Transform& transform)
 	floorHeight = Floor::getInstance()->getHeight(eye.x, eye.z);
 	if (eye.y < floorHeight)
 		eye.y = floorHeight + CAMERA_FLOOR_OFFSET;
-	updateLookAt();
+	interpolateLookAt(deltaTime);
 }
 
 void Camera::cursorCallback(float xpos, float ypos)
@@ -56,8 +56,11 @@ void Camera::interpolateRotation(float dx, float dy, float deltaTime)
 
 void Camera::interpolatePosition(vec3 pos, float deltaTime)
 {
-	position = mix(position, pos, CAMERA_SPEED * deltaTime);
-	updateEye();
+	//position = mix(position, pos, CAMERA_SPEED * deltaTime);
+	//updateEye();
+
+	position = pos;
+	interpolateEye(deltaTime);
 }
 
 //void Camera::moveForward(float delta)
