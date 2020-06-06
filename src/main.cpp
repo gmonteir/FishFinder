@@ -66,8 +66,14 @@ public:
 		if (action == GLFW_PRESS) {
 			switch (key)
 			{
-			case GLFW_KEY_ESCAPE:
+			case GLFW_KEY_ESCAPE: // Close Game
 				glfwSetWindowShouldClose(window, GL_TRUE);
+				break;
+			case GLFW_KEY_R: // Reset Game
+				reset();
+				break;
+			case GLFW_KEY_SPACE: // Start Game
+				start();
 				break;
 			case GLFW_KEY_1: // 1st person
 				camera.firstPerson();
@@ -108,12 +114,10 @@ public:
 			case GLFW_KEY_P: // top Camera
 				showTopCamera = !showTopCamera;
 				break;
-			case GLFW_KEY_R: // Reset Game
-				reset();
-				break;
 			}
 		}
-		Keys::getInstance().update(key, action);
+		if (GameManager::getInstance().inGame())
+			Keys::getInstance().update(key, action);
 	}
 
 	void mouseCallback(GLFWwindow* window, int button, int action, int mods) override
@@ -182,7 +186,15 @@ public:
 			Spawner::getInstance()->spawnFollower();*/
 
 		FBOManager::getInstance().increaseBlurAmount(BLUR_INCREMENT);
+	}
+
+	void start()
+	{
+		GameManager::getInstance().play();
+		FBOManager::getInstance().increaseBlurAmount(BLUR_INCREMENT);
 		FBOManager::getInstance().triggerConfuse();
+
+		cout << "Play!" << endl;
 	}
 
 	void reset()
@@ -197,19 +209,21 @@ public:
 		CutSceneManager::getInstance().reset();
 		CutSceneManager::getInstance().nextCutScene();
 		FBOManager::getInstance().increaseBlurAmount(BLUR_INCREMENT);
-		FBOManager::getInstance().triggerConfuse();
 		cout << "Resetted!" << endl;
 	}
 
 	void update(float deltaTime, float gameTime)
 	{
-		Spawner::getInstance()->update(deltaTime, gameTime);
-		CutSceneManager::getInstance().update(deltaTime, gameTime);
 		GameManager::getInstance().update(deltaTime, gameTime);
-		EntityCollection::getInstance()->update(deltaTime);
-		camera.update(deltaTime, player->getTransform());
+		if (GameManager::getInstance().inGame())
+		{
+			Spawner::getInstance()->update(deltaTime, gameTime);
+			CutSceneManager::getInstance().update(deltaTime, gameTime);
+			EntityCollection::getInstance()->update(deltaTime);
 
-		FBOManager::getInstance().update(deltaTime, gameTime);
+			FBOManager::getInstance().update(deltaTime, gameTime);
+		}
+		camera.update(deltaTime, player->getTransform());
 	}
 
 	void renderScene(shared_ptr<MatrixStack> Model, vec4* planes, float deltaTime)

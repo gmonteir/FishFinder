@@ -20,7 +20,7 @@ class GameManager
 
 	struct GameStats {
 		GameStats() : timeRemaining(INITIAL_TIME_LIMIT), charRemaining(NUM_CHARACTERS), 
-			gameState(GAME_ACTIVE), stamina(INITIAL_STAMINA) {}
+			gameState(GAME_TITLE), stamina(INITIAL_STAMINA) {}
 		float timeRemaining;
 		int charRemaining;
 		int gameState;
@@ -39,15 +39,18 @@ class GameManager
 		void toggleDrawing() { shouldDraw = !shouldDraw; }
 	};
 
-	GameManager();
-
-public:
 	struct TitleTexts {
+		TitleTexts() : title(TITLE_TEXT), startText(START_TEXT) { startText.active = true; }
 		std::string title;
 		BlinkText startText;
 
-		void draw();
+		void reset() { startText = BlinkText(START_TEXT); }
+		void update(float deltaTime) { startText.update(deltaTime); }
 	};
+
+	GameManager();
+
+public:
 
 	static GameManager& getInstance();
 
@@ -57,9 +60,11 @@ public:
 
 	void update(float deltaTime, float gameTime);
 	void draw();
+	void play();
 	void lose();
 	void win();
 
+	bool inGame() { return gameStats.gameState > GAME_TITLE; }
 	int getCharRemaining() { return gameStats.charRemaining; }
 
 	float getStamina() { return gameStats.stamina; }
@@ -68,20 +73,28 @@ public:
 
 	void decrementNumChar() { gameStats.charRemaining--; }
 
-	void drawText(int alignment, const std::string& text, float x, float y, float scale = UI_FONT_SIZE, glm::vec3 color = UI_COLOR);
-	void drawTextWithFloat(int alignment, const char* format, float num,
-		float x, float y, float scale = UI_FONT_SIZE, glm::vec3 color = UI_COLOR);
-
-	void drawCutSceneText();
-
 private:
 	RenderText* textRenderer;
 	FPSCounter fpsCounter;
 	GameStats gameStats;
+	TitleTexts titleTexts;
 
 	BlinkText restartText;
 	int width, height;
 
-	static const TitleTexts titleTexts;
+	void drawText(int alignment, const std::string& text, 
+		float x, float y, float scale = UI_FONT_SIZE, glm::vec3 color = UI_COLOR);
+	void drawTextWithFloat(int alignment, const char* format, float num,
+		float x, float y, float scale = UI_FONT_SIZE, glm::vec3 color = UI_COLOR);
+	void drawBlinkText(int alignment, const BlinkText& blinkText, 
+		float x, float y, float scale = UI_FONT_SIZE, glm::vec3 color = UI_COLOR);
+	void drawCutSceneText();
+	void drawInGameStats();
+	void drawTimeRemaining();
+	void drawFPS();
+
+	void drawTitleScreen();
+	void drawWinScreen();
+	void drawLoseScreen();
 };
 

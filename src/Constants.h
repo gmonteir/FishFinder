@@ -50,10 +50,10 @@ const std::string MUSIC_LOOP = "loop.wav";
 
 // Game Constants
 constexpr float INITIAL_TIME_LIMIT = 100.0f; // seconds
-constexpr int GAME_LOST = -1;
 constexpr int GAME_TITLE = 0;
 constexpr int GAME_ACTIVE = 1;
 constexpr int GAME_WON = 2;
+constexpr int GAME_LOST = 3;
 constexpr float WARNING_TIME = 15.0f;
 
 // UI Constants
@@ -226,6 +226,10 @@ constexpr float SCENE_TEXT_DELAY = 1.0f;
 constexpr float TEXT_BLINK_DELAY = 0.5f;
 
 const std::string BLINK_TEXT = "Press 'R' to restart";
+const std::string TITLE_TEXT = "Finding Dory";
+const std::string START_TEXT = "Press Spacebar to begin";
+const std::string WIN_TEXT = "You won!";
+const std::string LOSE_TEXT = "Game Over";
 
 const glm::vec2 RANDOM_TEXT_TIME_RANGE = glm::vec2(20, 50);
 const glm::vec2 BOOST_TEXT_TIME_RANGE = glm::vec2(5, 15);
