@@ -65,7 +65,7 @@ void EntityCollection::draw(std::shared_ptr<MatrixStack>& M, vec4* planes) const
 				for (int l = 0; l < entities[i][j][k]->size(); l++) {
 					shared_ptr<Entity> entity = entities[i][j][k]->at(l);
 
-					if (!Camera::viewFrustCull(entity->getTransform().getPosition(), entity->getRadius(), planes)) {
+					if (!Camera::shouldCull(entity->getTransform().getPosition(), entity->getRadius(), planes)) {
 						entity->draw(M);
 					}
 													
@@ -83,7 +83,7 @@ void EntityCollection::draw(shared_ptr<Program>& prog, shared_ptr<MatrixStack>& 
 				for (int l = 0; l < entities[i][j][k]->size(); l++) {
 					shared_ptr<Entity> entity = entities[i][j][k]->at(l);
 
-					if (!Camera::viewFrustCull(entity->getTransform().getPosition(), entity->getRadius(), planes)) {
+					if (!Camera::shouldCull(entity->getTransform().getPosition(), entity->getRadius(), planes)) {
 						entity->draw(prog, M);
 					}
 				}

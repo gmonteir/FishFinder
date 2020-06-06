@@ -15,7 +15,8 @@ void Camera::update(float deltaTime, Transform& transform)
 	if (Keys::getInstance().keyPressed(Keys::ROTRIGHT))
 		interpolateRotation(-1, 0, 1);
 
-	interpolatePosition(transform.getPosition(), deltaTime);
+	position = transform.getPosition();
+	interpolateEye(deltaTime);
 	transform.interpolateFacing(getDirection(), deltaTime);
 	
 	floorHeight = Floor::getInstance()->getHeight(eye.x, eye.z);
@@ -52,15 +53,6 @@ void Camera::interpolateRotation(float dx, float dy, float deltaTime)
 	alpha = mix(alpha, finalAlpha, CAMERA_SPEED * deltaTime);
 
 	updateDirection();
-}
-
-void Camera::interpolatePosition(vec3 pos, float deltaTime)
-{
-	//position = mix(position, pos, CAMERA_SPEED * deltaTime);
-	//updateEye();
-
-	position = pos;
-	interpolateEye(deltaTime);
 }
 
 //void Camera::moveForward(float delta)
@@ -133,22 +125,14 @@ vec4* Camera::extractVFPlanes(mat4 P, vec4* planes)
 	return planes;
 }
 
-float DistToPlane(float A, float B, float C, float D, vec3 point) {
-	return A * point.x + B * point.y + C * point.z + D;
-}
-
-int Camera::viewFrustCull(vec3 center, float radius, vec4* planes) {
-
+bool Camera::shouldCull(vec3 center, float radius, vec4* planes) 
+{
 	float dist;
-
 	for (int i = 0; i < 6; i++) {
-		dist = DistToPlane(planes[i].x, planes[i].y, planes[i].z, planes[i].w, center);
+		dist = distToPlane(planes[i].x, planes[i].y, planes[i].z, planes[i].w, center);
 		//test against each plane
-		if (dist < (-1) * radius)
-			return 1;
-
+		if (dist < -radius)
+			return true;
 	}
-
-	return 0;
-
+	return false;
 }

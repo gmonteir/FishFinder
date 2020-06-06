@@ -92,7 +92,7 @@ constexpr float MOUSE_SENSITIVITY = 0.03;
 const glm::vec3 FIRST_PERSON_OFFSET  = glm::vec3(0, 0, PLAYER_SIZE * 1.5);
 const glm::vec3 SECOND_PERSON_OFFSET = glm::vec3(0, PLAYER_SIZE + 0.3, PLAYER_SIZE + 10);
 const glm::vec3 THIRD_PERSON_OFFSET  = glm::vec3(0, SECOND_PERSON_OFFSET.y, -SECOND_PERSON_OFFSET.z);
-const glm::vec3 SIDE_PERSON_OFFSET   = glm::vec3(0, 0, 0);
+const glm::vec3 SIDE_PERSON_OFFSET   = glm::vec3(PLAYER_SIZE * 10, 0, PLAYER_SIZE);
 constexpr float CAMERA_FLOOR_OFFSET = 1.0f;
 
 constexpr float MAX_VIEW = 80.0 / 180 * M_PI;
