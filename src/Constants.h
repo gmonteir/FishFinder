@@ -158,7 +158,7 @@ constexpr float SHARK_SPEED = 15;
 constexpr float SHARK_ATTACK_DISTANCE = 40;
 constexpr int SHARK_MATERIAL = 8;
 const glm::vec2 SHARK_FLOOR_OFFSET_RANGE = glm::vec2(15, 20);
-constexpr int NUM_MOVING_ENEMIES = 8;
+constexpr int NUM_MOVING_ENEMIES = 5;
 
 // Caustics Constants
 constexpr int NUM_CAUSTICS = 32;
