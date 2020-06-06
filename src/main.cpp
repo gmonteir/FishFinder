@@ -175,7 +175,7 @@ public:
 		*/
 
 		EntityCollection::getInstance()->addEntity(player);
-		EntityCollection::getInstance()->addEntity(testChar);
+		//EntityCollection::getInstance()->addEntity(testChar);
 
 		Spawner::getInstance()->init(player);
 		playerBehavior->setTarget(Spawner::getInstance()->spawnFollower());
