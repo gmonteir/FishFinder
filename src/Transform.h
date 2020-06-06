@@ -2,6 +2,8 @@
 
 #include "Constants.h"
 
+#include <iostream>
+
 // value_ptr for glm
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -24,8 +26,10 @@ public:
 	/* Move by velocity and deltaTime */
 	Transform& move(float deltaTime) { return move(velocity * deltaTime); }
 
-	Transform& interpolateVelocity(const glm::vec3& vel, float deltaTime) 
-		{ return setVelocity(velocity = mix(this->velocity, vel, deltaTime * speed)); }
+	Transform& interpolateVelocity(const glm::vec3& vel, float delta) 
+		{ return setVelocity(velocity = mix(this->velocity, vel, delta)); }
+	Transform& interpolateVelocityBySpeed(const glm::vec3& vel, float deltaTime) 
+		{ return interpolateVelocity(vel, deltaTime * speed); }
 	Transform& setPosition(const glm::vec3& pos) { this->position = pos; return *this; }
 	Transform& setVelocity(const glm::vec3& vel) { this->velocity = vel; return *this; }
 

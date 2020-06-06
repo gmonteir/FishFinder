@@ -12,7 +12,7 @@ shared_ptr<Spawner> Spawner::getInstance() {
 }
 
 // must be done after player is in Entities
-void Spawner::init()
+void Spawner::init(shared_ptr<Entity> player)
 {
 	// spawnFollower(); moved to main so we can save the first target position
 	spawnPowerup();
@@ -22,9 +22,14 @@ void Spawner::init()
 		spawnCoral(rand() % 3);
 	}
 
-	for (size_t i = 0; i < NUM_ENEMIES; i++)
+	for (size_t i = 0; i < NUM_STATIC_ENEMIES; i++)
 	{
-		spawnEnemy();
+		spawnStaticEnemy();
+	}
+
+	for (size_t i = 0; i < NUM_MOVING_ENEMIES; i++)
+	{
+		spawnMovingEnemy(player);
 	}
 	cout << "Spawner init" << endl;
 }
@@ -51,6 +56,7 @@ Transform* Spawner::spawnFollower()
 	e->getTransform()
 		.setVelocity(Random::spawnVel())
 		.setSize(c.size)
+		.setSpeed(FOLLOWER_SPEED)
 		.syncFacing();
 	e->getModel().setTexture(c.texture);
 
@@ -65,7 +71,9 @@ void Spawner::spawnPowerup()
 	e->getTransform()
 		.setSize(vec3(POWERUP_SIZE))
 		.setFacing(Random::facingXZ());
-	e->getModel().setMaterial(POWERUP_MATERIAL);
+	e->getModel().setMaterial(POWERUP_MATERIAL)
+		.setTextureProgram(REFLECTPROG)
+		.enableTexture();
 
 	EntityCollection::getInstance()->addEntity(e);
 }
@@ -82,14 +90,30 @@ void Spawner::spawnCoral(int type)
 	EntityCollection::getInstance()->addEntity(e);
 }
 
-void Spawner::spawnEnemy()
+void Spawner::spawnStaticEnemy()
 {
-	shared_ptr<Entity> e = make_shared<Entity>(ENEMY_SHAPE, int(Behavior::ENEMY));
+	shared_ptr<Entity> e = make_shared<Entity>(STATIC_ENEMY_SHAPE, int(Behavior::STATICENEMY));
 	findSpawnPosition(e, Random::range(ENEMY_FLOOR_OFFSET_RANGE));
 	e->getTransform()
 		.setSize(vec3(ENEMY_SIZE))
 		.setFacing(Random::facingXZ());
 	e->getModel().setMaterial(ENEMY_MATERIAL);
+
+	EntityCollection::getInstance()->addEntity(e);
+}
+
+void Spawner::spawnMovingEnemy(shared_ptr<Entity> player)
+{
+	shared_ptr<Entity> e = make_shared<Entity>(MOVING_ENEMY_SHAPE, int(Behavior::MOVINGENEMY));
+	findSpawnPosition(e, Random::range(SHARK_FLOOR_OFFSET_RANGE));
+	e->getTransform()
+		.setSize(vec3(SHARK_SIZE))
+		.setSpeed(SHARK_SPEED)
+		.setFacing(Random::facingXZ());
+	e->getModel().setTexture(SHARK_TEXTURE)
+		.setMaterial(SHARK_MATERIAL);
+
+	dynamic_pointer_cast<Behavior::MovingEnemyBehavior>(e->getBehavior())->setTarget(&player->getTransform());
 
 	EntityCollection::getInstance()->addEntity(e);
 }
