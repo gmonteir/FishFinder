@@ -44,7 +44,7 @@ class GameManager
 		std::string title;
 		BlinkText startText;
 
-		void reset() { startText = BlinkText(START_TEXT); }
+		void reset() { startText = BlinkText(START_TEXT); startText.active = true; }
 		void update(float deltaTime) { startText.update(deltaTime); }
 	};
 
