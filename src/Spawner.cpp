@@ -14,12 +14,12 @@ shared_ptr<Spawner> Spawner::getInstance() {
 // must be done after player is in Entities
 void Spawner::init(shared_ptr<Entity> player)
 {
-	// spawnFollower(); moved to main so we can save the first target position
+	this->player = player;
+
 	spawnPowerup();
-	
 	for (size_t i = 0; i < NUM_CORAL; i++)
 	{
-		spawnCoral(rand() % 3);
+		spawnCoral(Random::integer(NUM_CORAL_TYPES));
 	}
 
 	for (size_t i = 0; i < NUM_STATIC_ENEMIES; i++)
@@ -29,7 +29,7 @@ void Spawner::init(shared_ptr<Entity> player)
 
 	for (size_t i = 0; i < NUM_MOVING_ENEMIES; i++)
 	{
-		spawnMovingEnemy(player);
+		spawnMovingEnemy();
 	}
 	cout << "Spawner init" << endl;
 }
@@ -102,7 +102,7 @@ void Spawner::spawnStaticEnemy()
 	EntityCollection::getInstance()->addEntity(e);
 }
 
-void Spawner::spawnMovingEnemy(shared_ptr<Entity> player)
+void Spawner::spawnMovingEnemy()
 {
 	shared_ptr<Entity> e = make_shared<Entity>(MOVING_ENEMY_SHAPE, int(Behavior::MOVINGENEMY));
 	findSpawnPosition(e, Random::range(SHARK_FLOOR_OFFSET_RANGE));
@@ -127,7 +127,8 @@ void Spawner::findSpawnPosition(shared_ptr<Entity>& entity, float offset)
 	int entityJ = EntityCollection::mapYtoJ(entity->getTransform().getPosition().y);
 	int entityK = EntityCollection::mapZtoK(entity->getTransform().getPosition().z);
 
-	while (entity->hasCollided(EntityCollection::getInstance()->entities, entityI, entityJ, entityK))
+	while (entity->distance(*player) < SPAWN_DISTANCE_FROM_PLAYER 
+		|| entity->hasCollided(EntityCollection::getInstance()->entities, entityI, entityJ, entityK))
 	{
 
 		entity->getTransform().setPosition(Random::spawnPos());

@@ -86,7 +86,6 @@ void GameManager::update(float deltaTime, float gameTime)
 void GameManager::draw()
 {
 	glfwGetFramebufferSize(WindowManager::instance->getHandle(), &width, &height);
-
 	shared_ptr<Program> prog;
 
 	glEnable(GL_BLEND);

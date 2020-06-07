@@ -42,6 +42,8 @@ public:
 		int i, int j, int k);
 	bool hasCollided(std::vector<std::shared_ptr<Entity>>& collectionEntities);
 
+	float distance(const Entity& entity) const 
+		{ return glm::distance(transform.getPosition(), entity.transform.getPosition()); }
 
 	// Getters
 	Transform& getTransform() { return transform; }

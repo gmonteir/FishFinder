@@ -23,11 +23,12 @@ public:
 	void spawnPowerup();
 	void spawnCoral(int type);
 	void spawnStaticEnemy();
-	void spawnMovingEnemy(std::shared_ptr<Entity> player);
+	void spawnMovingEnemy();
 
 	void findSpawnPosition(std::shared_ptr<Entity>& entity, float offset);
 
 private:
 	float lastFrameTime;
+	std::shared_ptr<Entity> player;
 };
 

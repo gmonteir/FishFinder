@@ -110,11 +110,14 @@ const glm::vec3 FLOOR_SIZE = glm::vec3(2, 1, 2);
 const glm::vec3 FLOOR_POSITION = glm::vec3((-MAP_X / 2) * FLOOR_SIZE.x, -200, (-MAP_Z / 2) * FLOOR_SIZE.z);
 constexpr float WORLD_SIZE = 255;
 
-// Follower Constants
+// Spawn Constants
 constexpr float MAX_SPAWN_DISTANCE = 200;
 constexpr float MAX_SPAWN_VELOCITY = 15;
 constexpr float MIN_SPAWN_SIZE = 3;
 constexpr float MAX_SPAWN_SIZE = 6;
+constexpr float SPAWN_DISTANCE_FROM_PLAYER = 50;
+
+// Follower Constants
 constexpr int DEFAULT_MATERIAL = 3;
 constexpr float FOLLOWER_SPEED = 40;
 constexpr float FOLLOWER_OFFSET = 10.0f;
@@ -134,6 +137,10 @@ constexpr int SOFT_CORAL_MATERIAL = 6;
 constexpr int ELKHORN_CORAL_MATERIAL = 9;
 constexpr float CORAL_FLOOR_OFFSET = 1.0;
 
+constexpr int TREE_CORAL_INDEX = 0;
+constexpr int SOFT_CORAL_INDEX = 1;
+constexpr int ELKHORN_CORAL_INDEX = 2;
+constexpr int NUM_CORAL_TYPES = 3;
 const std::string CORAL_SHAPES[]{
 	TREE_CORAL_SHAPE,
 	SOFT_CORAL_SHAPE,
@@ -156,7 +163,7 @@ constexpr int NUM_STATIC_ENEMIES = 10;
 // Shark Constants
 constexpr float SHARK_SIZE = 3 * PLAYER_SIZE;
 constexpr float SHARK_SPEED = 15;
-constexpr float SHARK_ATTACK_DISTANCE = 40;
+constexpr float SHARK_ATTACK_DISTANCE = 35;
 constexpr int SHARK_MATERIAL = 8;
 const glm::vec2 SHARK_FLOOR_OFFSET_RANGE = glm::vec2(15, 20);
 constexpr int NUM_MOVING_ENEMIES = 5;
