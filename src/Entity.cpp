@@ -1,7 +1,7 @@
 #include "Entity.h"
 #include "Draw.h"
 #include "Random.h"
-
+#include "EntityCollection.h"
 
 #include <iostream>
 
@@ -11,8 +11,7 @@
 using namespace std;
 using namespace glm;
 
-void Entity::update(float deltaTime, shared_ptr<vector<shared_ptr<Entity>>>(&entities)[MAP_I][MAP_J][MAP_K],
-	int i, int j, int k)
+void Entity::update(float deltaTime)
 {
 	bool wasOutOfBoundsX = false;
 	bool wasOutOfBoundsY = false;
@@ -32,19 +31,19 @@ void Entity::update(float deltaTime, shared_ptr<vector<shared_ptr<Entity>>>(&ent
 	transform.move(change.x * XAXIS);
 	wasOutOfBoundsX = isOutOfBounds();
 	wasInFloorX = isInFloor();
-	if (wasOutOfBoundsX || wasInFloorX || hasCollided(entities, i, j, k))
+	if (wasOutOfBoundsX || wasInFloorX || EntityCollection::getInstance()->hasCollided(*this))
 		transform.move(-change.x * XAXIS);
 
 	transform.move(change.y * YAXIS);
 	wasOutOfBoundsY = isOutOfBounds();
 	wasInFloorY = isInFloor();
-	if (wasOutOfBoundsY || wasInFloorY || hasCollided(entities, i, j, k))
+	if (wasOutOfBoundsY || wasInFloorY || EntityCollection::getInstance()->hasCollided(*this))
 		transform.move(-change.y * YAXIS);
 
 	transform.move(change.z * ZAXIS);
 	wasOutOfBoundsZ = isOutOfBounds();
 	wasInFloorZ = isInFloor();
-	if (wasOutOfBoundsZ || wasInFloorZ || hasCollided(entities, i, j, k))
+	if (wasOutOfBoundsZ || wasInFloorZ || EntityCollection::getInstance()->hasCollided(*this))
 		transform.move(-change.z * ZAXIS);
 
 	if (wasOutOfBoundsX || wasOutOfBoundsY || wasOutOfBoundsZ) // event trigger check 
@@ -67,7 +66,7 @@ void Entity::draw(shared_ptr<Program>& prog, shared_ptr<MatrixStack>& M) const
 	model.draw(prog, M, transform);
 }
 
-bool Entity::hasCollided(Entity &entity) const
+bool Entity::hasCollided(Entity &entity)
 {
 	shared_ptr<Behavior> b = entity.behavior;
 	if (b->getType() == Behavior::FOLLOWER 
@@ -81,37 +80,27 @@ bool Entity::hasCollided(Entity &entity) const
 	vec3 eMin(entity.getMinBoundCoordinate());
 	vec3 eMax(entity.getMaxBoundCoordinate());
 
-	return myMin.x <= eMax.x && eMin.x <= myMax.x
+	if (myMin.x <= eMax.x && eMin.x <= myMax.x
 		&& myMin.y <= eMax.y && eMin.y <= myMax.y
-		&& myMin.z <= eMax.z && eMin.z <= myMax.z;
-}
-
-bool Entity::hasCollided(shared_ptr<vector<shared_ptr<Entity>>>(&entities)[MAP_I][MAP_J][MAP_K],
-	int i, int j, int k)
-{
-
-	if (hasCollided(*entities[i][j][k]) ||
-		i > 0 && hasCollided(*entities[i - 1][j][k]) || 
-		i < MAP_I - 1 && hasCollided(*entities[i + 1][j][k]) ||
-		j > 0 && hasCollided(*entities[i][j - 1][k]) ||
-		j < MAP_J - 1 && hasCollided(*entities[i][j + 1][k]) ||
-		k > 0 && hasCollided(*entities[i][j][k - 1]) ||
-		k < MAP_K - 1 && hasCollided(*entities[i][j][k + 1]))
+		&& myMin.z <= eMax.z && eMin.z <= myMax.z)
+	{
+		behavior->onCollision(*b);
+		b->onCollision(*behavior);
 		return true;
-
-	return false;
-
+	}
+	else
+	{
+		return false;
+	}
 }
 
-bool Entity::hasCollided(vector<shared_ptr<Entity>> &collectionEntities) {
+bool Entity::hasCollided(vector<shared_ptr<Entity>> &collectionEntities)
+{
 	shared_ptr<Entity> e;
-
 	for (int i = 0; i < collectionEntities.size(); i++)
 	{
 		e = collectionEntities[i];
 		if (&(*e) != &(*this) && hasCollided(*e)) {
-			behavior->onCollision(*e->getBehavior());
-			e->getBehavior()->onCollision(*getBehavior());
 			return true;
 		}
 	}

@@ -32,14 +32,11 @@ public:
 	}
 	~Entity() {}
 
-	void update(float deltaTime, std::shared_ptr<std::vector<std::shared_ptr<Entity>>> (&entities)[MAP_I][MAP_J][MAP_K],
-		int i, int j, int k);
+	void update(float deltaTime);
 	void draw(std::shared_ptr<MatrixStack> &M) const;
 	void draw(std::shared_ptr<Program>& prog, std::shared_ptr<MatrixStack>& M) const;
 
-	bool hasCollided(Entity &entity) const;
-	bool hasCollided(std::shared_ptr<std::vector<std::shared_ptr<Entity>>>(&entities)[MAP_I][MAP_J][MAP_K],
-		int i, int j, int k);
+	bool hasCollided(Entity &entity);
 	bool hasCollided(std::vector<std::shared_ptr<Entity>>& collectionEntities);
 
 	float distance(const Entity& entity) const 

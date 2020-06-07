@@ -123,19 +123,10 @@ void Spawner::findSpawnPosition(shared_ptr<Entity>& entity, float offset)
 	entity->getTransform().setPosition(Random::spawnPos());
 	entity->bringToFloor(offset);
 
-	int entityI = EntityCollection::mapXtoI(entity->getTransform().getPosition().x);
-	int entityJ = EntityCollection::mapYtoJ(entity->getTransform().getPosition().y);
-	int entityK = EntityCollection::mapZtoK(entity->getTransform().getPosition().z);
-
 	while (entity->distance(*player) < SPAWN_DISTANCE_FROM_PLAYER 
-		|| entity->hasCollided(EntityCollection::getInstance()->entities, entityI, entityJ, entityK))
+		|| EntityCollection::getInstance()->hasCollided(*entity))
 	{
-
 		entity->getTransform().setPosition(Random::spawnPos());
 		entity->bringToFloor(offset);
-
-		entityI = EntityCollection::getInstance()->mapXtoI(entity->getTransform().getPosition().x);
-		entityJ = EntityCollection::getInstance()->mapYtoJ(entity->getTransform().getPosition().y);
-		entityK = EntityCollection::getInstance()->mapZtoK(entity->getTransform().getPosition().z);
 	}
 }
