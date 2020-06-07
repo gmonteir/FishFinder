@@ -51,7 +51,7 @@ private:
 	
 	void updateDirection() 
 		{ direction = normalize(glm::vec3(cos(alpha) * cos(beta), sin(alpha), cos(alpha) * cos(M_PI_2 - beta))); }
-	glm::vec3 calcEye() { return position + offset.z * direction + offset.y * upVector; }
+	glm::vec3 calcEye() { return position + offset.z * direction + offset.y * upVector + offset.x * glm::vec3(direction.z, 0.0f, -direction.x); }
 	void interpolateEye(float deltaTime) { eye = mix(eye, calcEye(), deltaTime * CAMERA_SPEED); }
 	void interpolateLookAt(float deltaTime) { LA = mix(LA, position, deltaTime * CAMERA_SPEED); } 
 	// eye + float(getReverse()) * direction; // adjust to fix first person camera
