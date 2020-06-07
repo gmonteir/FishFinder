@@ -13,14 +13,8 @@ using namespace glm;
 
 void Entity::update(float deltaTime)
 {
-	bool wasOutOfBoundsX = false;
-	bool wasOutOfBoundsY = false;
-	bool wasOutOfBoundsZ = false;
-
-	bool wasInFloorX = false;
-	bool wasInFloorY = false;
-	bool wasInFloorZ = false;
-
+	bool wasOutOfBoundsX, wasOutOfBoundsY, wasOutOfBoundsZ;
+	bool wasInFloorX, wasInFloorY, wasInFloorZ;
 	vec3 change = transform.getVelocity() * deltaTime;
 
 	behavior->update(deltaTime);
@@ -28,23 +22,9 @@ void Entity::update(float deltaTime)
 	if (change == ORIGIN) // if not moving, skip calculations
 		return;
 
-	transform.move(change.x * XAXIS);
-	wasOutOfBoundsX = isOutOfBounds();
-	wasInFloorX = isInFloor();
-	if (wasOutOfBoundsX || wasInFloorX || EntityCollection::getInstance()->hasCollided(*this))
-		transform.move(-change.x * XAXIS);
-
-	transform.move(change.y * YAXIS);
-	wasOutOfBoundsY = isOutOfBounds();
-	wasInFloorY = isInFloor();
-	if (wasOutOfBoundsY || wasInFloorY || EntityCollection::getInstance()->hasCollided(*this))
-		transform.move(-change.y * YAXIS);
-
-	transform.move(change.z * ZAXIS);
-	wasOutOfBoundsZ = isOutOfBounds();
-	wasInFloorZ = isInFloor();
-	if (wasOutOfBoundsZ || wasInFloorZ || EntityCollection::getInstance()->hasCollided(*this))
-		transform.move(-change.z * ZAXIS);
+	move(change.x * XAXIS, &wasOutOfBoundsX, &wasInFloorX);
+	move(change.y * YAXIS, &wasOutOfBoundsY, &wasInFloorY);
+	move(change.z * ZAXIS, &wasOutOfBoundsZ, &wasInFloorZ);
 
 	if (wasOutOfBoundsX || wasOutOfBoundsY || wasOutOfBoundsZ) // event trigger check 
 	{
@@ -56,15 +36,15 @@ void Entity::update(float deltaTime)
 	}
 }
 
-void Entity::draw(shared_ptr<MatrixStack> &M) const
+void Entity::move(vec3 delta, bool* outOfBounds, bool* inFloor)
 {
-	model.draw(M, transform);
+	transform.move(delta);
+	*outOfBounds = isOutOfBounds();
+	*inFloor = isInFloor();
+	if (*outOfBounds || *inFloor || EntityCollection::getInstance()->hasCollided(*this))
+		transform.move(-delta);
 }
 
-void Entity::draw(shared_ptr<Program>& prog, shared_ptr<MatrixStack>& M) const
-{
-	model.draw(prog, M, transform);
-}
 
 bool Entity::hasCollided(Entity &entity)
 {
