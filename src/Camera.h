@@ -12,7 +12,7 @@ class Camera
 
 public:
 	Camera() : position(), LA(), upVector(YAXIS), alpha(0), beta(-M_PI_2), 
-		offset(THIRD_PERSON_OFFSET), reverse(false), initializedMouse(false) {
+		offset(SIDE_PERSON_OFFSET), reverse(false), initializedMouse(false) {
 		updateDirection();
 		eye = calcEye();
 	}

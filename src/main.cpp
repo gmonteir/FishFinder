@@ -161,10 +161,7 @@ public:
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	 }
 
-	void initEntities()
-	{
 		Skybox::getInstance(); // initialize skybox
 		player = make_shared<Entity>(DORY_SHAPE, int(Behavior::PLAYER));
 		playerBehavior = dynamic_pointer_cast<Behavior::PlayerBehavior>(player->getBehavior());
@@ -177,24 +174,15 @@ public:
 		testChar->bringToFloor();
 		*/
 
-		EntityCollection::getInstance()->addEntity(player);
-		//EntityCollection::getInstance()->addEntity(testChar);
-
-		Spawner::getInstance()->init(player);
-		playerBehavior->setTarget(Spawner::getInstance()->spawnFollower());
-		CutSceneManager::getInstance().nextCutScene();
-
-		/*for (int i = 0; i < 85; i++)
-			Spawner::getInstance()->spawnFollower();*/
-
-		FBOManager::getInstance().increaseBlurAmount(BLUR_INCREMENT);
-	}
+		reset();
+	 }
 
 	void start()
 	{
 		GameManager::getInstance().play();
-		FBOManager::getInstance().increaseBlurAmount(BLUR_INCREMENT);
+		//FBOManager::getInstance().increaseBlurAmount(BLUR_INCREMENT);
 		FBOManager::getInstance().triggerConfuse();
+		camera.thirdPerson();
 
 		cout << "Play!" << endl;
 	}
@@ -205,12 +193,15 @@ public:
 		GameManager::getInstance().reset();
 		playerBehavior->reset();
 		EntityCollection::getInstance()->addEntity(player);
+		//EntityCollection::getInstance()->addEntity(testChar);
+
 		Spawner::getInstance()->init(player);
 		playerBehavior->setTarget(Spawner::getInstance()->spawnFollower());
 
 		CutSceneManager::getInstance().reset();
 		CutSceneManager::getInstance().nextCutScene();
-		FBOManager::getInstance().increaseBlurAmount(BLUR_INCREMENT);
+		camera.sidePerson();
+
 		cout << "Resetted!" << endl;
 	}
 
@@ -319,7 +310,6 @@ int main(int argc, char **argv)
 	// This is the code that will likely change program to program as you
 	// may need to initialize or set up different data and state
 	application->init();
-	application->initEntities();
 	//AudioManager::getInstance().startMusicLoop();
 
 	double gameTime = 0; // keep track of how long we have been in the game.
