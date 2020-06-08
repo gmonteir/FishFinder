@@ -227,14 +227,28 @@ public:
 		ParticleManager::getInstance().processParticles(player->getTransform().getPosition(), deltaTime);
 	}
 
-	void renderSceneToFBO(int fbo, int progIndex, shared_ptr<MatrixStack> Model, vec4* planes)
+	void renderDepthScene(shared_ptr<MatrixStack> Model, vec4* planes)
 	{
-		FBOManager::getInstance().bindBuffer(fbo);
-		shared_ptr<Program> prog = ShaderManager::getInstance()->getShader(progIndex);
+		FBOManager::getInstance().bindBuffer(int(FBOManager::DEPTH_BUFFER));
+		shared_ptr<Program> prog = ShaderManager::getInstance()->getShader(DEPTHPROG);
+		prog->bind();
+			ShaderManager::getInstance()->sendUniforms(DEPTHPROG);
+
+			Skybox::getInstance().draw(prog, Model, camera.getEye());
+			Floor::getInstance()->draw(prog, Model);
+			EntityCollection::getInstance()->draw(prog, Model, planes);
+		prog->unbind();
+	}
+
+	void renderLightDepthScene(shared_ptr<MatrixStack> Model, vec4* planes)
+	{
+		FBOManager::getInstance().bindBuffer(int(FBOManager::SHADOW_BUFFER));
+		shared_ptr<Program> prog = ShaderManager::getInstance()->getShader(LIGHTDEPTHPROG);
 		prog->bind();
 			ShaderManager::getInstance()->sendUniforms(LIGHTDEPTHPROG);
-			EntityCollection::getInstance()->draw(prog, Model, planes);
+
 			Floor::getInstance()->draw(prog, Model);
+			EntityCollection::getInstance()->draw(prog, Model, planes);
 		prog->unbind();
 	}
 
@@ -273,10 +287,8 @@ public:
 		// ---------------------- drawing ----------------- //
 		if (FBOManager::getInstance().isEnabled())
 		{
-			//glCullFace(GL_FRONT);
-			renderSceneToFBO(int(FBOManager::SHADOW_BUFFER), LIGHTDEPTHPROG, Model, planes);
-			//glCullFace(GL_BACK);
-			renderSceneToFBO(int(FBOManager::DEPTH_BUFFER), DEPTHPROG, Model, planes);
+			renderLightDepthScene(Model, planes);
+			renderDepthScene(Model, planes);
 
 			FBOManager::getInstance().bindBuffer(int(FBOManager::MAIN_BUFFER));
 			renderScene(Model, planes, deltaTime);

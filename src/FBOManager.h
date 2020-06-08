@@ -23,6 +23,13 @@ class FBOManager
 
 	FBOManager();
 
+	void initFBOs();
+	/**** geometry set up for a quad *****/
+	void initQuad();
+	/* Helper function to create the framebuffer object and associated texture to write to */
+	void createFBO(GLuint fb, GLuint tex);
+	void createDepthFBO(GLuint fb, GLuint tex);
+
 	public:
 		static constexpr int MAIN_BUFFER = 0;
 		static constexpr int BLUR_BUFFER = 1;
@@ -59,9 +66,6 @@ class FBOManager
 
 		bool isEnabled() const { return debug.enabled; }
 
-		/* code to write out the FBO (texture) - helpful for debugging*/
-		void writeTexture(const std::string filename, GLuint tex);
-
 		GLuint getTexBufId(int index) { return texBuf[index]; }
 
 	private:
@@ -73,19 +77,12 @@ class FBOManager
 
 		FBOData data;
 		DebugData debug;
-		
-		void initFBOs();
-		/**** geometry set up for a quad *****/
-		void initQuad();
-
-		/* Helper function to create the framebuffer object and associated texture to write to */
-		void createFBO(GLuint fb, GLuint tex);
-
-		void createDepthFBO(GLuint fb, GLuint tex);
 
 		/* Process Texture on the specificed texture  - could vary what it does based on
 			shader  - works on inTex - runs shaders and output to textured quad */
-		void processDrawTex(GLuint tex, int program);
+		void processDrawTex(int program, GLuint tex);
 		void drawTex(GLuint tex);
-		void processBindTex(int prog, int frameIndex, int texIndex);
+
+		/* code to write out the FBO (texture) - helpful for debugging*/
+		void writeTexture(const std::string filename, GLuint tex);
 };

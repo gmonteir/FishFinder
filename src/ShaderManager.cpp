@@ -276,10 +276,16 @@ void ShaderManager::sendUniforms(int progIndex, const shared_ptr<Texture> textur
 	case DEPTHPROG:
 		glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, value_ptr(uniformData.P));
 		glUniformMatrix4fv(prog->getUniform("V"), 1, GL_FALSE, value_ptr(uniformData.V));
+		glUniform3f(prog->getUniform("eye"), uniformData.eye.x, uniformData.eye.y, uniformData.eye.z);
 		break;
 	case WATERFBOPROG:
 		glUniform1f(prog->getUniform("time"), uniformData.time);
+		glUniform1i(prog->getUniform("texBuf"), 0);
+		break;
 	case FOGFBOPROG:
+		glUniform1i(prog->getUniform("depthBuf"), 1);
+		glUniform1i(prog->getUniform("texBuf"), 0);
+		break;
 	case BLURFBOPROG:
 		glUniform1i(prog->getUniform("texBuf"), 0);
 		break;
