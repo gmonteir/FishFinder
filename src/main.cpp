@@ -304,7 +304,7 @@ int main(int argc, char **argv)
 	// may need to initialize or set up different data and state
 	application->init();
 	application->initEntities();
-	AudioManager::getInstance().startMusicLoop();
+	//AudioManager::getInstance().startMusicLoop();
 
 	double gameTime = 0; // keep track of how long we have been in the game.
 	double currentTime = glfwGetTime();
