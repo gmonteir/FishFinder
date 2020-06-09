@@ -12,7 +12,7 @@ void Model::draw(shared_ptr<MatrixStack> &M, const Transform& transform) const
 	shared_ptr<Program> prog = ShaderManager::getInstance()->getShader(progIndex);
 	prog->bind();
 	ShaderManager::getInstance()->sendUniforms(progIndex, texture);
-	if (!hasTexture)
+	if (!hasTexture || matProgram == CORALPROG)
 	{
 		SetMaterial(prog, material);
 	}

@@ -25,7 +25,7 @@ public:
 		: shapes(*Shapes::getInstance()->getShape(shapeName)), 
 		animator(Animator::createAnimator(shapeName)),
 		rotationOffset(Shapes::getInstance()->getRotationOffset(shapeName)),
-		material(DEFAULT_MATERIAL), matProgram(SIMPLEPROG), 
+		material(NO_MATERIAL), matProgram(SIMPLEPROG),
 		texProgram(TEXTUREPROG), texture(nullptr), hasTexture(false)
 	{
 		extractMinMax();

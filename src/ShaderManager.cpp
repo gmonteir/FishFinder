@@ -32,6 +32,7 @@ ShaderManager::ShaderManager()
 	shaderProgs[PARTICLEPROG] = initParticleProg();
 	shaderProgs[LIGHTDEPTHPROG] = initLightDepthProg();
 	shaderProgs[CHARPARTICLEPROG] = initCharParticleProg();
+	shaderProgs[CORALPROG] = initCoralProg();
 
 	//luData.LP = glm::ortho(-ORTHO_SIZE, ORTHO_SIZE, -ORTHO_SIZE, ORTHO_SIZE, 1.0f, 1000.0f);
 	luData.LP = glm::ortho(-ORTHO_SIZE, ORTHO_SIZE, -ORTHO_SIZE, ORTHO_SIZE, NEAR_PLANE, 2 * ORTHO_SIZE);
@@ -55,6 +56,29 @@ shared_ptr<Program> ShaderManager::initSimpleProg()
 	prog->addUniform("shine");
 	addLightUniforms(prog);
 	prog->addUniform("eye");
+	prog->addUniform("shadowDepth");
+	prog->addAttribute("vertPos");
+	prog->addAttribute("vertNor");
+	prog->addAttribute("vertTex");
+	return prog;
+}
+
+shared_ptr<Program> ShaderManager::initCoralProg()
+{
+	shared_ptr<Program> prog = makeProgram("/simple_vert.glsl", "/coral_frag.glsl");
+	prog->addUniform("P");
+	prog->addUniform("M");
+	prog->addUniform("V");
+	prog->addUniform("LP");
+	prog->addUniform("LV");
+	prog->addUniform("time");
+	prog->addUniform("MatAmb");
+	prog->addUniform("MatDif");
+	prog->addUniform("MatSpec");
+	prog->addUniform("shine");
+	addLightUniforms(prog);
+	prog->addUniform("eye");
+	prog->addUniform("Texture0");
 	prog->addUniform("shadowDepth");
 	prog->addAttribute("vertPos");
 	prog->addAttribute("vertNor");
@@ -308,6 +332,21 @@ void ShaderManager::sendUniforms(int progIndex, const shared_ptr<Texture> textur
 		glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, value_ptr(uniformData.P));
 		glUniformMatrix4fv(prog->getUniform("V"), 1, GL_FALSE, value_ptr(uniformData.V));
 		glUniform1f(prog->getUniform("time"), uniformData.time);
+		break;
+	case CORALPROG:
+		glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, value_ptr(uniformData.P));
+		glUniformMatrix4fv(prog->getUniform("V"), 1, GL_FALSE, value_ptr(uniformData.V));
+		glUniformMatrix4fv(prog->getUniform("LP"), 1, GL_FALSE, value_ptr(luData.LP));
+		glUniformMatrix4fv(prog->getUniform("LV"), 1, GL_FALSE, value_ptr(luData.LV));
+		glUniform1f(prog->getUniform("time"), uniformData.time);
+		sendLightUniforms(prog);
+		glUniform3f(prog->getUniform("eye"), uniformData.eye.x, uniformData.eye.y, uniformData.eye.z);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, FBOManager::getInstance().getTexBufId(int(FBOManager::SHADOW_BUFFER)));
+		glUniform1i(prog->getUniform("shadowDepth"), 0);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, texture->getID());
+		glUniform1i(prog->getUniform("Texture0"), 1);
 		break;
 	}
 }
