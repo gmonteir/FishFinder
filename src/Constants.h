@@ -45,15 +45,17 @@ const std::string TREE_CORAL_SHAPE = "TREE_CORAL";
 const std::string SOFT_CORAL_SHAPE = "SOFT_CORAL";
 const std::string ELKHORN_CORAL_SHAPE = "ELKHORN_CORAL";
 const std::string FLOOR_SHAPE = "FLOOR_SHAPE";
-const std::string ENEMY_SHAPE = "ENEMY";
+const std::string STATIC_ENEMY_SHAPE = "STATIC_ENEMY";
+const std::string MOVING_ENEMY_SHAPE = SHARK_SHAPE;
 
 const std::string MUSIC_LOOP = "loop.wav";
 
 // Game Constants
 constexpr float INITIAL_TIME_LIMIT = 100.0f; // seconds
-constexpr int GAME_LOST = -1;
-constexpr int GAME_ACTIVE = 0;
-constexpr int GAME_WON = 1;
+constexpr int GAME_TITLE = 0;
+constexpr int GAME_ACTIVE = 1;
+constexpr int GAME_WON = 2;
+constexpr int GAME_LOST = 3;
 constexpr float WARNING_TIME = 15.0f;
 
 // UI Constants
@@ -88,9 +90,11 @@ constexpr float IMMUNITY_TIME = 6.0f; // seconds
 // Camera
 constexpr float CAMERA_SPEED = 3;
 constexpr float MOUSE_SENSITIVITY = 0.03;
-const glm::vec2 FIRST_PERSON_OFFSET = glm::vec2(PLAYER_SIZE * 1.5, 0);
-const glm::vec2 SECOND_PERSON_OFFSET = glm::vec2(PLAYER_SIZE + 10, PLAYER_SIZE + 0.3);
-const glm::vec2 THIRD_PERSON_OFFSET = glm::vec2(-SECOND_PERSON_OFFSET.x, SECOND_PERSON_OFFSET.y);
+// x = left, y = up, z = forward
+const glm::vec3 FIRST_PERSON_OFFSET  = glm::vec3(0, 0, PLAYER_SIZE * 1.5);
+const glm::vec3 SECOND_PERSON_OFFSET = glm::vec3(0, PLAYER_SIZE + 0.3, PLAYER_SIZE + 10);
+const glm::vec3 THIRD_PERSON_OFFSET  = glm::vec3(0, SECOND_PERSON_OFFSET.y, -SECOND_PERSON_OFFSET.z);
+const glm::vec3 SIDE_PERSON_OFFSET   = glm::vec3(-PLAYER_SIZE * 4, 0, PLAYER_SIZE * 4.1);
 constexpr float CAMERA_FLOOR_OFFSET = 1.0f;
 
 constexpr float MAX_VIEW = 80.0 / 180 * M_PI;
@@ -107,11 +111,14 @@ const glm::vec3 FLOOR_SIZE = glm::vec3(2, 1, 2);
 const glm::vec3 FLOOR_POSITION = glm::vec3((-MAP_X / 2) * FLOOR_SIZE.x, -200, (-MAP_Z / 2) * FLOOR_SIZE.z);
 constexpr float WORLD_SIZE = 255;
 
-// Follower Constants
+// Spawn Constants
 constexpr float MAX_SPAWN_DISTANCE = 200;
 constexpr float MAX_SPAWN_VELOCITY = 15;
 constexpr float MIN_SPAWN_SIZE = 3;
 constexpr float MAX_SPAWN_SIZE = 6;
+constexpr float SPAWN_DISTANCE_FROM_PLAYER = 50;
+
+// Follower Constants
 constexpr int NO_MATERIAL = -1; // no material
 constexpr float FOLLOWER_SPEED = 40;
 constexpr float FOLLOWER_OFFSET = 10.0f;
@@ -130,6 +137,10 @@ constexpr int SOFT_CORAL_MATERIAL = 6;
 constexpr int ELKHORN_CORAL_MATERIAL = 9;
 constexpr float CORAL_FLOOR_OFFSET = 1.0;
 
+constexpr int TREE_CORAL_INDEX = 0;
+constexpr int SOFT_CORAL_INDEX = 1;
+constexpr int ELKHORN_CORAL_INDEX = 2;
+constexpr int NUM_CORAL_TYPES = 3;
 const std::string CORAL_SHAPES[]{
 	TREE_CORAL_SHAPE,
 	SOFT_CORAL_SHAPE,
@@ -142,12 +153,20 @@ const int CORAL_MATERIALS[]{
 	ELKHORN_CORAL_MATERIAL
 };
 
-// Enemy Constants
+// Static Enemy Constants
 constexpr float ENEMY_SIZE = 3;
 constexpr int ENEMY_MATERIAL = 7;
 const glm::vec2 ENEMY_FLOOR_OFFSET_RANGE = glm::vec2(8, 15);
 const glm::vec2 ENEMY_TIMER_RANGE = glm::vec2(5, 10);
-constexpr int NUM_ENEMIES = 10;
+constexpr int NUM_STATIC_ENEMIES = 10;
+
+// Shark Constants
+constexpr float SHARK_SIZE = 3 * PLAYER_SIZE;
+constexpr float SHARK_SPEED = 15;
+constexpr float SHARK_ATTACK_DISTANCE = 35;
+constexpr int SHARK_MATERIAL = 8;
+const glm::vec2 SHARK_FLOOR_OFFSET_RANGE = glm::vec2(15, 20);
+constexpr int NUM_MOVING_ENEMIES = 5;
 
 // Caustics Constants
 constexpr int NUM_CAUSTICS = 32;
@@ -175,13 +194,6 @@ struct Light {
 	float constant;
 	float linear;
 	float quadratic;
-};
-
-constexpr int NUM_LIGHTS = 3;
-const struct Light POINT_LIGHTS[NUM_LIGHTS] = {
-	{ glm::vec3(1, 90, 0), 1.0, 0.007, 0.0002 },
-	{ glm::vec3(100, 70, -100), 1.0, 0.007, 0.0002 },
-	{ glm::vec3(100, 50, 150), 1.0, 0.007, 0.0002 }
 };
 
 // Freetype Constants
@@ -226,6 +238,10 @@ constexpr float SCENE_TEXT_DELAY = 1.0f;
 constexpr float TEXT_BLINK_DELAY = 0.5f;
 
 const std::string BLINK_TEXT = "Press 'R' to restart";
+const std::string TITLE_TEXT = "Finding Dory";
+const std::string START_TEXT = "Press Spacebar to begin";
+const std::string WIN_TEXT = "You won!";
+const std::string LOSE_TEXT = "Game Over";
 
 const glm::vec2 RANDOM_TEXT_TIME_RANGE = glm::vec2(20, 50);
 const glm::vec2 BOOST_TEXT_TIME_RANGE = glm::vec2(5, 15);

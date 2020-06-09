@@ -8,10 +8,10 @@
 class FBOManager
 {
 	struct DebugData {
-		DebugData() : enabled(true), write(false), texture(0) {}
+		DebugData() : enabled(true), write(false), fog(true) {}
 		bool enabled;
 		bool write; // debug
-		int texture;
+		bool fog;
 	};
 
 	struct FBOData {
@@ -22,6 +22,13 @@ class FBOManager
 	};
 
 	FBOManager();
+
+	void initFBOs();
+	/**** geometry set up for a quad *****/
+	void initQuad();
+	/* Helper function to create the framebuffer object and associated texture to write to */
+	void createFBO(GLuint fb, GLuint tex);
+	void createDepthFBO(GLuint fb, GLuint tex);
 
 	public:
 		static constexpr int MAIN_BUFFER = 0;
@@ -40,7 +47,7 @@ class FBOManager
 		~FBOManager() {}
 
 		void bindScreen() const;
-		void bindBuffer(int bufferIndex) const;
+		void bindBuffer(int bufferIndex);
 		void processFog();
 		void processBlur();
 		void drawBuffer();
@@ -50,7 +57,7 @@ class FBOManager
 		void increaseBlurAmount(float delta) { data.blurAmount += delta; }
 		void toggleEnabled() { debug.enabled = !debug.enabled; }
 		void writeNextTexture() { debug.write = true; }
-		void toggleTexture() { debug.texture = (debug.texture + 1) % NUM_BUFFERS; }
+		void toggleFog() { debug.fog = !debug.fog; }
 
 		void toggleChaos() { data.chaos = !data.chaos; }
 		void triggerConfuse() { data.confuseTimer = CONFUSE_TIME; }
@@ -58,9 +65,6 @@ class FBOManager
 		void toggleWater() { data.water = !data.water; }
 
 		bool isEnabled() const { return debug.enabled; }
-
-		/* code to write out the FBO (texture) - helpful for debugging*/
-		void writeTexture(const std::string filename, GLuint tex);
 
 		GLuint getTexBufId(int index) { return texBuf[index]; }
 
@@ -73,19 +77,13 @@ class FBOManager
 
 		FBOData data;
 		DebugData debug;
-		
-		void initFBOs();
-		/**** geometry set up for a quad *****/
-		void initQuad();
-
-		/* Helper function to create the framebuffer object and associated texture to write to */
-		void createFBO(GLuint fb, GLuint tex);
-
-		void createDepthFBO(GLuint fb, GLuint tex);
+		int activeBuffer;
 
 		/* Process Texture on the specificed texture  - could vary what it does based on
 			shader  - works on inTex - runs shaders and output to textured quad */
-		void processDrawTex(GLuint tex, int program);
+		void processDrawTex(int program, GLuint tex);
 		void drawTex(GLuint tex);
-		void processBindTex(int prog, int frameIndex, int texIndex);
+
+		/* code to write out the FBO (texture) - helpful for debugging*/
+		void writeTexture(const std::string filename, GLuint tex);
 };

@@ -5,10 +5,8 @@
 
 #include "Program.h"
 #include "MatrixStack.h"
-#include "Texture.h"
 #include "Shape.h"
 #include "Constants.h"
-#include "ShaderManager.h"
 #include "Transform.h"
 #include "Model.h"
 #include "Behavior.h"
@@ -32,16 +30,16 @@ public:
 	}
 	~Entity() {}
 
-	void update(float deltaTime, std::shared_ptr<std::vector<std::shared_ptr<Entity>>> (&entities)[MAP_I][MAP_J][MAP_K],
-		int i, int j, int k);
-	void draw(std::shared_ptr<MatrixStack> &M) const;
-	void draw(std::shared_ptr<Program>& prog, std::shared_ptr<MatrixStack>& M) const;
+	void update(float deltaTime);
+	void draw(std::shared_ptr<MatrixStack> &M) const { model.draw(M, transform); }
+	void draw(std::shared_ptr<Program>& prog, std::shared_ptr<MatrixStack>& M) const
+		{ model.draw(prog, M, transform); }
 
-	bool hasCollided(Entity &entity) const;
-	bool hasCollided(std::shared_ptr<std::vector<std::shared_ptr<Entity>>>(&entities)[MAP_I][MAP_J][MAP_K],
-		int i, int j, int k);
+	bool hasCollided(Entity &entity);
 	bool hasCollided(std::vector<std::shared_ptr<Entity>>& collectionEntities);
 
+	float distance(const Entity& entity) const 
+		{ return glm::distance(transform.getPosition(), entity.transform.getPosition()); }
 
 	// Getters
 	Transform& getTransform() { return transform; }
@@ -50,31 +48,36 @@ public:
 
 	float getRadius() const { return glm::length(model.getScaledMax() * transform.getSize()); }
 	/* max shifted by transform and model */
-	glm::vec3 getMaxBoundCoordinate() const { return model.getScaledMax() * transform.getSize() + transform.getPosition(); }
+	glm::vec3 getMaxBoundCoordinate() const 
+		{ return model.getScaledMax() * transform.getSize() + transform.getPosition(); }
 	/* min shifted by transform and model */
-	glm::vec3 getMinBoundCoordinate() const { return model.getScaledMin() * transform.getSize() + transform.getPosition(); }
+	glm::vec3 getMinBoundCoordinate() const 
+		{ return model.getScaledMin() * transform.getSize() + transform.getPosition(); }
 
 	bool shouldRemove() { return behavior->removed(); }
-	bool isOutOfBounds() const {
-		return !isInside(transform.getPosition(), glm::vec3(WORLD_SIZE), glm::vec3(-WORLD_SIZE));
-	}
-	bool isInFloor() {
-		return !Floor::getInstance()->isAboveFloor(getMinBoundCoordinate(), getMaxBoundCoordinate());
-	}
 
 	void bringToFloor(float offset=0) { behavior->bringToFloor(offset); }
-
-	// checks if point is inside the bounding box defined by max and min
-	static bool isInside(glm::vec3 pt, glm::vec3 max, glm::vec3 min) { 
-		return min.x < pt.x && pt.x < max.x
-			&& min.y < pt.y && pt.y < max.y
-			&& min.z < pt.z && pt.z < max.z;
-	}
 
 protected:
 	Transform transform;
 	Model model;
 	std::shared_ptr<Behavior> behavior;
+
+private:
+
+	void move(glm::vec3 delta, bool* outOfBounds, bool* inFloor);
+
+	bool isOutOfBounds() const 
+		{ return !isInside(transform.getPosition(), glm::vec3(WORLD_SIZE), glm::vec3(-WORLD_SIZE)); }
+	bool isInFloor() 
+		{ return !Floor::getInstance()->isAboveFloor(getMinBoundCoordinate(), getMaxBoundCoordinate()); }
+
+	// checks if point is inside the bounding box defined by max and min
+	static bool isInside(glm::vec3 pt, glm::vec3 max, glm::vec3 min) {
+		return min.x < pt.x&& pt.x < max.x
+			&& min.y < pt.y&& pt.y < max.y
+			&& min.z < pt.z&& pt.z < max.z;
+	}
 };
 
 #endif

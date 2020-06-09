@@ -5,6 +5,12 @@
 using namespace std;
 using namespace glm;
 
+struct Light ShaderManager::POINT_LIGHTS[] = {
+	{ glm::vec3(1, 90, 0), 1.0, 0.007, 0.0002 },
+	{ glm::vec3(100, 70, -100), 1.0, 0.007, 0.0002 },
+	{ glm::vec3(100, 50, 150), 1.0, 0.007, 0.0002 }
+};
+
 shared_ptr<ShaderManager> ShaderManager::getInstance()
 {
 	static shared_ptr<ShaderManager> instance(new ShaderManager);
@@ -300,10 +306,16 @@ void ShaderManager::sendUniforms(int progIndex, const shared_ptr<Texture> textur
 	case DEPTHPROG:
 		glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, value_ptr(uniformData.P));
 		glUniformMatrix4fv(prog->getUniform("V"), 1, GL_FALSE, value_ptr(uniformData.V));
+		glUniform3f(prog->getUniform("eye"), uniformData.eye.x, uniformData.eye.y, uniformData.eye.z);
 		break;
 	case WATERFBOPROG:
 		glUniform1f(prog->getUniform("time"), uniformData.time);
+		glUniform1i(prog->getUniform("texBuf"), 0);
+		break;
 	case FOGFBOPROG:
+		glUniform1i(prog->getUniform("depthBuf"), 1);
+		glUniform1i(prog->getUniform("texBuf"), 0);
+		break;
 	case BLURFBOPROG:
 		glUniform1i(prog->getUniform("texBuf"), 0);
 		break;
