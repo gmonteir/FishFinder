@@ -47,7 +47,7 @@ class FBOManager
 		~FBOManager() {}
 
 		void bindScreen() const;
-		void bindBuffer(int bufferIndex) const;
+		void bindBuffer(int bufferIndex);
 		void processFog();
 		void processBlur();
 		void drawBuffer();
@@ -77,6 +77,7 @@ class FBOManager
 
 		FBOData data;
 		DebugData debug;
+		int activeBuffer;
 
 		/* Process Texture on the specificed texture  - could vary what it does based on
 			shader  - works on inTex - runs shaders and output to textured quad */

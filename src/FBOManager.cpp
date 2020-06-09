@@ -8,7 +8,7 @@
 using namespace std;
 using namespace glm;
 
-FBOManager::FBOManager() : data(), debug()
+FBOManager::FBOManager() : data(), debug(), activeBuffer(0)
 {
 	initFBOs();
 	initQuad();
@@ -141,8 +141,9 @@ void FBOManager::bindScreen() const
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void FBOManager::bindBuffer(int bufferIndex) const
+void FBOManager::bindBuffer(int bufferIndex)
 {
+	activeBuffer = bufferIndex;
 	//set up to render to first FBO stored in array position 0
 	glBindFramebuffer(GL_FRAMEBUFFER, frameBuf[bufferIndex]);
 	// Clear framebuffer.
@@ -170,10 +171,11 @@ void FBOManager::processBlur()
 	if (!debug.enabled) return;
 
 	glDisable(GL_DEPTH_TEST);
+	int buffers[] = { activeBuffer, BLUR_BUFFER };
 	for (size_t i = 0; i < round(data.blurAmount); i++)
 	{
-		bindBuffer((i + 1) % 2);
-		processDrawTex(BLURFBOPROG, texBuf[i % 2]);
+		bindBuffer(buffers[(i + 1) % 2]);
+		processDrawTex(BLURFBOPROG, texBuf[buffers[i % 2]]);
 	}
 	glEnable(GL_DEPTH_TEST);
 }
@@ -198,7 +200,7 @@ void FBOManager::drawBuffer()
 	glUniform1f(fboProg->getUniform("shake"), data.shakeTimer > 0);
 	glUniform1f(fboProg->getUniform("water"), data.water);
 	ShaderManager::getInstance()->sendUniforms(WATERFBOPROG);
-	drawTex(texBuf[debug.texture]);
+	drawTex(texBuf[activeBuffer]);
 	fboProg->unbind();
 	glEnable(GL_DEPTH_TEST);
 }

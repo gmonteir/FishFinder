@@ -295,8 +295,8 @@ public:
 			FBOManager::getInstance().bindBuffer(int(FBOManager::MAIN_BUFFER));
 			renderScene(Model, planes, deltaTime);
 
-			FBOManager::getInstance().processBlur();
 			FBOManager::getInstance().processFog();
+			FBOManager::getInstance().processBlur();
 			//player->draw(Model);
 			FBOManager::getInstance().drawBuffer();
 		}
