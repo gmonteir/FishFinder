@@ -221,12 +221,11 @@ public:
 		camera.update(deltaTime, player->getTransform());
 	}
 
-	void renderScene(shared_ptr<MatrixStack> Model, vec4* planes, float deltaTime)
+	void renderScene(shared_ptr<MatrixStack> Model, vec4* planes)
 	{
 		Skybox::getInstance().draw(Model, camera.getEye());
 		Floor::getInstance()->draw(Model);
 		EntityCollection::getInstance()->draw(Model, planes);
-		ParticleManager::getInstance().processParticles(player->getTransform().getPosition(), deltaTime);
 	}
 
 	void renderDepthScene(shared_ptr<MatrixStack> Model, vec4* planes)
@@ -293,17 +292,19 @@ public:
 			renderDepthScene(Model, planes);
 
 			FBOManager::getInstance().bindBuffer(int(FBOManager::MAIN_BUFFER));
-			renderScene(Model, planes, deltaTime);
+			renderScene(Model, planes);
 
 			FBOManager::getInstance().processFog();
 			FBOManager::getInstance().processBlur();
+			ParticleManager::getInstance().processParticles(player->getTransform().getPosition(), deltaTime);
 			//player->draw(Model);
 			FBOManager::getInstance().drawBuffer();
 		}
 		else
 		{
 			FBOManager::getInstance().bindScreen();
-			renderScene(Model, planes, deltaTime);
+			renderScene(Model, planes);
+			ParticleManager::getInstance().processParticles(player->getTransform().getPosition(), deltaTime);
 		}
 
 		GameManager::getInstance().draw();
