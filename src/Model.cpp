@@ -11,7 +11,7 @@ void Model::draw(shared_ptr<MatrixStack> &M, const Transform& transform) const
 	shared_ptr<Program> prog = ShaderManager::getInstance()->getShader(program);
 	prog->bind();
 	ShaderManager::getInstance()->sendUniforms(program, texture);
-	if (!texture && program != REFLECTPROG)
+	if (material != NO_MATERIAL)
 	{
 		SetMaterial(prog, material);
 	}
