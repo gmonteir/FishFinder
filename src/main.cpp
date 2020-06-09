@@ -216,6 +216,8 @@ public:
 
 			FBOManager::getInstance().update(deltaTime, gameTime);
 		}
+		ShaderManager::POINT_LIGHTS[int(ShaderManager::NUM_LIGHTS) - 1].pos.x = player->getTransform().getPosition().x;
+		ShaderManager::POINT_LIGHTS[int(ShaderManager::NUM_LIGHTS) - 1].pos.z = player->getTransform().getPosition().z;
 		camera.update(deltaTime, player->getTransform());
 	}
 
@@ -293,9 +295,9 @@ public:
 			FBOManager::getInstance().bindBuffer(int(FBOManager::MAIN_BUFFER));
 			renderScene(Model, planes, deltaTime);
 
-			FBOManager::getInstance().processFog();
 			FBOManager::getInstance().processBlur();
-			player->draw(Model);
+			FBOManager::getInstance().processFog();
+			//player->draw(Model);
 			FBOManager::getInstance().drawBuffer();
 		}
 		else

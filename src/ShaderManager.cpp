@@ -5,6 +5,12 @@
 using namespace std;
 using namespace glm;
 
+struct Light ShaderManager::POINT_LIGHTS[] = {
+	{ glm::vec3(1, 90, 0), 1.0, 0.007, 0.0002 },
+	{ glm::vec3(100, 70, -100), 1.0, 0.007, 0.0002 },
+	{ glm::vec3(100, 50, 150), 1.0, 0.007, 0.0002 }
+};
+
 shared_ptr<ShaderManager> ShaderManager::getInstance()
 {
 	static shared_ptr<ShaderManager> instance(new ShaderManager);

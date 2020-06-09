@@ -195,13 +195,6 @@ struct Light {
 	float quadratic;
 };
 
-constexpr int NUM_LIGHTS = 3;
-const struct Light POINT_LIGHTS[NUM_LIGHTS] = {
-	{ glm::vec3(1, 90, 0), 1.0, 0.007, 0.0002 },
-	{ glm::vec3(100, 70, -100), 1.0, 0.007, 0.0002 },
-	{ glm::vec3(100, 50, 150), 1.0, 0.007, 0.0002 }
-};
-
 // Freetype Constants
 constexpr int LEFT = 0;
 constexpr int CENTER = 1;
