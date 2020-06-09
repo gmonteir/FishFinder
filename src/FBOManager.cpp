@@ -152,7 +152,7 @@ void FBOManager::bindBuffer(int bufferIndex)
 
 void FBOManager::processFog()
 {
-	if (!debug.enabled) return;
+	if (!debug.fog) return;
 
 	glDisable(GL_DEPTH_TEST);
 	bindBuffer(FOG_BUFFER);
@@ -168,8 +168,6 @@ void FBOManager::processFog()
 
 void FBOManager::processBlur()
 {
-	if (!debug.enabled) return;
-
 	glDisable(GL_DEPTH_TEST);
 	int buffers[] = { activeBuffer, BLUR_BUFFER };
 	for (size_t i = 0; i < round(data.blurAmount); i++)
@@ -186,7 +184,10 @@ void FBOManager::drawBuffer()
 
 	/* code to write out the FBO (texture) just once  - this is for debugging*/
 	if (debug.write) {
-		writeTexture("texture" + to_string(debug.texture) + ".png", texBuf[debug.texture]);
+		for (size_t i = 0; i < NUM_BUFFERS; i++)
+		{
+			writeTexture("texture" + to_string(i) + ".png", texBuf[i]);
+		}
 		debug.write = false;
 	}
 

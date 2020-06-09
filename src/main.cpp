@@ -100,7 +100,7 @@ public:
 				FBOManager::getInstance().writeNextTexture();
 				break;
 			case GLFW_KEY_Y: // draw next Effect
-				FBOManager::getInstance().toggleTexture();
+				FBOManager::getInstance().toggleFog();
 				break;
 			case GLFW_KEY_X: // Confusion Effect
 				FBOManager::getInstance().triggerConfuse();

@@ -8,10 +8,10 @@
 class FBOManager
 {
 	struct DebugData {
-		DebugData() : enabled(true), write(false), texture(0) {}
+		DebugData() : enabled(true), write(false), fog(true) {}
 		bool enabled;
 		bool write; // debug
-		int texture;
+		bool fog;
 	};
 
 	struct FBOData {
@@ -57,7 +57,7 @@ class FBOManager
 		void increaseBlurAmount(float delta) { data.blurAmount += delta; }
 		void toggleEnabled() { debug.enabled = !debug.enabled; }
 		void writeNextTexture() { debug.write = true; }
-		void toggleTexture() { debug.texture = (debug.texture + 1) % NUM_BUFFERS; }
+		void toggleFog() { debug.fog = !debug.fog; }
 
 		void toggleChaos() { data.chaos = !data.chaos; }
 		void triggerConfuse() { data.confuseTimer = CONFUSE_TIME; }
