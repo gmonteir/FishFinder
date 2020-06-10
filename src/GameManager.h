@@ -84,20 +84,22 @@ private:
 	int width, height;
 
 	void drawText(int alignment, const std::string& text, 
-		float x, float y, float scale = UI_FONT_SIZE, glm::vec3 color = UI_COLOR);
-	void drawText(int alignment, const std::string& text, float x, float y, float xscale, float yscale, glm::vec3 color);
+		float x, float y, float scale = UI_FONT_SIZE, glm::vec3 color = UI_COLOR) const;
+	void drawText(int alignment, const std::string& text, 
+		float x, float y, float xscale, float yscale, glm::vec3 color) const;
 	void drawTextWithFloat(int alignment, const char* format, float num,
-		float x, float y, float scale = UI_FONT_SIZE, glm::vec3 color = UI_COLOR);
+		float x, float y, float scale = UI_FONT_SIZE, glm::vec3 color = UI_COLOR) const;
 	void drawBlinkText(int alignment, const BlinkText& blinkText, 
-		float x, float y, float scale = UI_FONT_SIZE, glm::vec3 color = UI_COLOR);
-	void drawCutSceneText();
-	void drawInGameStats();
-	void drawStamina();
-	void drawTimeRemaining();
-	void drawFPS();
+		float x, float y, float scale = UI_FONT_SIZE, glm::vec3 color = UI_COLOR) const;
+	void drawCutSceneText() const;
+	void drawInGameStats() const;
+	void drawStamina() const;
+	void drawTimeRemaining() const;
+	void drawFPS() const;
+	std::string repeat(const std::string& s, int n) const;
 
-	void drawTitleScreen();
-	void drawWinScreen();
-	void drawLoseScreen();
+	void drawTitleScreen() const;
+	void drawWinScreen() const;
+	void drawLoseScreen() const;
 };
 

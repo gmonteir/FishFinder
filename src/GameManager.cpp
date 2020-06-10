@@ -155,21 +155,21 @@ void GameManager::win()
 	}
 }
 
-void GameManager::drawText(int alignment, const std::string& text, float x, float y, float scale, glm::vec3 color)
+void GameManager::drawText(int alignment, const std::string& text, float x, float y, float scale, glm::vec3 color) const
 {
 	// TODO: make work with aspect ratios and window size
 	textRenderer->drawText(alignment, text, x, y, scale, color);
 }
 
 
-void GameManager::drawText(int alignment, const std::string& text, float x, float y, float xscale, float yscale, glm::vec3 color)
+void GameManager::drawText(int alignment, const std::string& text, float x, float y, float xscale, float yscale, glm::vec3 color) const
 {
 	// TODO: make work with aspect ratios and window size
 	textRenderer->drawText(alignment, text, x, y, xscale, yscale, color);
 }
 
 void GameManager::drawTextWithFloat(int alignment, const char* format, float num,
-	float x, float y, float scale, glm::vec3 color)
+	float x, float y, float scale, glm::vec3 color) const
 {
 	char buffer[40];
 	sprintf(buffer, format, num);
@@ -177,76 +177,70 @@ void GameManager::drawTextWithFloat(int alignment, const char* format, float num
 }
 
 void GameManager::drawBlinkText(int alignment, const BlinkText& blinkText,
-	float x, float y, float scale, glm::vec3 color)
+	float x, float y, float scale, glm::vec3 color) const
 {
 	if (!blinkText.shouldDraw) return;
 	drawText(alignment, blinkText.text, x, y, scale, color);
 }
 
-void GameManager::drawCutSceneText()
+void GameManager::drawCutSceneText() const
 {
 	if (!CutSceneManager::getInstance().shouldDraw()) return;
 	drawText(CENTER, CutSceneManager::getInstance().getText(), width / 2, UI_BOTTOM_MARGIN + 2 * UI_LINE_OFFSET, SCENE_FONT_SIZE, UI_LAVENDER_COLOR);
 }
 
-void GameManager::drawInGameStats()
+void GameManager::drawInGameStats() const
 {
 	drawText(LEFT, "Characters Remaining: " + to_string(gameStats.charRemaining), UI_LEFT_MARGIN, height - UI_LINE_OFFSET);
 	//drawTextWithFloat(LEFT, "Stamina: %.1f %%", 100 * gameStats.stamina / MAX_STAMINA, UI_LEFT_MARGIN, height - 2 * UI_LINE_OFFSET);
 }
 
-// Function which return string by concatenating it. 
-string repeat(string s, int n)
-{
-	// Copying given string to temparory string. 
-	string s1 = s;
-
-	for (int i = 1; i < n; i++)
-		s += s1; // Concatinating strings 
-
-	if (n > 0)
-		return s;
-	
-	return "";
-}
-
-void GameManager::drawStamina()
+void GameManager::drawStamina() const
 {
 	string s1 = repeat("I", int(gameStats.stamina) * 2);
 	drawText(LEFT, "Stamina: ", UI_LEFT_MARGIN, height - 2.1 * UI_LINE_OFFSET);
-	// drawText(LEFT, s1, UI_LEFT_MARGIN, height - 3.1 * UI_LINE_OFFSET, 0.1 * UI_FONT_SIZE, 1.5 * UI_FONT_SIZE,
-	// 	vec3(1 - gameStats.stamina / 100, gameStats.stamina / 100, 0));
 	drawText(LEFT, s1, UI_LEFT_MARGIN + 120/UI_FONT_SIZE, height - 2.1 * UI_LINE_OFFSET, 0.1 * UI_FONT_SIZE, 1.5 * UI_FONT_SIZE,
 	 	vec3(1 - gameStats.stamina / 100, gameStats.stamina / 100, 0));
 }
 
-void GameManager::drawTimeRemaining()
+void GameManager::drawTimeRemaining() const
 {
 	drawTextWithFloat(CENTER, "%.1f s", gameStats.timeRemaining, width / 2, height - 2 * UI_LINE_OFFSET, 2 * UI_FONT_SIZE,
 		gameStats.timeRemaining > WARNING_TIME ? UI_COLOR : UI_RED_COLOR);
 }
 
-void GameManager::drawFPS()
+void GameManager::drawFPS() const
 {
 	drawText(LEFT, "FPS: " + to_string(fpsCounter.fps), UI_LEFT_MARGIN, UI_BOTTOM_MARGIN);
+}
+
+// Function which return string by concatenating it. 
+string GameManager::repeat(const string& s, int n) const
+{
+	// Copying given string to temparory string. 
+	string s1 = "";
+
+	for (int i = 0; i < n; i++)
+		s1 += s; // Concatinating strings 
+	return s1;
 }
 
 
 // ------------------- Drawing Screens -------------------- //
 
-void GameManager::drawTitleScreen()
+void GameManager::drawTitleScreen() const
 {
 	drawText(CENTER, titleTexts.title, width / 2, height * 3 / 4, TITLE_FONT_SIZE, UI_GREEN_COLOR);
 	drawBlinkText(CENTER, titleTexts.startText, width / 2, height / 4, TITLE_FONT_SIZE / 2, UI_GREEN_COLOR);
 }
 
-void GameManager::drawWinScreen()
+void GameManager::drawWinScreen() const
 {
 	drawText(CENTER, WIN_TEXT, width / 2, height / 2, TITLE_FONT_SIZE, UI_GREEN_COLOR);
 	drawBlinkText(CENTER, restartText, width / 2, height / 4, TITLE_FONT_SIZE / 2, UI_GREEN_COLOR);
 }
 
-void GameManager::drawLoseScreen()
+void GameManager::drawLoseScreen() const
 {
 	drawText(CENTER, LOSE_TEXT, width / 2, height / 2, TITLE_FONT_SIZE, UI_RED_COLOR);
 	drawBlinkText(CENTER, restartText.text, width / 2, height / 4, TITLE_FONT_SIZE / 2, UI_RED_COLOR);
