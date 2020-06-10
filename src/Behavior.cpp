@@ -21,8 +21,10 @@ unique_ptr<Behavior> Behavior::createBehavior(int behavior, Transform& transform
 		return unique_ptr<Behavior>(new FollowerBehavior(transform, model));
 	case POWERUP:
 		return unique_ptr<Behavior>(new PowerupBehavior(transform, model));
-	case ENEMY:
-		return unique_ptr<Behavior>(new EnemyBehavior(transform, model));
+	case STATICENEMY:
+		return unique_ptr<Behavior>(new StaticEnemyBehavior(transform, model));
+	case MOVINGENEMY:
+		return unique_ptr<Behavior>(new MovingEnemyBehavior(transform, model));
 	default:
 		return unique_ptr<Behavior>(new NoBehavior(transform, model));
 	}
@@ -51,7 +53,6 @@ void Behavior::PlayerBehavior::start()
 		.setSpeed(PLAYER_SPEED);
 	bringToFloor(FOLLOWER_FLOOR_OFFSET);
 	model.setTexture(DORY_TEXTURE);
-	model.setProgram(TEXTUREPROG);
 }
 
 void Behavior::PlayerBehavior::update(float deltaTime)
@@ -75,7 +76,7 @@ void Behavior::PlayerBehavior::update(float deltaTime)
 	deltas.x = forward * transform.getFacing().x + right * -transform.getFacing().z;
 	deltas.y = forward * transform.getFacing().y;
 	deltas.z = forward * transform.getFacing().z + right * transform.getFacing().x;
-	transform.interpolateVelocity(right == 0 && forward == 0 
+	transform.interpolateVelocityBySpeed(right == 0 && forward == 0
 		? ORIGIN : normalize(deltas) * (transform.getSpeed() - slow + boost), deltaTime);
 
 	if (slow > 0)
@@ -113,7 +114,8 @@ void Behavior::PlayerBehavior::onCollision(Behavior& collider)
 		GameManager::getInstance().increaseStamina(STAMINA_INCREMENT);
 		AudioManager::getInstance().playSoundEffect(FOUND_MUSIC);
 		break;
-	case ENEMY:
+	case STATICENEMY:
+	case MOVINGENEMY:
 		if (immuneTime > 0) break;
 		slow = PLAYER_SPEED;
 		immuneTime = IMMUNITY_TIME;
@@ -152,12 +154,6 @@ void Behavior::PlayerBehavior::checkBoost(float deltaTime)
 }
 
 // ----------------------------- FOLLOWER ----------------------------- //
-void Behavior::FollowerBehavior::start()
-{
-	transform.setSpeed(FOLLOWER_SPEED);
-	model.setProgram(TEXTUREPROG);
-}
-
 void Behavior::FollowerBehavior::update(float deltaTime)
 {
 	if (target)
@@ -187,11 +183,6 @@ void Behavior::FollowerBehavior::setPathVelocity(float deltaTime)
 
 
 // ----------------------------- POWERUP ----------------------------- //
-void Behavior::PowerupBehavior::start()
-{
-	model.setProgram(REFLECTPROG);
-}
-
 void Behavior::PowerupBehavior::update(float deltaTime)
 {
 	transform.move(vec3(0, sin(timer) * deltaTime, 0));
@@ -204,21 +195,48 @@ void Behavior::PowerupBehavior::update(float deltaTime)
 	}
 }
 
-// ----------------------------- ENEMY ----------------------------- //
-
-void Behavior::EnemyBehavior::start()
+// ----------------------------- STATIC ENEMY ----------------------------- //
+void Behavior::StaticEnemyBehavior::start()
 {
 	timer = Random::range(ENEMY_TIMER_RANGE);
 }
 
-void Behavior::EnemyBehavior::update(float deltaTime)
+void Behavior::StaticEnemyBehavior::update(float deltaTime)
 {
 	timer -= deltaTime;
 
 	if (timer <= 0)
 	{
-		transform.setVelocity(Random::facingXZ());
+		transform.setVelocity(Random::facingXZ() * transform.getSpeed());
 		timer = Random::range(ENEMY_TIMER_RANGE);
 	}
+}
+
+// ----------------------------- MOVING ENEMY ----------------------------- //
+void Behavior::MovingEnemyBehavior::start()
+{
+	timer = Random::range(ENEMY_TIMER_RANGE);
+}
+
+void Behavior::MovingEnemyBehavior::update(float deltaTime)
+{
+	vec3 difference(target->getPosition() - transform.getPosition());
+	timer -= deltaTime;
+	if (length(difference) < SHARK_ATTACK_DISTANCE)
+	{
+		newVelocity = normalize(difference) * transform.getSpeed();
+		model.disableTexture();
+	}
+	else 
+	{
+		model.enableTexture();
+		if (timer <= 0)
+		{
+			newVelocity = Random::facingXZ() * transform.getSpeed();
+			timer = Random::range(ENEMY_TIMER_RANGE);
+		}
+	}
+	transform.interpolateVelocity(newVelocity, deltaTime)
+		.syncFacing();
 }
 

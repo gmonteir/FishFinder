@@ -24,6 +24,10 @@ class ShaderManager
 	};
 
 	public:
+
+		static constexpr int NUM_LIGHTS = 3;
+		static struct Light POINT_LIGHTS[NUM_LIGHTS];
+
 		static std::shared_ptr<ShaderManager> getInstance();
 
 		// Shader Manager
@@ -43,6 +47,7 @@ class ShaderManager
 		std::shared_ptr<Program> initParticleProg();
 		std::shared_ptr<Program> initLightDepthProg();
 		std::shared_ptr<Program> initCharParticleProg();
+		std::shared_ptr<Program> initCoralProg();
 
 		std::shared_ptr<Program> getShader(int i) const { return shaderProgs[i]; }
 	    void setData(const uniforms& common) { uniformData = common; }

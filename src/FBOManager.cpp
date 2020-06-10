@@ -8,98 +8,11 @@
 using namespace std;
 using namespace glm;
 
-FBOManager::FBOManager() : data(), debug()
+FBOManager::FBOManager() : data(), debug(), activeBuffer(0)
 {
 	initFBOs();
 	initQuad();
 	cout << "FBOManager: Initialized" << endl;
-}
-
-FBOManager& FBOManager::getInstance()
-{
-	static FBOManager instance;
-	return instance;
-}
-
-void FBOManager::bindScreen() const
-{
-	//set up to render to first FBO stored in array position 0
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-}
-
-void FBOManager::bindBuffer(int bufferIndex) const
-{
-	//set up to render to first FBO stored in array position 0
-	glBindFramebuffer(GL_FRAMEBUFFER, frameBuf[bufferIndex]);
-	// Clear framebuffer.
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-}
-
-void FBOManager::processFog()
-{
-	if (!debug.enabled) return;
-
-	glDisable(GL_DEPTH_TEST);
-	bindBuffer(FOG_BUFFER);
-	glActiveTexture(GL_TEXTURE0 + 1);
-	glBindTexture(GL_TEXTURE_2D, texBuf[DEPTH_BUFFER]);
-	processDrawTex(texBuf[MAIN_BUFFER], FOGFBOPROG);
-	glEnable(GL_DEPTH_TEST);
-}
-
-void FBOManager::processBlur()
-{
-	if (!debug.enabled) return;
-
-	glDisable(GL_DEPTH_TEST);
-	for (size_t i = 0; i < round(data.blurAmount); i++)
-	{
-		bindBuffer((i + 1) % 2);
-		processDrawTex(texBuf[i % 2], BLURFBOPROG);
-	}
-	glEnable(GL_DEPTH_TEST);
-}
-
-void FBOManager::drawBuffer()
-{
-	if (!debug.enabled) return;
-
-	/* code to write out the FBO (texture) just once  - this is for debugging*/
-	if (debug.write) {
-		for (int i = 0; i < NUM_BUFFERS; i++)
-		{
-			writeTexture("texture" + to_string(i) + ".png", texBuf[i]);
-		}
-		debug.write = false;
-	}
-
-	bindScreen();
-
-	glDisable(GL_DEPTH_TEST);
-	shared_ptr<Program> fboProg = ShaderManager::getInstance()->getShader(WATERFBOPROG);
-	fboProg->bind();
-	glUniform1f(fboProg->getUniform("chaos"), data.chaos);
-	glUniform1f(fboProg->getUniform("confuse"), data.confuseTimer > 0);
-	glUniform1f(fboProg->getUniform("shake"), data.shakeTimer > 0);
-	glUniform1f(fboProg->getUniform("water"), data.water);
-	ShaderManager::getInstance()->sendUniforms(WATERFBOPROG);
-	drawTex(texBuf[debug.texture]);
-	fboProg->unbind();
-	glEnable(GL_DEPTH_TEST);
-}
-
-void FBOManager::update(float deltaTime, float gameTime)
-{
-	data.blurAmount = mix(data.blurAmount, 0.0f, deltaTime * RECOVERY_SPEED);
-	if (data.shakeTimer > 0) { data.shakeTimer -= deltaTime; }
-	if (data.confuseTimer > 0) { data.confuseTimer -= deltaTime; }
-}
-
-void FBOManager::writeTexture(const std::string filename, GLuint tex)
-{
-	assert(GLTextureWriter::WriteImage(tex, filename));
-	cout << "FBOManager: Wrote out texture to " << filename << endl;
 }
 
 void FBOManager::initFBOs()
@@ -215,8 +128,93 @@ void FBOManager::createDepthFBO(GLuint fb, GLuint tex)
 	}
 }
 
+FBOManager& FBOManager::getInstance()
+{
+	static FBOManager instance;
+	return instance;
+}
 
-void FBOManager::processDrawTex(GLuint tex, int program)
+void FBOManager::bindScreen() const
+{
+	//set up to render to first FBO stored in array position 0
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+}
+
+void FBOManager::bindBuffer(int bufferIndex)
+{
+	activeBuffer = bufferIndex;
+	//set up to render to first FBO stored in array position 0
+	glBindFramebuffer(GL_FRAMEBUFFER, frameBuf[bufferIndex]);
+	// Clear framebuffer.
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+}
+
+void FBOManager::processFog()
+{
+	if (!debug.fog) return;
+
+	glDisable(GL_DEPTH_TEST);
+	bindBuffer(FOG_BUFFER);
+	shared_ptr<Program> fboProg = ShaderManager::getInstance()->getShader(FOGFBOPROG);
+	fboProg->bind();
+		ShaderManager::getInstance()->sendUniforms(FOGFBOPROG);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, texBuf[DEPTH_BUFFER]);
+		drawTex(texBuf[MAIN_BUFFER]);
+	fboProg->unbind();
+	glEnable(GL_DEPTH_TEST);
+}
+
+void FBOManager::processBlur()
+{
+	glDisable(GL_DEPTH_TEST);
+	int buffers[] = { activeBuffer, BLUR_BUFFER };
+	for (size_t i = 0; i < round(data.blurAmount); i++)
+	{
+		bindBuffer(buffers[(i + 1) % 2]);
+		processDrawTex(BLURFBOPROG, texBuf[buffers[i % 2]]);
+	}
+	glEnable(GL_DEPTH_TEST);
+}
+
+void FBOManager::drawBuffer()
+{
+	if (!debug.enabled) return;
+
+	/* code to write out the FBO (texture) just once  - this is for debugging*/
+	if (debug.write) {
+		for (size_t i = 0; i < NUM_BUFFERS; i++)
+		{
+			writeTexture("texture" + to_string(i) + ".png", texBuf[i]);
+		}
+		debug.write = false;
+	}
+
+	bindScreen();
+
+	glDisable(GL_DEPTH_TEST);
+	shared_ptr<Program> fboProg = ShaderManager::getInstance()->getShader(WATERFBOPROG);
+	fboProg->bind();
+	glUniform1f(fboProg->getUniform("chaos"), data.chaos);
+	glUniform1f(fboProg->getUniform("confuse"), data.confuseTimer > 0);
+	glUniform1f(fboProg->getUniform("shake"), data.shakeTimer > 0);
+	glUniform1f(fboProg->getUniform("water"), data.water);
+	ShaderManager::getInstance()->sendUniforms(WATERFBOPROG);
+	drawTex(texBuf[activeBuffer]);
+	fboProg->unbind();
+	glEnable(GL_DEPTH_TEST);
+}
+
+void FBOManager::update(float deltaTime, float gameTime)
+{
+	data.blurAmount = mix(data.blurAmount, 0.0f, deltaTime * RECOVERY_SPEED);
+	if (data.shakeTimer > 0) { data.shakeTimer -= deltaTime; }
+	if (data.confuseTimer > 0) { data.confuseTimer -= deltaTime; }
+}
+
+
+void FBOManager::processDrawTex(int program, GLuint tex)
 {
 	shared_ptr<Program> fboProg = ShaderManager::getInstance()->getShader(program);
 	//example applying of 'drawing' the FBO texture
@@ -241,9 +239,8 @@ void FBOManager::drawTex(GLuint tex)
 	glDisableVertexAttribArray(0);
 }
 
-void FBOManager::processBindTex(int prog, int frameIndex, int texIndex)
+void FBOManager::writeTexture(const std::string filename, GLuint tex)
 {
-	glBindFramebuffer(GL_FRAMEBUFFER, frameBuf[frameIndex]);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	processDrawTex(texBuf[texIndex], prog);
+	assert(GLTextureWriter::WriteImage(tex, filename));
+	cout << "FBOManager: Wrote out texture to " << filename << endl;
 }

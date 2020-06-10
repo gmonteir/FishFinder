@@ -66,8 +66,14 @@ public:
 		if (action == GLFW_PRESS) {
 			switch (key)
 			{
-			case GLFW_KEY_ESCAPE:
+			case GLFW_KEY_ESCAPE: // Close Game
 				glfwSetWindowShouldClose(window, GL_TRUE);
+				break;
+			case GLFW_KEY_R: // Reset Game
+				reset();
+				break;
+			case GLFW_KEY_SPACE: // Start Game
+				start();
 				break;
 			case GLFW_KEY_1: // 1st person
 				camera.firstPerson();
@@ -77,6 +83,9 @@ public:
 				break;
 			case GLFW_KEY_3: // 3rd person
 				camera.thirdPerson();
+				break;
+			case GLFW_KEY_4: // Side person
+				camera.sidePerson();
 				break;
 			case GLFW_KEY_COMMA: // cheat stamina
 				GameManager::getInstance().increaseStamina(STAMINA_INCREMENT);
@@ -91,7 +100,7 @@ public:
 				FBOManager::getInstance().writeNextTexture();
 				break;
 			case GLFW_KEY_Y: // draw next Effect
-				FBOManager::getInstance().toggleTexture();
+				FBOManager::getInstance().toggleFog();
 				break;
 			case GLFW_KEY_X: // Confusion Effect
 				FBOManager::getInstance().triggerConfuse();
@@ -108,13 +117,10 @@ public:
 			case GLFW_KEY_P: // top Camera
 				showTopCamera = !showTopCamera;
 				break;
-			case GLFW_KEY_R: // Reset Game
-				reset();
-				AudioManager::getInstance().reset();
-				break;
 			}
 		}
-		Keys::getInstance().update(key, action);
+		if (GameManager::getInstance().inGame())
+			Keys::getInstance().update(key, action);
 	}
 
 	void mouseCallback(GLFWwindow* window, int button, int action, int mods) override
@@ -155,35 +161,30 @@ public:
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	 }
 
-	void initEntities()
-	{
 		Skybox::getInstance(); // initialize skybox
 		player = make_shared<Entity>(DORY_SHAPE, int(Behavior::PLAYER));
 		playerBehavior = dynamic_pointer_cast<Behavior::PlayerBehavior>(player->getBehavior());
 
-		//
+		/*
 		testChar = make_shared<Entity>(SHARK_SHAPE, int(Behavior::NONE));
 		testChar->getModel().setTexture(SHARK_TEXTURE);
-		testChar->getModel().setProgram(TEXTUREPROG);
 		testChar->getTransform().setSize(vec3(3*PLAYER_SIZE));
 		testChar->getTransform().setPosition(vec3(5, 0, 20));
 		testChar->bringToFloor();
-		//
+		*/
 
-		EntityCollection::getInstance()->addEntity(player);
-		EntityCollection::getInstance()->addEntity(testChar);
+		reset();
+	 }
 
-		Spawner::getInstance()->init();
-		playerBehavior->setTarget(Spawner::getInstance()->spawnFollower());
-		CutSceneManager::getInstance().nextCutScene();
-
-		/*for (int i = 0; i < 85; i++)
-			Spawner::getInstance()->spawnFollower();*/
-
-		FBOManager::getInstance().increaseBlurAmount(BLUR_INCREMENT);
+	void start()
+	{
+		GameManager::getInstance().play();
+		//FBOManager::getInstance().increaseBlurAmount(BLUR_INCREMENT);
 		FBOManager::getInstance().triggerConfuse();
+		camera.thirdPerson();
+
+		cout << "Play!" << endl;
 	}
 
 	void reset()
@@ -192,43 +193,63 @@ public:
 		GameManager::getInstance().reset();
 		playerBehavior->reset();
 		EntityCollection::getInstance()->addEntity(player);
-		Spawner::getInstance()->init();
+		//EntityCollection::getInstance()->addEntity(testChar);
+
+		Spawner::getInstance()->init(player);
 		playerBehavior->setTarget(Spawner::getInstance()->spawnFollower());
 
 		CutSceneManager::getInstance().reset();
 		CutSceneManager::getInstance().nextCutScene();
-		FBOManager::getInstance().increaseBlurAmount(BLUR_INCREMENT);
-		FBOManager::getInstance().triggerConfuse();
+		camera.sidePerson();
+
 		cout << "Resetted!" << endl;
 	}
 
 	void update(float deltaTime, float gameTime)
 	{
-		Spawner::getInstance()->update(deltaTime, gameTime);
-		CutSceneManager::getInstance().update(deltaTime, gameTime);
 		GameManager::getInstance().update(deltaTime, gameTime);
-		EntityCollection::getInstance()->update(deltaTime);
+		if (GameManager::getInstance().inGame())
+		{
+			Spawner::getInstance()->update(deltaTime, gameTime);
+			CutSceneManager::getInstance().update(deltaTime, gameTime);
+			EntityCollection::getInstance()->update(deltaTime);
+
+			FBOManager::getInstance().update(deltaTime, gameTime);
+		}
+		ShaderManager::POINT_LIGHTS[int(ShaderManager::NUM_LIGHTS) - 1].pos.x = player->getTransform().getPosition().x;
+		ShaderManager::POINT_LIGHTS[int(ShaderManager::NUM_LIGHTS) - 1].pos.z = player->getTransform().getPosition().z;
 		camera.update(deltaTime, player->getTransform());
-
-		FBOManager::getInstance().update(deltaTime, gameTime);
 	}
 
-	void renderScene(shared_ptr<MatrixStack> Model, vec4* planes, float deltaTime)
+	void renderScene(shared_ptr<MatrixStack> Model, vec4* planes)
 	{
-		EntityCollection::getInstance()->draw(Model, planes);
-		Floor::getInstance()->draw(Model);
 		Skybox::getInstance().draw(Model, camera.getEye());
-		ParticleManager::getInstance().processParticles(player->getTransform().getPosition(), deltaTime);
+		Floor::getInstance()->draw(Model);
+		EntityCollection::getInstance()->draw(Model, planes);
 	}
 
-	void renderSceneToFBO(int fbo, int progIndex, shared_ptr<MatrixStack> Model, vec4* planes)
+	void renderDepthScene(shared_ptr<MatrixStack> Model, vec4* planes)
 	{
-		FBOManager::getInstance().bindBuffer(fbo);
-		shared_ptr<Program> prog = ShaderManager::getInstance()->getShader(progIndex);
+		FBOManager::getInstance().bindBuffer(int(FBOManager::DEPTH_BUFFER));
+		shared_ptr<Program> prog = ShaderManager::getInstance()->getShader(DEPTHPROG);
+		prog->bind();
+			ShaderManager::getInstance()->sendUniforms(DEPTHPROG);
+
+			Skybox::getInstance().draw(prog, Model, camera.getEye());
+			Floor::getInstance()->draw(prog, Model);
+			EntityCollection::getInstance()->draw(prog, Model, planes);
+		prog->unbind();
+	}
+
+	void renderLightDepthScene(shared_ptr<MatrixStack> Model, vec4* planes)
+	{
+		FBOManager::getInstance().bindBuffer(int(FBOManager::SHADOW_BUFFER));
+		shared_ptr<Program> prog = ShaderManager::getInstance()->getShader(LIGHTDEPTHPROG);
 		prog->bind();
 			ShaderManager::getInstance()->sendUniforms(LIGHTDEPTHPROG);
-			EntityCollection::getInstance()->draw(prog, Model, planes);
+
 			Floor::getInstance()->draw(prog, Model);
+			EntityCollection::getInstance()->draw(prog, Model, planes);
 		prog->unbind();
 	}
 
@@ -267,23 +288,23 @@ public:
 		// ---------------------- drawing ----------------- //
 		if (FBOManager::getInstance().isEnabled())
 		{
-			//glCullFace(GL_FRONT);
-			renderSceneToFBO(int(FBOManager::SHADOW_BUFFER), LIGHTDEPTHPROG, Model, planes);
-			//glCullFace(GL_BACK);
-			renderSceneToFBO(int(FBOManager::DEPTH_BUFFER), DEPTHPROG, Model, planes);
+			renderLightDepthScene(Model, planes);
+			renderDepthScene(Model, planes);
 
 			FBOManager::getInstance().bindBuffer(int(FBOManager::MAIN_BUFFER));
-			renderScene(Model, planes, deltaTime);
+			renderScene(Model, planes);
 
 			FBOManager::getInstance().processFog();
 			FBOManager::getInstance().processBlur();
-			player->draw(Model);
+			ParticleManager::getInstance().processParticles(player->getTransform().getPosition(), deltaTime);
+			//player->draw(Model);
 			FBOManager::getInstance().drawBuffer();
 		}
 		else
 		{
 			FBOManager::getInstance().bindScreen();
-			renderScene(Model, planes, deltaTime);
+			renderScene(Model, planes);
+			ParticleManager::getInstance().processParticles(player->getTransform().getPosition(), deltaTime);
 		}
 
 		GameManager::getInstance().draw();

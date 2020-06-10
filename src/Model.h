@@ -25,7 +25,8 @@ public:
 		: shapes(*Shapes::getInstance()->getShape(shapeName)), 
 		animator(Animator::createAnimator(shapeName)),
 		rotationOffset(Shapes::getInstance()->getRotationOffset(shapeName)),
-		material(DEFAULT_MATERIAL), program(SIMPLEPROG), texture(nullptr)
+		material(NO_MATERIAL), matProgram(SIMPLEPROG),
+		texProgram(TEXTUREPROG), texture(nullptr), hasTexture(false)
 	{
 		extractMinMax();
 		extractShiftScale();
@@ -44,10 +45,14 @@ public:
 	const std::vector<std::shared_ptr<Shape>>& getShapes() const { return shapes; }
 	Animator& getAnimator() { return *animator; }
 
-	void setMaterial(int material) { this->material = material; }
-	void setTexture(const std::string& textureName) 
-		{ texture = Textures::getInstance()->getTexture(textureName); }
-	void setProgram(int prog) { program = prog; }
+	Model& setMaterial(int material) { this->material = material; return *this; }
+	Model& setTexture(const std::string& textureName)
+		{ texture = Textures::getInstance()->getTexture(textureName); enableTexture(); return *this; }
+	Model& setMaterialProgram(int prog) { matProgram = prog; return *this; }
+	Model& setTextureProgram(int prog) { texProgram = prog; return *this; }
+
+	Model& disableTexture() { hasTexture = false; return *this; }
+	Model& enableTexture() { hasTexture = true; return *this; }
 
 private:
 	const std::vector<std::shared_ptr<Shape>>& shapes;
@@ -55,7 +60,8 @@ private:
 	const std::unique_ptr<Animator> animator;
 	float rotationOffset;
 
-	int material, program;
+	bool hasTexture;
+	int material, matProgram, texProgram;
 	glm::vec3 max, min, shift, scale;
 
 	void extractMinMax();

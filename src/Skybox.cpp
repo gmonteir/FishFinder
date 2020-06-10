@@ -48,7 +48,7 @@ void Skybox::draw(shared_ptr<Program>& prog, shared_ptr<MatrixStack>& M, vec3 po
 	M->translate(vec3(0, 5, 0));
 	M->translate(position);
 	M->rotate(radians(-180.f), YAXIS);
-	M->scale(vec3(500));
+	M->scale(vec3(400));
 	glUniformMatrix4fv(prog->getUniform("M"), 1, GL_FALSE, value_ptr(M->topMatrix()));
 	glBindTexture(GL_TEXTURE_CUBE_MAP, cubeMapTexture);
 	Shapes::getInstance()->getShape(CUBE_SHAPE)->at(0)->draw(prog);

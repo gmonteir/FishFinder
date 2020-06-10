@@ -12,19 +12,24 @@ shared_ptr<Spawner> Spawner::getInstance() {
 }
 
 // must be done after player is in Entities
-void Spawner::init()
+void Spawner::init(shared_ptr<Entity> player)
 {
-	// spawnFollower(); moved to main so we can save the first target position
+	this->player = player;
+
 	spawnPowerup();
-	
 	for (size_t i = 0; i < NUM_CORAL; i++)
 	{
-		spawnCoral(rand() % 3);
+		spawnCoral(Random::integer(NUM_CORAL_TYPES));
 	}
 
-	for (size_t i = 0; i < NUM_ENEMIES; i++)
+	for (size_t i = 0; i < NUM_STATIC_ENEMIES; i++)
 	{
-		spawnEnemy();
+		spawnStaticEnemy();
+	}
+
+	for (size_t i = 0; i < NUM_MOVING_ENEMIES; i++)
+	{
+		spawnMovingEnemy();
 	}
 	cout << "Spawner init" << endl;
 }
@@ -51,6 +56,7 @@ Transform* Spawner::spawnFollower()
 	e->getTransform()
 		.setVelocity(Random::spawnVel())
 		.setSize(c.size)
+		.setSpeed(FOLLOWER_SPEED)
 		.syncFacing();
 	e->getModel().setTexture(c.texture);
 
@@ -65,7 +71,8 @@ void Spawner::spawnPowerup()
 	e->getTransform()
 		.setSize(vec3(POWERUP_SIZE))
 		.setFacing(Random::facingXZ());
-	e->getModel().setMaterial(POWERUP_MATERIAL);
+	e->getModel().setTextureProgram(REFLECTPROG)
+		.enableTexture();
 
 	EntityCollection::getInstance()->addEntity(e);
 }
@@ -77,14 +84,17 @@ void Spawner::spawnCoral(int type)
 	e->getTransform()
 		.setSize(Random::spawnSize())
 		.setFacing(Random::facingXZ());
+	e->getModel().setMaterialProgram(CORALPROG);
+	e->getModel().setTextureProgram(CORALPROG);
 	e->getModel().setMaterial(CORAL_MATERIALS[type]);
+	e->getModel().setTexture(CORAL_TEXTURE);
 
 	EntityCollection::getInstance()->addEntity(e);
 }
 
-void Spawner::spawnEnemy()
+void Spawner::spawnStaticEnemy()
 {
-	shared_ptr<Entity> e = make_shared<Entity>(ENEMY_SHAPE, int(Behavior::ENEMY));
+	shared_ptr<Entity> e = make_shared<Entity>(STATIC_ENEMY_SHAPE, int(Behavior::STATICENEMY));
 	findSpawnPosition(e, Random::range(ENEMY_FLOOR_OFFSET_RANGE));
 	e->getTransform()
 		.setSize(vec3(ENEMY_SIZE))
@@ -94,23 +104,31 @@ void Spawner::spawnEnemy()
 	EntityCollection::getInstance()->addEntity(e);
 }
 
+void Spawner::spawnMovingEnemy()
+{
+	shared_ptr<Entity> e = make_shared<Entity>(MOVING_ENEMY_SHAPE, int(Behavior::MOVINGENEMY));
+	findSpawnPosition(e, Random::range(SHARK_FLOOR_OFFSET_RANGE));
+	e->getTransform()
+		.setSize(vec3(SHARK_SIZE))
+		.setSpeed(SHARK_SPEED)
+		.setFacing(Random::facingXZ());
+	e->getModel().setTexture(SHARK_TEXTURE)
+		.setMaterial(SHARK_MATERIAL);
+
+	dynamic_pointer_cast<Behavior::MovingEnemyBehavior>(e->getBehavior())->setTarget(&player->getTransform());
+
+	EntityCollection::getInstance()->addEntity(e);
+}
+
 void Spawner::findSpawnPosition(shared_ptr<Entity>& entity, float offset)
 { 
 	entity->getTransform().setPosition(Random::spawnPos());
 	entity->bringToFloor(offset);
 
-	int entityI = EntityCollection::mapXtoI(entity->getTransform().getPosition().x);
-	int entityJ = EntityCollection::mapYtoJ(entity->getTransform().getPosition().y);
-	int entityK = EntityCollection::mapZtoK(entity->getTransform().getPosition().z);
-
-	while (entity->hasCollided(EntityCollection::getInstance()->entities, entityI, entityJ, entityK))
+	while (entity->distance(*player) < SPAWN_DISTANCE_FROM_PLAYER 
+		|| EntityCollection::getInstance()->hasCollided(*entity))
 	{
-
 		entity->getTransform().setPosition(Random::spawnPos());
 		entity->bringToFloor(offset);
-
-		entityI = EntityCollection::getInstance()->mapXtoI(entity->getTransform().getPosition().x);
-		entityJ = EntityCollection::getInstance()->mapYtoJ(entity->getTransform().getPosition().y);
-		entityK = EntityCollection::getInstance()->mapZtoK(entity->getTransform().getPosition().z);
 	}
 }

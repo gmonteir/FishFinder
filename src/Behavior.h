@@ -21,13 +21,15 @@ public:
 	static constexpr int PLAYER = 1;
 	static constexpr int FOLLOWER = 2;
 	static constexpr int POWERUP = 3;
-	static constexpr int ENEMY = 4;
+	static constexpr int STATICENEMY = 4;
+	static constexpr int MOVINGENEMY = 5;
 
 	class NoBehavior;
 	class PlayerBehavior;
 	class FollowerBehavior;
 	class PowerupBehavior;
-	class EnemyBehavior;
+	class StaticEnemyBehavior;
+	class MovingEnemyBehavior;
 
 	static std::unique_ptr<Behavior> createBehavior(int behavior, Transform& transform, Model& model);
 
@@ -115,7 +117,7 @@ public:
 		offset(FOLLOWER_OFFSET), following(false) {}
 	virtual ~FollowerBehavior() {}
 
-	void start() override;
+	void start() override {}
 	void update(float deltaTime) override;
 
 	void onOutOfBounds(float deltaTime) override;
@@ -142,6 +144,23 @@ public:
 		: Behavior(POWERUP, transform, model), timer(POWERUP_DESPAWN_TIME) {}
 	virtual ~PowerupBehavior() {}
 
+	void start() override {}
+	void update(float deltaTime) override;
+
+	void onOutOfBounds(float deltaTime) override {}
+	void onCollision(Behavior& collider) override {}
+
+private:
+	float timer;
+};
+
+class Behavior::StaticEnemyBehavior : public Behavior
+{
+public:
+	StaticEnemyBehavior(Transform& transform, Model& model)
+		: Behavior(STATICENEMY, transform, model), timer(0) {}
+	virtual ~StaticEnemyBehavior() {}
+
 	void start() override;
 	void update(float deltaTime) override;
 
@@ -152,12 +171,12 @@ private:
 	float timer;
 };
 
-class Behavior::EnemyBehavior : public Behavior
+class Behavior::MovingEnemyBehavior : public Behavior
 {
 public:
-	EnemyBehavior(Transform& transform, Model& model)
-		: Behavior(ENEMY, transform, model), timer(0) {}
-	virtual ~EnemyBehavior() {}
+	MovingEnemyBehavior(Transform& transform, Model& model)
+		: Behavior(MOVINGENEMY, transform, model), timer(0), newVelocity(ORIGIN), target(nullptr) {}
+	virtual ~MovingEnemyBehavior() {}
 
 	void start() override;
 	void update(float deltaTime) override;
@@ -165,8 +184,12 @@ public:
 	void onOutOfBounds(float deltaTime) override {}
 	void onCollision(Behavior& collider) override {}
 
+	void setTarget(Transform* target) { this->target = target; }
+
 private:
 	float timer;
+	glm::vec3 newVelocity;
+	Transform *target;
 };
 
 #endif
