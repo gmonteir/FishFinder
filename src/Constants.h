@@ -76,6 +76,7 @@ const glm::vec3 UI_LAVENDER_COLOR = glm::vec3(0.8f, 0.25f, 0.25f);
 constexpr float UI_LINE_OFFSET = 50.0f;
 constexpr float UI_BOTTOM_MARGIN = 25.0f;
 constexpr float UI_LEFT_MARGIN = 25.0f;
+constexpr float UI_RIGHT_MARGIN = 400.0f;
 
 constexpr float UI_FONT_SIZE = 0.75f;
 constexpr float TITLE_FONT_SIZE = 2.5f;
@@ -177,7 +178,7 @@ constexpr int NUM_MOVING_ENEMIES = 5;
 constexpr int NUM_CAUSTICS = 32;
 
 // Shader Constants
-constexpr int NUM_SHADERS = 14;
+constexpr int NUM_SHADERS = 15;
 constexpr int SIMPLEPROG = 0;
 constexpr int SKYBOXPROG = 1;
 constexpr int TEXTUREPROG = 2;
@@ -192,6 +193,7 @@ constexpr int PARTICLEPROG = 10;
 constexpr int LIGHTDEPTHPROG = 11;
 constexpr int CHARPARTICLEPROG = 12;
 constexpr int CORALPROG = 13;
+constexpr int STAMINAPROG = 14;
 
 // Light Constants
 struct Light {
@@ -204,6 +206,7 @@ struct Light {
 // Freetype Constants
 constexpr int LEFT = 0;
 constexpr int CENTER = 1;
+constexpr int RIGHT = 2;
 
 // Particle Constants
 constexpr int NUM_PARTICLES = 100;
@@ -258,6 +261,7 @@ const std::string LOSE_TEXT = "Game Over";
 
 const glm::vec2 RANDOM_TEXT_TIME_RANGE = glm::vec2(20, 50);
 const glm::vec2 BOOST_TEXT_TIME_RANGE = glm::vec2(5, 15);
+const float TIME_UNTIL_BLUR = 2.0;
 
 const std::vector<std::vector<std::vector<std::string>>> CUTSCENETEXTS{
 	std::vector<std::vector<std::string>> { // Main

@@ -132,10 +132,15 @@ void Behavior::PlayerBehavior::checkBoost(float deltaTime)
 {
 	if (Keys::getInstance().keyPressed(Keys::BOOST)
 		&& GameManager::getInstance().getStamina() > 0) {
+		blurTime -= deltaTime;
 		speechTime -= deltaTime;
 		boost = BOOST_SPEED;
-		GameManager::getInstance().decreaseStamina(deltaTime);
-		FBOManager::getInstance().increaseBlurAmount(deltaTime);
+		GameManager::getInstance().decreaseStamina(10 * deltaTime);
+		
+		if (blurTime <= 0) {
+			FBOManager::getInstance().increaseBlurAmount(deltaTime);
+		}
+		
 		if (boostOnce) {
 			AudioManager::getInstance().playSoundEffect(BOOST_MUSIC);
 			boostOnce = false;
@@ -150,6 +155,7 @@ void Behavior::PlayerBehavior::checkBoost(float deltaTime)
 		boost = 0;
 		boostOnce = true;
 		resetSpeechTime();
+		blurTime = 2.0;
 	}
 }
 

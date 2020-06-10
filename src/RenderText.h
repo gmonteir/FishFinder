@@ -29,6 +29,7 @@ class RenderText
 		~RenderText() {}
 		void init();
 		void drawText(int alignment, std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color);
+		void drawText(int alignment, std::string text, GLfloat x, GLfloat y, GLfloat xscale, GLfloat yscale, glm::vec3 color);
 	private:
 		GLuint VAO, VBO;
 		std::map<GLchar, Character> Characters;

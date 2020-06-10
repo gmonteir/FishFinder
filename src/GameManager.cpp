@@ -104,15 +104,18 @@ void GameManager::draw()
 		break;
 	case GAME_ACTIVE:
 		drawInGameStats();
+		drawStamina();
 		drawCutSceneText();
 		drawTimeRemaining();
 		break;
 	case GAME_WON:
 		drawInGameStats();
+		drawStamina();
 		drawWinScreen();
 		break;
 	case GAME_LOST:
 		drawInGameStats();
+		drawStamina();
 		drawCutSceneText();
 		drawTimeRemaining();
 		drawLoseScreen();
@@ -158,6 +161,13 @@ void GameManager::drawText(int alignment, const std::string& text, float x, floa
 	textRenderer->drawText(alignment, text, x, y, scale, color);
 }
 
+
+void GameManager::drawText(int alignment, const std::string& text, float x, float y, float xscale, float yscale, glm::vec3 color)
+{
+	// TODO: make work with aspect ratios and window size
+	textRenderer->drawText(alignment, text, x, y, xscale, yscale, color);
+}
+
 void GameManager::drawTextWithFloat(int alignment, const char* format, float num,
 	float x, float y, float scale, glm::vec3 color)
 {
@@ -182,7 +192,30 @@ void GameManager::drawCutSceneText()
 void GameManager::drawInGameStats()
 {
 	drawText(LEFT, "Characters Remaining: " + to_string(gameStats.charRemaining), UI_LEFT_MARGIN, height - UI_LINE_OFFSET);
-	drawTextWithFloat(LEFT, "Stamina: %.1f %%", 100 * gameStats.stamina / MAX_STAMINA, UI_LEFT_MARGIN, height - 2 * UI_LINE_OFFSET);
+	//drawTextWithFloat(LEFT, "Stamina: %.1f %%", 100 * gameStats.stamina / MAX_STAMINA, UI_LEFT_MARGIN, height - 2 * UI_LINE_OFFSET);
+}
+
+// Function which return string by concatenating it. 
+string repeat(string s, int n)
+{
+	// Copying given string to temparory string. 
+	string s1 = s;
+
+	for (int i = 1; i < n; i++)
+		s += s1; // Concatinating strings 
+
+	if (n > 0)
+		return s;
+	
+	return "";
+}
+
+void GameManager::drawStamina()
+{
+	string s1 = repeat("I", int(gameStats.stamina) * 2);
+
+	drawText(LEFT, s1, width - UI_RIGHT_MARGIN, height - 2 * UI_LINE_OFFSET, 0.1 * UI_FONT_SIZE, 2 * UI_FONT_SIZE,
+		vec3(1 - gameStats.stamina / 100, gameStats.stamina / 100, 0));
 }
 
 void GameManager::drawTimeRemaining()
