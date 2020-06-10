@@ -15,6 +15,7 @@ public:
 	~AudioManager() {}
 
 	void playSoundEffect(int effect);
+	void stopSoundEffect(int effect);
 	void reset();
 	
 private:

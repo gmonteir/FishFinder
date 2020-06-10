@@ -7,6 +7,7 @@
 #include "Model.h"
 #include "Constants.h"
 #include "Random.h"
+#include "AudioManager.h"
 
 #include <memory>
 
@@ -74,7 +75,7 @@ class Behavior::PlayerBehavior : public Behavior
 public:
 	PlayerBehavior(Transform& transform, Model& model)
 		: Behavior(PLAYER, transform, model), score(0), slow(0), boost(0),
-		previousCharacter(&transform), target(nullptr), immuneTime(0) {
+		previousCharacter(&transform), target(nullptr), immuneTime(0), boostOnce(true) {
 		resetSpeechTime();
 	}
 
@@ -97,6 +98,7 @@ private:
 	int score;
 	float slow, boost;
 	float immuneTime, speechTime;
+	bool boostOnce;
 
 	Transform* previousCharacter;
 	Transform* target;
