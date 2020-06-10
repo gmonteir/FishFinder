@@ -98,7 +98,7 @@ public:
 private:
 	int score;
 	float slow, boost;
-	float immuneTime, speechTime;
+	float immuneTime, speechTime, blurTime = TIME_UNTIL_BLUR;
 
 	Transform* previousCharacter;
 	Transform* target;

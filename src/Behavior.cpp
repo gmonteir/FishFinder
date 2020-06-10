@@ -129,10 +129,15 @@ void Behavior::PlayerBehavior::checkBoost(float deltaTime)
 {
 	if (Keys::getInstance().keyPressed(Keys::BOOST)
 		&& GameManager::getInstance().getStamina() > 0) {
+		blurTime -= deltaTime;
 		speechTime -= deltaTime;
 		boost = BOOST_SPEED;
 		GameManager::getInstance().decreaseStamina(10 * deltaTime);
-		FBOManager::getInstance().increaseBlurAmount(deltaTime);
+		
+		if (blurTime <= 0) {
+			FBOManager::getInstance().increaseBlurAmount(deltaTime);
+		}
+		
 		if (speechTime <= 0) {
 			CutSceneManager::getInstance().startCutScene(BOOST_TEXTS);
 			resetSpeechTime();
@@ -141,6 +146,7 @@ void Behavior::PlayerBehavior::checkBoost(float deltaTime)
 	else {
 		boost = 0;
 		resetSpeechTime();
+		blurTime = 2.0;
 	}
 }
 
