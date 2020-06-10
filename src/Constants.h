@@ -261,7 +261,7 @@ const std::string LOSE_TEXT = "Game Over";
 
 const glm::vec2 RANDOM_TEXT_TIME_RANGE = glm::vec2(20, 50);
 const glm::vec2 BOOST_TEXT_TIME_RANGE = glm::vec2(5, 15);
-const float TIME_UNTIL_BLUR = 2.0;
+const float TIME_UNTIL_BLUR = 0.5;
 
 const std::vector<std::vector<std::vector<std::string>>> CUTSCENETEXTS{
 	std::vector<std::vector<std::string>> { // Main

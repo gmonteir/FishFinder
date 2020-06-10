@@ -383,7 +383,6 @@ public:
 		GameManager::getInstance().draw();
 		float stamina = GameManager::getInstance().getStamina();
 
-		cout << stamina << endl;
 		shared_ptr<Program> staminaProg = ShaderManager::getInstance()->getShader(STAMINAPROG);
 		
 		//ShaderManager::getInstance()->sendUniforms(STAMINAPROG);

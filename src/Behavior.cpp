@@ -155,7 +155,7 @@ void Behavior::PlayerBehavior::checkBoost(float deltaTime)
 		boost = 0;
 		boostOnce = true;
 		resetSpeechTime();
-		blurTime = 2.0;
+		blurTime = TIME_UNTIL_BLUR;
 	}
 }
 
