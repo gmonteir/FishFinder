@@ -33,6 +33,7 @@ ShaderManager::ShaderManager()
 	shaderProgs[LIGHTDEPTHPROG] = initLightDepthProg();
 	shaderProgs[CHARPARTICLEPROG] = initCharParticleProg();
 	shaderProgs[CORALPROG] = initCoralProg();
+	shaderProgs[STAMINAPROG] = initStaminaProg();
 
 	//luData.LP = glm::ortho(-ORTHO_SIZE, ORTHO_SIZE, -ORTHO_SIZE, ORTHO_SIZE, 1.0f, 1000.0f);
 	luData.LP = glm::ortho(-ORTHO_SIZE, ORTHO_SIZE, -ORTHO_SIZE, ORTHO_SIZE, NEAR_PLANE, 2 * ORTHO_SIZE);
@@ -239,6 +240,15 @@ shared_ptr<Program> ShaderManager::initCharParticleProg()
 	return prog;
 }
 
+shared_ptr<Program> ShaderManager::initStaminaProg()
+{
+	shared_ptr<Program> prog = makeProgram("/stamina_vert.glsl", "/stamina_frag.glsl");
+	//prog->addUniform("P");
+	prog->addUniform("stamina");
+	prog->addAttribute("vertPos");
+	return prog;
+}
+
 void ShaderManager::sendUniforms(int progIndex, const shared_ptr<Texture> texture, const std::shared_ptr<Texture> blendTexture)
 {
 	shared_ptr<Program> prog = getShader(progIndex);
@@ -278,7 +288,7 @@ void ShaderManager::sendUniforms(int progIndex, const shared_ptr<Texture> textur
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, FBOManager::getInstance().getTexBufId(int(FBOManager::SHADOW_BUFFER)));
 		glUniform1i(prog->getUniform("shadowDepth"), 0);
-		
+
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, texture->getID());
 		glUniform1i(prog->getUniform("Texture0"), 1);
@@ -347,6 +357,10 @@ void ShaderManager::sendUniforms(int progIndex, const shared_ptr<Texture> textur
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, texture->getID());
 		glUniform1i(prog->getUniform("Texture0"), 1);
+		break;
+	case STAMINAPROG:
+		/*glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, value_ptr(uniformData.P));
+		glUniformMatrix4fv(prog->getUniform("V"), 1, GL_FALSE, value_ptr(uniformData.V));*/
 		break;
 	}
 }

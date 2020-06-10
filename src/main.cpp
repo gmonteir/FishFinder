@@ -52,6 +52,9 @@ public:
 	shared_ptr<Entity> testChar;
 	Camera camera;
 
+	GLuint staminaVAO;
+	GLuint staminaBuf;
+
 	bool showTopCamera = false;
 	mat4 topView = lookAt(vec3(0, 100, 0), vec3(0, 99, 1), YAXIS);
 
@@ -151,6 +154,51 @@ public:
 		glViewport(0, 0, width, height);
 	}
 
+	void initStaminaBuf() {
+
+		glGenVertexArrays(1, &staminaVAO);
+		glGenBuffers(1, &staminaBuf);
+
+		glEnableVertexAttribArray(0);
+		glBindBuffer(GL_ARRAY_BUFFER, staminaBuf);
+		glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(vec4), 0);
+
+		GLfloat vertices[] = { -1, -1, 0, 0, // bottom left corner
+							  -1,  1, 0, 0, // top left corner
+							   1,  1, 0, 0, // top right corner
+							   1, -1, 0, 0 }; // bottom right corner
+
+		GLubyte indices[] = { 0,1,2, // first triangle (bottom left - top left - top right)
+							 0,2,3 }; // second triangle (bottom left - top right - bottom right)
+
+		glBufferData(0, sizeof(vec4) * 4, &vertices, GL_STATIC_DRAW);
+
+	}
+
+	void initQuad() {
+		//now set up a simple quad for rendering FBO
+		glGenVertexArrays(1, &staminaVAO);
+		glBindVertexArray(staminaVAO);
+
+		static const GLfloat g_quad_vertex_buffer_data[] =
+		{
+			-0.5f, -0.5f, 0.0f,
+			0.5f, -0.5f, 0.0f,
+			-0.5f,  0.5f, 0.0f,
+			-0.5f,  0.5f, 0.0f,
+			0.5f, -0.5f, 0.0f,
+			0.5f,  0.5f, 0.0f,
+		};
+
+		glGenBuffers(1, &staminaBuf);
+		glBindBuffer(GL_ARRAY_BUFFER, staminaBuf);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(g_quad_vertex_buffer_data), g_quad_vertex_buffer_data, GL_DYNAMIC_DRAW);
+		//glEnableVertexAttribArray(0);
+		//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(vec3), (void*)0);
+		//glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindVertexArray(0);
+	}
+
 	void init()
 	{
 		GLSL::checkVersion();
@@ -161,6 +209,8 @@ public:
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+		
 
 		Skybox::getInstance(); // initialize skybox
 		player = make_shared<Entity>(DORY_SHAPE, int(Behavior::PLAYER));
@@ -175,6 +225,9 @@ public:
 		*/
 
 		reset();
+
+		initQuad();
+
 	 }
 
 	void start()
@@ -253,6 +306,25 @@ public:
 		prog->unbind();
 	}
 
+	void drawStamina(shared_ptr<Program> prog, float stamina) {
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+		glEnable(GL_BLEND);
+
+		prog->bind();
+		glBindVertexArray(staminaVAO);
+		glUniform1f(prog->getUniform("stamina"), stamina);
+		glEnableVertexAttribArray(0);
+		glBindBuffer(GL_ARRAY_BUFFER, staminaBuf);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+		glDisableVertexAttribArray(0);
+		glBindVertexArray(0);
+		prog->unbind();
+
+		glDisable(GL_BLEND);
+	}
+
 	void render(float deltaTime, float gameTime)
 	{
 		// Get current frame buffer size.
@@ -308,6 +380,15 @@ public:
 		}
 
 		GameManager::getInstance().draw();
+		float stamina = GameManager::getInstance().getStamina();
+
+		cout << stamina << endl;
+		shared_ptr<Program> staminaProg = ShaderManager::getInstance()->getShader(STAMINAPROG);
+		
+		//ShaderManager::getInstance()->sendUniforms(STAMINAPROG);
+
+		//drawStamina(staminaProg, stamina/100);
+
 	}	
 };
 

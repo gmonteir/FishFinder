@@ -84,12 +84,14 @@ private:
 
 	void drawText(int alignment, const std::string& text, 
 		float x, float y, float scale = UI_FONT_SIZE, glm::vec3 color = UI_COLOR);
+	void drawText(int alignment, const std::string& text, float x, float y, float xscale, float yscale, glm::vec3 color);
 	void drawTextWithFloat(int alignment, const char* format, float num,
 		float x, float y, float scale = UI_FONT_SIZE, glm::vec3 color = UI_COLOR);
 	void drawBlinkText(int alignment, const BlinkText& blinkText, 
 		float x, float y, float scale = UI_FONT_SIZE, glm::vec3 color = UI_COLOR);
 	void drawCutSceneText();
 	void drawInGameStats();
+	void drawStamina();
 	void drawTimeRemaining();
 	void drawFPS();
 

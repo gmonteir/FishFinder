@@ -131,7 +131,7 @@ void Behavior::PlayerBehavior::checkBoost(float deltaTime)
 		&& GameManager::getInstance().getStamina() > 0) {
 		speechTime -= deltaTime;
 		boost = BOOST_SPEED;
-		GameManager::getInstance().decreaseStamina(deltaTime);
+		GameManager::getInstance().decreaseStamina(10 * deltaTime);
 		FBOManager::getInstance().increaseBlurAmount(deltaTime);
 		if (speechTime <= 0) {
 			CutSceneManager::getInstance().startCutScene(BOOST_TEXTS);
