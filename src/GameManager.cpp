@@ -135,6 +135,8 @@ void GameManager::play()
 void GameManager::lose()
 {
 	if (gameStats.gameState == GAME_ACTIVE) {
+		AudioManager::getInstance().stopSoundEffect(MAIN_MUSIC);
+		AudioManager::getInstance().playSoundEffect(LOSE_MUSIC);
 		gameStats.gameState = GAME_LOST;
 		restartText.active = true;
 	}
@@ -143,6 +145,8 @@ void GameManager::lose()
 void GameManager::win()
 {
 	if (gameStats.gameState == GAME_ACTIVE) {
+		AudioManager::getInstance().stopSoundEffect(MAIN_MUSIC);
+		AudioManager::getInstance().playSoundEffect(WIN_MUSIC);
 		gameStats.gameState = GAME_WON;
 		restartText.active = true;
 	}
