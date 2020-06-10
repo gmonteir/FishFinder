@@ -381,8 +381,7 @@ public:
 		}
 
 		GameManager::getInstance().draw();
-		float stamina = GameManager::getInstance().getStamina();
-
+		//float stamina = GameManager::getInstance().getStamina();
 		//shared_ptr<Program> staminaProg = ShaderManager::getInstance()->getShader(STAMINAPROG);
 		//ShaderManager::getInstance()->sendUniforms(STAMINAPROG);
 		//drawStamina(staminaProg, stamina/100);
