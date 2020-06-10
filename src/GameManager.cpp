@@ -213,9 +213,11 @@ string repeat(string s, int n)
 void GameManager::drawStamina()
 {
 	string s1 = repeat("I", int(gameStats.stamina) * 2);
-
-	drawText(LEFT, s1, width - UI_RIGHT_MARGIN, height - 2 * UI_LINE_OFFSET, 0.1 * UI_FONT_SIZE, 2 * UI_FONT_SIZE,
-		vec3(1 - gameStats.stamina / 100, gameStats.stamina / 100, 0));
+	drawText(LEFT, "Stamina: ", UI_LEFT_MARGIN, height - 2.1 * UI_LINE_OFFSET);
+	// drawText(LEFT, s1, UI_LEFT_MARGIN, height - 3.1 * UI_LINE_OFFSET, 0.1 * UI_FONT_SIZE, 1.5 * UI_FONT_SIZE,
+	// 	vec3(1 - gameStats.stamina / 100, gameStats.stamina / 100, 0));
+	drawText(LEFT, s1, UI_LEFT_MARGIN + 120/UI_FONT_SIZE, height - 2.1 * UI_LINE_OFFSET, 0.1 * UI_FONT_SIZE, 1.5 * UI_FONT_SIZE,
+	 	vec3(1 - gameStats.stamina / 100, gameStats.stamina / 100, 0));
 }
 
 void GameManager::drawTimeRemaining()
