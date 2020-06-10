@@ -13,7 +13,7 @@ void main(){
 	vec3 fogColor = vec3(0.1, 0.12, 0.14);
 
 	
-	float fogDensity = 5;
+	float fogDensity = 4;
 	const float LOG2 = 1.442695;
 	float z = 1-depth.r;
 	//float fogFactor = exp2( -fogDensity * fogDensity * z * z * LOG2 );
