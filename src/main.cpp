@@ -307,25 +307,6 @@ public:
 		prog->unbind();
 	}
 
-	void drawStamina(shared_ptr<Program> prog, float stamina) {
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-		glEnable(GL_BLEND);
-
-		prog->bind();
-		glBindVertexArray(staminaVAO);
-		glUniform1f(prog->getUniform("stamina"), stamina);
-		glEnableVertexAttribArray(0);
-		glBindBuffer(GL_ARRAY_BUFFER, staminaBuf);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-		glDrawArrays(GL_TRIANGLES, 0, 6);
-		glDisableVertexAttribArray(0);
-		glBindVertexArray(0);
-		prog->unbind();
-
-		glDisable(GL_BLEND);
-	}
-
 	void render(float deltaTime, float gameTime)
 	{
 		// Get current frame buffer size.
