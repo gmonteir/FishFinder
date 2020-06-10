@@ -98,6 +98,7 @@ void Behavior::PlayerBehavior::onCollision(Behavior& collider)
 			return;
 		follower->setTarget(previousCharacter);
 		GameManager::getInstance().decrementNumChar();
+		AudioManager::getInstance().playSoundEffect(FOUND_MUSIC);
 		CutSceneManager::getInstance().nextCutScene();
 		ParticleManager::getInstance().setCaptured(target);
 		if (GameManager::getInstance().getCharRemaining() > 0) {
@@ -111,6 +112,7 @@ void Behavior::PlayerBehavior::onCollision(Behavior& collider)
 	case POWERUP:
 		collider.remove();
 		GameManager::getInstance().increaseStamina(STAMINA_INCREMENT);
+		AudioManager::getInstance().playSoundEffect(FOUND_MUSIC);
 		break;
 	case STATICENEMY:
 	case MOVINGENEMY:
@@ -120,6 +122,7 @@ void Behavior::PlayerBehavior::onCollision(Behavior& collider)
 		transform.setVelocity(ORIGIN);
 		FBOManager::getInstance().increaseBlurAmount(BLUR_INCREMENT);
 		FBOManager::getInstance().triggerShake();
+		AudioManager::getInstance().playSoundEffect(COLLISION_MUSIC);
 		CutSceneManager::getInstance().startCutScene(ENEMY_TEXTS);
 		break;
 	}
@@ -138,13 +141,19 @@ void Behavior::PlayerBehavior::checkBoost(float deltaTime)
 			FBOManager::getInstance().increaseBlurAmount(deltaTime);
 		}
 		
+		if (boostOnce) {
+			AudioManager::getInstance().playSoundEffect(BOOST_MUSIC);
+			boostOnce = false;
+		}
 		if (speechTime <= 0) {
 			CutSceneManager::getInstance().startCutScene(BOOST_TEXTS);
 			resetSpeechTime();
 		}
 	}
 	else {
+		AudioManager::getInstance().stopSoundEffect(BOOST_MUSIC);
 		boost = 0;
+		boostOnce = true;
 		resetSpeechTime();
 		blurTime = 2.0;
 	}

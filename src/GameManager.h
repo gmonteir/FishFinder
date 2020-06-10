@@ -3,6 +3,7 @@
 #include "Constants.h"
 #include "RenderText.h"
 #include "ShaderManager.h"
+#include "AudioManager.h"
 #include <memory>
 
 // value_ptr for glm

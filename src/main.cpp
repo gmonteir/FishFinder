@@ -74,6 +74,7 @@ public:
 				break;
 			case GLFW_KEY_R: // Reset Game
 				reset();
+				AudioManager::getInstance().reset();
 				break;
 			case GLFW_KEY_SPACE: // Start Game
 				start();
@@ -406,7 +407,7 @@ int main(int argc, char **argv)
 	// This is the code that will likely change program to program as you
 	// may need to initialize or set up different data and state
 	application->init();
-	AudioManager::getInstance().startMusicLoop();
+	AudioManager::getInstance().playSoundEffect(MAIN_MUSIC);
 
 	double gameTime = 0; // keep track of how long we have been in the game.
 	double currentTime = glfwGetTime();

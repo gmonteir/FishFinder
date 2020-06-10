@@ -49,6 +49,11 @@ const std::string STATIC_ENEMY_SHAPE = "STATIC_ENEMY";
 const std::string MOVING_ENEMY_SHAPE = SHARK_SHAPE;
 
 const std::string MUSIC_LOOP = "loop.wav";
+const std::string COLLISION_EFFECT = "bump.wav";
+const std::string FOUND_EFFECT = "found.wav";
+const std::string BOOST_EFFECT = "bubbles.wav";
+const std::string WIN_EFFECT = "win.wav";
+const std::string LOSE_EFFECT = "lose.wav";
 
 // Game Constants
 constexpr float INITIAL_TIME_LIMIT = 100.0f; // seconds
@@ -227,6 +232,14 @@ const Character CHARACTERS[]{
 	{JENNY_SHAPE, JENNY_TEXTURE, 4},
 	{CHARLIE_SHAPE, CHARLIE_TEXTURE, 4},
 };
+
+// Music Constants
+constexpr int MAIN_MUSIC = 0;
+constexpr int COLLISION_MUSIC = 1;
+constexpr int BOOST_MUSIC = 2;
+constexpr int FOUND_MUSIC = 3;
+constexpr int WIN_MUSIC = 4;
+constexpr int LOSE_MUSIC = 5;
 
 // CutScene Texts Constants
 // order by priority

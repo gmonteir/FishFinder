@@ -14,12 +14,23 @@ public:
 
 	~AudioManager() {}
 
-	void startMusicLoop();
 	void playSoundEffect(int effect);
+	void stopSoundEffect(int effect);
 	void reset();
 	
 private:
 	ISoundEngine* engine;
-	ISound* mainLoop;
-	
+	ISoundSource* mainLoop;
+	ISoundSource* bump;
+	ISoundSource* found;
+	ISoundSource* win;
+	ISoundSource* lose;
+	ISoundSource* boost;
+
+	ISound* mainLoopS;
+	ISound* bumpS;
+	ISound* foundS;
+	ISound* winS;
+	ISound* loseS;
+	ISound* boostS;
 };
