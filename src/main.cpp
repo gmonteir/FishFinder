@@ -71,6 +71,7 @@ public:
 				break;
 			case GLFW_KEY_R: // Reset Game
 				reset();
+				AudioManager::getInstance().reset();
 				break;
 			case GLFW_KEY_SPACE: // Start Game
 				start();
