@@ -52,7 +52,7 @@ void Behavior::PlayerBehavior::start()
 	transform.setSize(glm::vec3(PLAYER_SIZE))
 		.setSpeed(PLAYER_SPEED);
 	bringToFloor(FOLLOWER_FLOOR_OFFSET);
-	model.setTexture(DORY_TEXTURE);
+	model.setTexture(PLAYER_TEXTURE);
 }
 
 void Behavior::PlayerBehavior::update(float deltaTime)

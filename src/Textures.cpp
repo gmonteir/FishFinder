@@ -7,14 +7,14 @@ using namespace std;
 
 Textures::Textures()
 {
-	addTexture(RESOURCE_DIR + "/dory.jpg", DORY_TEXTURE, GL_CLAMP_TO_EDGE);
-	addTexture(RESOURCE_DIR + "/nemo.jpg", NEMO_TEXTURE, GL_CLAMP_TO_EDGE);
-	addTexture(RESOURCE_DIR + "/squirt.jpg", SQUIRT_TEXTURE, GL_CLAMP_TO_EDGE);
-	addTexture(RESOURCE_DIR + "/jenny.jpg", JENNY_TEXTURE, GL_CLAMP_TO_EDGE);
-	addTexture(RESOURCE_DIR + "/charlie.jpg", CHARLIE_TEXTURE, GL_CLAMP_TO_EDGE);
-	addTexture(RESOURCE_DIR + "/bloat.jpg", BLOAT_TEXTURE, GL_CLAMP_TO_EDGE);
-	addTexture(RESOURCE_DIR + "/marlin.jpg", MARLIN_TEXTURE, GL_CLAMP_TO_EDGE);
-	addTexture(RESOURCE_DIR + "/gurgle.jpg", GURGLE_TEXTURE, GL_CLAMP_TO_EDGE);
+	addTexture(RESOURCE_DIR + "/player.jpg", PLAYER_TEXTURE, GL_CLAMP_TO_EDGE);
+	addTexture(RESOURCE_DIR + "/clown1.jpg", CLOWN1_TEXTURE, GL_CLAMP_TO_EDGE);
+	addTexture(RESOURCE_DIR + "/turtle.jpg", TURTLE_TEXTURE, GL_CLAMP_TO_EDGE);
+	addTexture(RESOURCE_DIR + "/mother.jpg", MOTHER_TEXTURE, GL_CLAMP_TO_EDGE);
+	addTexture(RESOURCE_DIR + "/father.jpg", FATHER_TEXTURE, GL_CLAMP_TO_EDGE);
+	addTexture(RESOURCE_DIR + "/puffer.jpg", PUFFER_TEXTURE, GL_CLAMP_TO_EDGE);
+	addTexture(RESOURCE_DIR + "/clown2.jpg", CLOWN2_TEXTURE, GL_CLAMP_TO_EDGE);
+	addTexture(RESOURCE_DIR + "/royal.jpg", ROYAL_TEXTURE, GL_CLAMP_TO_EDGE);
 	addTexture(RESOURCE_DIR + "/shark.jpg", SHARK_TEXTURE, GL_CLAMP_TO_EDGE);
 	addTexture(RESOURCE_DIR + "/ground.bmp", FLOOR_TEXTURE, GL_CLAMP_TO_EDGE);
 	addTexture(RESOURCE_DIR + "/coral.jpg", CORAL_TEXTURE, GL_CLAMP_TO_EDGE);

@@ -10,14 +10,14 @@ Shapes::Shapes()
 {
 	addShape(RESOURCE_DIR + "/cube.obj", CUBE_SHAPE);
 	addShape(RESOURCE_DIR + "/sphere.obj", SPHERE_SHAPE);
-	addShape(RESOURCE_DIR + "/dory.obj", DORY_SHAPE);
-	addShape(RESOURCE_DIR + "/nemo.obj", NEMO_SHAPE);
-	addShape(RESOURCE_DIR + "/squirt.obj", SQUIRT_SHAPE);
-	addShape(RESOURCE_DIR + "/jenny.obj", JENNY_SHAPE);
-	addShape(RESOURCE_DIR + "/charlie.obj", CHARLIE_SHAPE);
-	addShape(RESOURCE_DIR + "/bloat.obj", BLOAT_SHAPE);
-	addShape(RESOURCE_DIR + "/marlin.obj", MARLIN_SHAPE);
-	addShape(RESOURCE_DIR + "/gurgle.obj", GURGLE_SHAPE);
+	addShape(RESOURCE_DIR + "/player.obj", PLAYER_SHAPE);
+	addShape(RESOURCE_DIR + "/clown1.obj", CLOWN1_SHAPE);
+	addShape(RESOURCE_DIR + "/turtle.obj", TURTLE_SHAPE);
+	addShape(RESOURCE_DIR + "/mother.obj", MOTHER_SHAPE);
+	addShape(RESOURCE_DIR + "/father.obj", FATHER_SHAPE);
+	addShape(RESOURCE_DIR + "/puffer.obj", PUFFER_SHAPE);
+	addShape(RESOURCE_DIR + "/clown2.obj", CLOWN2_SHAPE);
+	addShape(RESOURCE_DIR + "/royal.obj", ROYAL_SHAPE);
 	addShape(RESOURCE_DIR + "/shark.obj", SHARK_SHAPE);
 	addShape(RESOURCE_DIR + "/tree_coral.obj", TREE_CORAL_SHAPE);
 	addShape(RESOURCE_DIR + "/soft_coral.obj", SOFT_CORAL_SHAPE);
@@ -53,9 +53,9 @@ void Shapes::addShape(vector<float>& posBuf,
 
 float Shapes::getRotationOffset(const string& key) const
 {
-	if (key == DORY_SHAPE)
+	if (key == PLAYER_SHAPE)
 		return radians(90.0f);
-	if (key == SQUIRT_SHAPE)
+	if (key == TURTLE_SHAPE)
 		return radians(-90.0f);
 	return 0;
 }

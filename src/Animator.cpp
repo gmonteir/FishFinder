@@ -5,18 +5,18 @@ using namespace glm;
 
 unique_ptr<Animator> Animator::createAnimator(const string& modelName)
 {
-	if (modelName == DORY_SHAPE)
-		return unique_ptr<Animator>(new DoryAnimator);
-	else if (modelName == NEMO_SHAPE || modelName == MARLIN_SHAPE)
-		return unique_ptr<Animator>(new NemoAnimator);
-	else if (modelName == SQUIRT_SHAPE)
-		return unique_ptr<Animator>(new SquirtAnimator);
-	else if (modelName == JENNY_SHAPE)
-		return unique_ptr<Animator>(new JennyAnimator);
-	else if (modelName == CHARLIE_SHAPE || modelName == GURGLE_SHAPE)
-		return unique_ptr<Animator>(new CharlieAnimator);
-	else if (modelName == BLOAT_SHAPE)
-		return unique_ptr<Animator>(new BloatAnimator);
+	if (modelName == PLAYER_SHAPE)
+		return unique_ptr<Animator>(new PlayerAnimator);
+	else if (modelName == CLOWN1_SHAPE || modelName == CLOWN2_SHAPE)
+		return unique_ptr<Animator>(new ClownfishAnimator);
+	else if (modelName == TURTLE_SHAPE)
+		return unique_ptr<Animator>(new TurtleAnimator);
+	else if (modelName == MOTHER_SHAPE)
+		return unique_ptr<Animator>(new MotherAnimator);
+	else if (modelName == FATHER_SHAPE || modelName == ROYAL_SHAPE)
+		return unique_ptr<Animator>(new FatherAnimator);
+	else if (modelName == PUFFER_SHAPE)
+		return unique_ptr<Animator>(new PufferfishAnimator);
 	else if (modelName == SHARK_SHAPE)
 		return unique_ptr<Animator>(new SharkAnimator);
 	return unique_ptr<Animator>(new NoAnimator);
@@ -70,7 +70,7 @@ void Animator::NoAnimator::drawModel(shared_ptr<MatrixStack>& M,
 	}
 }
 
-void Animator::DoryAnimator::animate(float deltaTime)
+void Animator::PlayerAnimator::animate(float deltaTime)
 {
 	animatePart(deltaTime * animationSpeed, &tail.y, &tailRight, -0.7, 0.7);
 	animatePart(deltaTime * animationSpeed, &leftFin.y, &leftFinRight, -0.3, 0.3);
@@ -79,10 +79,10 @@ void Animator::DoryAnimator::animate(float deltaTime)
 	rightFin.x = -rightFin.y;
 }
 
-void Animator::DoryAnimator::drawModel(shared_ptr<MatrixStack>& M,
+void Animator::PlayerAnimator::drawModel(shared_ptr<MatrixStack>& M,
 	shared_ptr<Program> prog, const vector<shared_ptr<Shape>>& shapes) const
 {
-	/* Dory Parts by Index
+	/* Player Parts by Index
 	0 - Face
 	1 - Top Fin
 	2 - Left Fin Joint
@@ -115,7 +115,7 @@ void Animator::DoryAnimator::drawModel(shared_ptr<MatrixStack>& M,
 	}
 }
 
-void Animator::NemoAnimator::animate(float dt)
+void Animator::ClownfishAnimator::animate(float dt)
 {
 	animatePart(dt, &tail.y, &tailRight, -0.7, 0.7);
 	animatePart(dt, &leftFin.y, &leftFinRight, -0.6, 0.6);
@@ -126,7 +126,7 @@ void Animator::NemoAnimator::animate(float dt)
 	rightFoot.x = -leftFoot.x;
 }
 
-void Animator::NemoAnimator::drawModel(shared_ptr<MatrixStack>& M, 
+void Animator::ClownfishAnimator::drawModel(shared_ptr<MatrixStack>& M, 
 	shared_ptr<Program> prog, const vector<shared_ptr<Shape>>& shapes) const
 {
 	/* Nemo Parts by Index
@@ -163,7 +163,7 @@ void Animator::NemoAnimator::drawModel(shared_ptr<MatrixStack>& M,
 	}
 }
 
-void Animator::SquirtAnimator::animate(float dt)
+void Animator::TurtleAnimator::animate(float dt)
 {
 	animatePart(dt, &leftFin.z, &leftFinRight, -0.6, 0.6);
 	leftFin.x = leftFin.z;
@@ -173,7 +173,7 @@ void Animator::SquirtAnimator::animate(float dt)
 	rightFoot.z = -leftFoot.z;
 }
 
-void Animator::SquirtAnimator::drawModel(shared_ptr<MatrixStack>& M, 
+void Animator::TurtleAnimator::drawModel(shared_ptr<MatrixStack>& M, 
 	shared_ptr<Program> prog, const vector<shared_ptr<Shape>>& shapes) const
 {
 	/* Squirt Parts by Index
@@ -205,7 +205,7 @@ void Animator::SquirtAnimator::drawModel(shared_ptr<MatrixStack>& M,
 	}
 }
 
-void Animator::JennyAnimator::animate(float deltaTime)
+void Animator::MotherAnimator::animate(float deltaTime)
 {
 	animatePart(deltaTime, &tail.y, &tailRight, -0.7, 0.7);
 	animatePart(deltaTime, &leftFin.y, &leftFinRight, -0.3, 0.3);
@@ -214,7 +214,7 @@ void Animator::JennyAnimator::animate(float deltaTime)
 	rightFin.x = -rightFin.y;
 }
 
-void Animator::JennyAnimator::drawModel(shared_ptr<MatrixStack>& M,
+void Animator::MotherAnimator::drawModel(shared_ptr<MatrixStack>& M,
 	shared_ptr<Program> prog, const vector<shared_ptr<Shape>>& shapes) const
 {
 	/* Jenny Parts by Index
@@ -242,7 +242,7 @@ void Animator::JennyAnimator::drawModel(shared_ptr<MatrixStack>& M,
 	}
 }
 
-void Animator::CharlieAnimator::animate(float deltaTime)
+void Animator::FatherAnimator::animate(float deltaTime)
 {
 	animatePart(deltaTime, &tail.y, &tailRight, -0.7, 0.7);
 	animatePart(deltaTime, &leftFin.y, &leftFinRight, -0.3, 0.3);
@@ -251,7 +251,7 @@ void Animator::CharlieAnimator::animate(float deltaTime)
 	rightFin.x = -rightFin.y;
 }
 
-void Animator::CharlieAnimator::drawModel(shared_ptr<MatrixStack>& M,
+void Animator::FatherAnimator::drawModel(shared_ptr<MatrixStack>& M,
 	shared_ptr<Program> prog, const vector<shared_ptr<Shape>>& shapes) const
 {
 	/* Charlie Parts by Index
@@ -279,7 +279,7 @@ void Animator::CharlieAnimator::drawModel(shared_ptr<MatrixStack>& M,
 	}
 }
 
-void Animator::BloatAnimator::animate(float deltaTime)
+void Animator::PufferfishAnimator::animate(float deltaTime)
 {
 	animatePart(deltaTime, &tail.y, &tailRight, -0.7, 0.7);
 	animatePart(deltaTime, &leftFin.y, &leftFinRight, -0.3, 0.3);
@@ -288,7 +288,7 @@ void Animator::BloatAnimator::animate(float deltaTime)
 	rightFin.x = -rightFin.y;
 }
 
-void Animator::BloatAnimator::drawModel(shared_ptr<MatrixStack>& M,
+void Animator::PufferfishAnimator::drawModel(shared_ptr<MatrixStack>& M,
 	shared_ptr<Program> prog, const vector<shared_ptr<Shape>>& shapes) const
 {
 	/* Bloat Parts by Index

@@ -17,14 +17,14 @@ const glm::vec3 ZAXIS = glm::vec3(0.0, 0.0, 1.0);
 // Assets
 const std::string RESOURCE_DIR = "../resources";
 
-const std::string DORY_TEXTURE = "DORY_TXT";
-const std::string NEMO_TEXTURE = "NEMO_TXT";
-const std::string SQUIRT_TEXTURE = "SQUIRT_TXT";
-const std::string JENNY_TEXTURE = "JENNY_TXT";
-const std::string CHARLIE_TEXTURE = "CHARLIE_TXT";
-const std::string BLOAT_TEXTURE = "BLOAT_TXT";
-const std::string MARLIN_TEXTURE = "MARLIN_TXT";
-const std::string GURGLE_TEXTURE = "GURGLE_TXT";
+const std::string PLAYER_TEXTURE = "PLAYER_TXT";
+const std::string CLOWN1_TEXTURE = "CLOWN1_TXT";
+const std::string TURTLE_TEXTURE = "TURTLE_TXT";
+const std::string MOTHER_TEXTURE = "MOTHER_TXT";
+const std::string FATHER_TEXTURE = "FATHER_TXT";
+const std::string PUFFER_TEXTURE = "PUFFER_TXT";
+const std::string CLOWN2_TEXTURE = "CLOWN2_TXT";
+const std::string ROYAL_TEXTURE = "ROYAL_TXT";
 const std::string SHARK_TEXTURE = "SHARK_TXT";
 const std::string CAUSTIC_TEXTURE = "CAUSTIC_TXT";
 const std::string FLOOR_TEXTURE = "FLOOR_TXT";
@@ -32,14 +32,14 @@ const std::string CORAL_TEXTURE = "CORAL_TXT";
 
 const std::string CUBE_SHAPE = "CUBE";
 const std::string SPHERE_SHAPE = "SPHERE";
-const std::string DORY_SHAPE = "DORY";
-const std::string NEMO_SHAPE = "NEMO";
-const std::string SQUIRT_SHAPE = "SQUIRT";
-const std::string JENNY_SHAPE = "JENNY";
-const std::string CHARLIE_SHAPE = "CHARLIE";
-const std::string BLOAT_SHAPE = "BLOAT";
-const std::string MARLIN_SHAPE = "MARLIN";
-const std::string GURGLE_SHAPE = "GURGLE";
+const std::string PLAYER_SHAPE = "PLAYER";
+const std::string CLOWN1_SHAPE = "CLOWN1";
+const std::string TURTLE_SHAPE = "TURTLE";
+const std::string MOTHER_SHAPE = "MOTHER";
+const std::string FATHER_SHAPE = "FATHER";
+const std::string PUFFER_SHAPE = "PUFFER";
+const std::string CLOWN2_SHAPE = "CLOWN2";
+const std::string ROYAL_SHAPE = "ROYAL";
 const std::string SHARK_SHAPE = "SHARK";
 const std::string TREE_CORAL_SHAPE = "TREE_CORAL";
 const std::string SOFT_CORAL_SHAPE = "SOFT_CORAL";
@@ -223,13 +223,13 @@ struct Character {
 
 constexpr int NUM_CHARACTERS = 7;
 const Character CHARACTERS[]{
-	{MARLIN_SHAPE, MARLIN_TEXTURE, 4},
-	{NEMO_SHAPE, NEMO_TEXTURE, 2},
-	{SQUIRT_SHAPE, SQUIRT_TEXTURE, 4},
-	{BLOAT_SHAPE, BLOAT_TEXTURE, 5},
-	{GURGLE_SHAPE, GURGLE_TEXTURE, 3},
-	{JENNY_SHAPE, JENNY_TEXTURE, 4},
-	{CHARLIE_SHAPE, CHARLIE_TEXTURE, 4},
+	{CLOWN2_SHAPE, CLOWN2_TEXTURE, 4},
+	{CLOWN1_SHAPE, CLOWN1_TEXTURE, 2},
+	{TURTLE_SHAPE, TURTLE_TEXTURE, 4},
+	{PUFFER_SHAPE, PUFFER_TEXTURE, 5},
+	{ROYAL_SHAPE, ROYAL_TEXTURE, 3},
+	{MOTHER_SHAPE, MOTHER_TEXTURE, 4},
+	{FATHER_SHAPE, FATHER_TEXTURE, 4},
 };
 
 // Music Constants
@@ -253,7 +253,7 @@ constexpr float SCENE_TEXT_DELAY = 1.0f;
 constexpr float TEXT_BLINK_DELAY = 0.5f;
 
 const std::string BLINK_TEXT = "Press 'R' to restart";
-const std::string TITLE_TEXT = "Finding Dory";
+const std::string TITLE_TEXT = "Fish Finder";
 const std::string START_TEXT = "Press Spacebar to begin";
 const std::string WIN_TEXT = "You won!";
 const std::string LOSE_TEXT = "Game Over";
@@ -267,24 +267,23 @@ const std::vector<std::vector<std::vector<std::string>>> CUTSCENETEXTS{
 		std::vector<std::string>{
 			"Ugh!",
 			"Where am I?",
-			"I need to find my friends,",
-			"before I forget again."
+			"I need to find my friends."
 		},
 		std::vector<std::string>{
-			"Marlin?",
-			"You found me!"
+			"There you are!",
+			"But where's your brother?"
 		},
 		std::vector<std::string>{
-			"Oh! It's Chico!",
-			"I mean Nemo."
+			"Oh! There he is!",
+			"Now to find Turtle."
 		},
 		std::vector<std::string>{
-			"Squirt!"
+			"Turtle!"
 		},
 		std::vector<std::string>{
 			"Who are you?",
-			"You're name's Bloat?",
-			"You have a friend named Gurgle?"
+			"You're a pufferfish?",
+			"You lost your friend?"
 		},
 		std::vector<std::string>{
 			"I found all my friends",
@@ -306,10 +305,6 @@ const std::vector<std::vector<std::vector<std::string>>> CUTSCENETEXTS{
 		},
 		std::vector<std::string>{
 			"That hurt!"
-		},
-		std::vector<std::string>{
-			"Bad Squishy,",
-			"Bad Squishy!"
 		},
 		std::vector<std::string>{
 			"Careful."
@@ -334,23 +329,13 @@ const std::vector<std::vector<std::vector<std::string>>> CUTSCENETEXTS{
 	},
 	std::vector<std::vector<std::string>> { // Random
 		std::vector<std::string>{
-			"Just keep swimming,",
-			"Just keep swimming,",
-			"swimming, swimming, swimming."
+			"I love to swim!"
 		},
 		std::vector<std::string>{
-			"What do we do?",
-			"We swim, swim."
+			"My fins hurt. I should hurry!"
 		},
 		std::vector<std::string>{
-			"I love to swim!",
-			"When you want to swim!"
-		},
-		std::vector<std::string>{
-			"La la la la la!"
-		},
-		std::vector<std::string>{
-			"I'm a natural blue."
+			"I'm a natural red."
 		},
 		std::vector<std::string>{
 			"I'm gonna get you,",

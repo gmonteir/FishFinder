@@ -1,0 +1,10 @@
+^C:\USERS\GARRE\DOCUMENTS\SCHOOL\476\FINDINGDORY\EXT\GLFW-3.3.2\SRC\CMAKELISTS.TXT
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/garre/Documents/School/476/FindingDory -BC:/Users/garre/Documents/School/476/FindingDory/build --check-stamp-file C:/Users/garre/Documents/School/476/FindingDory/ext/glfw-3.3.2/debug/src/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

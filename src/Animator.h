@@ -11,12 +11,12 @@ class Animator
 {
 public:
 	class NoAnimator;
-	class DoryAnimator;
-	class NemoAnimator;
-	class SquirtAnimator;
-	class JennyAnimator;
-	class CharlieAnimator;
-	class BloatAnimator;
+	class PlayerAnimator;
+	class ClownfishAnimator;
+	class TurtleAnimator;
+	class MotherAnimator;
+	class FatherAnimator;
+	class PufferfishAnimator;
 	class SharkAnimator;
 
 	Animator() : animationSpeed(1) {}
@@ -49,12 +49,12 @@ public:
 		const std::vector<std::shared_ptr<Shape>>& shapes) const override;
 };
 
-class Animator::DoryAnimator : public Animator
+class Animator::PlayerAnimator : public Animator
 {
 public:
-	DoryAnimator() : Animator(), leftFinRight(false), rightFinRight(false),
+	PlayerAnimator() : Animator(), leftFinRight(false), rightFinRight(false),
 		tailRight(false), tail(ORIGIN), rightFin(ORIGIN), leftFin(ORIGIN) {}
-	virtual ~DoryAnimator() {}
+	virtual ~PlayerAnimator() {}
 
 	void animate(float deltaTime) override;
 	void drawModel(std::shared_ptr<MatrixStack>& M, std::shared_ptr<Program> prog,
@@ -65,12 +65,12 @@ private:
 	bool leftFinRight, rightFinRight, tailRight;
 };
 
-class Animator::NemoAnimator : public Animator
+class Animator::ClownfishAnimator : public Animator
 {
 public:
-	NemoAnimator() : Animator(), leftFin(ORIGIN), rightFin(ORIGIN), tail(ORIGIN), leftFoot(ORIGIN), rightFoot(ORIGIN),
+	ClownfishAnimator() : Animator(), leftFin(ORIGIN), rightFin(ORIGIN), tail(ORIGIN), leftFoot(ORIGIN), rightFoot(ORIGIN),
 		leftFinRight(false), rightFinRight(false), tailRight(false), leftFootRight(false), rightFootRight(false) {}
-	virtual ~NemoAnimator() {}
+	virtual ~ClownfishAnimator() {}
 
 	void animate(float deltaTime) override;
 	void drawModel(std::shared_ptr<MatrixStack>& M, std::shared_ptr<Program> prog,
@@ -81,12 +81,12 @@ private:
 	bool leftFinRight, rightFinRight, tailRight, leftFootRight, rightFootRight;
 };
 
-class Animator::SquirtAnimator : public Animator
+class Animator::TurtleAnimator : public Animator
 {
 public:
-	SquirtAnimator() : Animator(), leftFin(ORIGIN), rightFin(ORIGIN), leftFoot(ORIGIN), rightFoot(ORIGIN),
+	TurtleAnimator() : Animator(), leftFin(ORIGIN), rightFin(ORIGIN), leftFoot(ORIGIN), rightFoot(ORIGIN),
 		leftFinRight(false), rightFinRight(false), leftFootRight(false), rightFootRight(false) {}
-	virtual ~SquirtAnimator() {}
+	virtual ~TurtleAnimator() {}
 
 	void animate(float deltaTime) override;
 	void drawModel(std::shared_ptr<MatrixStack>& M, std::shared_ptr<Program> prog,
@@ -97,12 +97,12 @@ private:
 	bool leftFinRight, rightFinRight, leftFootRight, rightFootRight;
 };
 
-class Animator::JennyAnimator : public Animator
+class Animator::MotherAnimator : public Animator
 {
 public:
-	JennyAnimator() : Animator(), leftFin(ORIGIN), rightFin(ORIGIN), tail(ORIGIN),
+	MotherAnimator() : Animator(), leftFin(ORIGIN), rightFin(ORIGIN), tail(ORIGIN),
 		leftFinRight(false), rightFinRight(false), tailRight(false) {}
-	virtual ~JennyAnimator() {}
+	virtual ~MotherAnimator() {}
 
 	void animate(float deltaTime) override;
 	void drawModel(std::shared_ptr<MatrixStack>& M, std::shared_ptr<Program> prog,
@@ -113,12 +113,12 @@ private:
 	bool leftFinRight, rightFinRight, tailRight;
 };
 
-class Animator::CharlieAnimator : public Animator
+class Animator::FatherAnimator : public Animator
 {
 public:
-	CharlieAnimator() : Animator(), leftFin(ORIGIN), rightFin(ORIGIN), tail(ORIGIN),
+	FatherAnimator() : Animator(), leftFin(ORIGIN), rightFin(ORIGIN), tail(ORIGIN),
 		leftFinRight(false), rightFinRight(false), tailRight(false) {}
-	virtual ~CharlieAnimator() {}
+	virtual ~FatherAnimator() {}
 
 	void animate(float deltaTime) override;
 	void drawModel(std::shared_ptr<MatrixStack>& M, std::shared_ptr<Program> prog,
@@ -129,12 +129,12 @@ private:
 	bool leftFinRight, rightFinRight, tailRight;
 };
 
-class Animator::BloatAnimator : public Animator
+class Animator::PufferfishAnimator : public Animator
 {
 public:
-	BloatAnimator() : Animator(), leftFin(ORIGIN), rightFin(ORIGIN), tail(ORIGIN),
+	PufferfishAnimator() : Animator(), leftFin(ORIGIN), rightFin(ORIGIN), tail(ORIGIN),
 		leftFinRight(false), rightFinRight(false), tailRight(false) {}
-	virtual ~BloatAnimator() {}
+	virtual ~PufferfishAnimator() {}
 
 	void animate(float deltaTime) override;
 	void drawModel(std::shared_ptr<MatrixStack>& M, std::shared_ptr<Program> prog,

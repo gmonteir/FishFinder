@@ -1,5 +1,5 @@
 /*
- * Finding Dory
+ * Fish Finder
  * CPE 476 Cal Poly Zoe Wood, Steven Pineda, Nathan Lui, Garrett Monteiro, Nick Ryan
  */
 
@@ -214,7 +214,7 @@ public:
 		
 
 		Skybox::getInstance(); // initialize skybox
-		player = make_shared<Entity>(DORY_SHAPE, int(Behavior::PLAYER));
+		player = make_shared<Entity>(PLAYER_SHAPE, int(Behavior::PLAYER));
 		playerBehavior = dynamic_pointer_cast<Behavior::PlayerBehavior>(player->getBehavior());
 
 		/*

@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\garre\Documents\School\476\FindingDory\build\CMakeFiles\8878f831dee0b3000fffdc2f109214fe\PACKAGE_force.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{494639C6-0885-3C52-9478-C1DFD5CC1A72}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
